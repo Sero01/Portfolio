@@ -3,36 +3,32 @@ import { ScrollReveal } from "./scroll-reveal";
 export function Hero() {
   return (
     <section className="min-h-screen flex items-center pt-16">
-      <div className="max-w-6xl mx-auto px-6 py-24">
+      <div className="max-w-6xl mx-auto px-6 py-24 w-full">
         <ScrollReveal>
-          <p className="text-sm uppercase tracking-widest text-[var(--color-muted)] mb-4">
-            Full-Stack Developer
-          </p>
-        </ScrollReveal>
-        <ScrollReveal delay={0.1}>
-          <h1 className="font-[family-name:var(--font-display)] text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] tracking-tight max-w-4xl">
-            Building modern web experiences with clean code.
-          </h1>
+          <div className="text-center">
+            <h1 className="font-[family-name:var(--font-display)] text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold leading-[0.95] tracking-tight">
+              <span className="block" style={{ WebkitTextStroke: "2px var(--color-fg)", color: "transparent" }}>
+                Design,
+              </span>
+              <span className="block text-[var(--color-accent)]">
+                Build,
+              </span>
+              <span className="block">
+                Innovate.
+              </span>
+            </h1>
+          </div>
         </ScrollReveal>
         <ScrollReveal delay={0.2}>
-          <p className="mt-8 text-lg sm:text-xl text-[var(--color-muted)] max-w-2xl leading-relaxed">
-            I design and build full-stack applications that are fast, accessible, and delightful to use.
+          <p className="text-center mt-8 text-lg sm:text-xl text-[var(--color-muted)]">
+            Full-Stack Developer crafting web apps &amp; AI-powered tools
           </p>
         </ScrollReveal>
         <ScrollReveal delay={0.3}>
-          <div className="mt-10 flex gap-4">
-            <a
-              href="#projects"
-              className="inline-flex items-center px-6 py-3 text-sm font-medium bg-[var(--color-fg)] text-[var(--color-bg)] rounded-full hover:opacity-90 transition-opacity"
-            >
-              View Projects
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center px-6 py-3 text-sm font-medium border border-[var(--color-border)] rounded-full hover:bg-[var(--color-card)] transition-colors"
-            >
-              Get in Touch
-            </a>
+          <div className="flex justify-center gap-6 mt-6 text-3xl">
+            <span>✨</span>
+            <span>🚀</span>
+            <span>💻</span>
           </div>
         </ScrollReveal>
       </div>
