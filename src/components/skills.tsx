@@ -26,7 +26,7 @@ export function Skills() {
                       key={item}
                       className="text-[var(--color-muted)] flex items-center gap-3"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
                       {item}
                     </li>
                   ))}
