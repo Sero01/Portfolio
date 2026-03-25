@@ -5,30 +5,27 @@ export interface Project {
   tags: string[];
   metric?: string;
   metricLabel?: string;
-  readTime: string;
   href: string;
   image?: string;
+  featured?: boolean;
 }
 
 export const projects: Project[] = [
   {
     id: 1,
     title: "Project Name One",
-    description: "A brief description of this project and the problem it solves.",
+    description: "A brief description of this project and the problem it solves. Built to serve thousands of users with a focus on performance and reliability.",
     tags: ["React", "Node.js", "PostgreSQL"],
     metric: "50K+",
     metricLabel: "Users Served",
-    readTime: "5 min read",
     href: "#",
+    featured: true,
   },
   {
     id: 2,
     title: "Project Name Two",
     description: "A brief description of this project and the problem it solves.",
     tags: ["Next.js", "TypeScript", "Tailwind"],
-    metric: "99.9%",
-    metricLabel: "Uptime",
-    readTime: "4 min read",
     href: "#",
   },
   {
@@ -36,17 +33,14 @@ export const projects: Project[] = [
     title: "Project Name Three",
     description: "A brief description of this project and the problem it solves.",
     tags: ["Python", "FastAPI", "Docker"],
-    metric: "3x",
-    metricLabel: "Performance Gain",
-    readTime: "6 min read",
     href: "#",
   },
   {
     id: 4,
     title: "Project Name Four",
-    description: "A brief description of this project and the problem it solves.",
+    description: "A brief description of this project and the problem it solves. An augmented reality experience pushing the boundaries of web technology.",
     tags: ["React Native", "Firebase"],
-    readTime: "3 min read",
     href: "#",
+    featured: true,
   },
 ];
