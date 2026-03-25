@@ -1,31 +1,28 @@
-import { socialLinks } from "@/data/social";
 import { ScrollReveal } from "./scroll-reveal";
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 sm:py-32">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="contact" className="py-32 sm:py-40">
+      <div className="max-w-6xl mx-auto px-6 text-center">
         <ScrollReveal>
-          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-            Get in Touch
+          <h2 className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] uppercase">
+            Interested in
+            <br />
+            working together?
           </h2>
-          <p className="text-[var(--color-muted)] text-lg mb-12 max-w-2xl">
-            Interested in working together? Let&apos;s connect.
-          </p>
         </ScrollReveal>
         <ScrollReveal delay={0.1}>
-          <div className="flex flex-wrap gap-4">
-            {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target={link.href.startsWith("http") ? "_blank" : undefined}
-                rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="inline-flex items-center px-6 py-3 text-sm font-medium border border-[var(--color-border)] rounded-full hover:bg-[var(--color-card)] hover:border-[var(--color-muted)] transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+          <div className="mt-10">
+            <p className="text-sm uppercase tracking-widest text-[var(--color-muted)] mb-3">
+              Contact me:
+            </p>
+            <a
+              href="mailto:hello@parvez.dev"
+              className="inline-flex items-center gap-2 text-lg sm:text-xl font-medium hover:text-[var(--color-accent)] transition-colors"
+            >
+              hello@parvez.dev
+              <span className="text-2xl">👋</span>
+            </a>
           </div>
         </ScrollReveal>
       </div>
