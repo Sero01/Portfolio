@@ -8,7 +8,8 @@
   --color-muted: #6b7280;
   --color-border: #e5e7eb;
   --color-card: #ffffff;
-  --color-accent: #2563eb;
+  --color-accent: #FF6B00;
+  --color-purple: #7C3AED;
 }
 
 .dark {
@@ -17,7 +18,8 @@
   --color-muted: #9ca3af;
   --color-border: #27272a;
   --color-card: #141414;
-  --color-accent: #3b82f6;
+  --color-accent: #FF7A1A;
+  --color-purple: #8B5CF6;
 }
 
 html {
@@ -34,4 +36,23 @@ body {
 ::selection {
   background-color: var(--color-accent);
   color: white;
+}
+
+/* Tech stack marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Photography horizontal scroll */
+.photography-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.photography-scroll::-webkit-scrollbar {
+  display: none;
 }
