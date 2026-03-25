@@ -13,7 +13,7 @@ Before doing anything else:
 Minimalist portfolio website for Parvez (Full-Stack Developer), inspired by whyramachandran.design's clean aesthetic. Single-page with smooth scroll navigation.
 
 ## Tech Stack
-- **Framework:** Next.js 15 (App Router), React 19, TypeScript
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript
 - **Styling:** Tailwind CSS v4 with CSS custom properties for theming
 - **Animation:** Framer Motion (scroll reveal animations)
 - **Theme:** next-themes (dark/light mode toggle)
@@ -34,8 +34,19 @@ Minimalist portfolio website for Parvez (Full-Stack Developer), inspired by whyr
 - All theme colors use CSS variables, not Tailwind color classes directly
 - Display font applied via `font-[family-name:var(--font-display)]`
 - Sections use `max-w-6xl mx-auto px-6` for consistent container width
-- Scroll animations wrapped in `<ScrollReveal>` component
+- Scroll animations wrapped in `<ScrollReveal>` component (framer-motion, `"use client"`)
 - Navigation uses anchor links (#projects, #skills, #experience, #contact)
+- Dark mode via `@custom-variant dark (&:where(.dark, .dark *))` in globals.css (class-based, not media query)
+- Hydration-safe client detection uses `useSyncExternalStore` pattern (not useState+useEffect — triggers lint error)
+- `next-themes` ThemeProvider wraps app in layout.tsx with `attribute="class"`, `defaultTheme="dark"`, `enableSystem`
+- `suppressHydrationWarning` required on `<html>` for next-themes compatibility
+- ESLint uses `eslint-config-next` with `core-web-vitals` and `typescript` — includes React compiler rules (`react-hooks/set-state-in-effect`)
+
+## Data Layer
+- All content data lives in `src/data/` as typed arrays with exported interfaces
+- Projects, skills, experience, social links are placeholder data — replace with real content
+- Project cards support optional `metric`/`metricLabel` fields for key stats
+- Social links conditionally open in new tab for external URLs
 
 ## Project Structure
 - `memory/` — daily logs: decisions, bugs, learnings, open questions
