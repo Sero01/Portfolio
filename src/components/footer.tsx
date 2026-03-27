@@ -5,7 +5,7 @@ export function Footer() {
         <p>Designed &amp; Developed by Parvez</p>
         <div className="flex items-center gap-4">
           <a
-            href="https://github.com/parvez"
+            href="https://github.com/Sero01"
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-full border border-[var(--color-border)] hover:border-[var(--color-muted)] transition-colors"
@@ -13,7 +13,7 @@ export function Footer() {
             GitHub
           </a>
           <a
-            href="https://linkedin.com/in/parvez"
+            href="https://www.linkedin.com/in/parvez-ahmed-b47680124/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-full border border-[var(--color-border)] hover:border-[var(--color-muted)] transition-colors"

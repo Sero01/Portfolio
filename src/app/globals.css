@@ -2,8 +2,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@font-face {
+  font-family: 'Array';
+  src: url('/fonts/array-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --color-bg: #fafafa;
+  --color-bg: #fffcf3;
   --color-fg: #0a0a0a;
   --color-muted: #6b7280;
   --color-border: #e5e7eb;
@@ -48,11 +56,13 @@ body {
   }
 }
 
-/* Photography horizontal scroll */
-.photography-scroll {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* Photography auto-scroll animation */
+@keyframes photo-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
-.photography-scroll::-webkit-scrollbar {
-  display: none;
-}
+

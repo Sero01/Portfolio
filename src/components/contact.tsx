@@ -17,10 +17,10 @@ export function Contact() {
               Contact me:
             </p>
             <a
-              href="mailto:hello@parvez.dev"
+              href="mailto:126ahmedparvez@gmail.com"
               className="inline-flex items-center gap-2 text-lg sm:text-xl font-medium hover:text-[var(--color-accent)] transition-colors"
             >
-              hello@parvez.dev
+              126ahmedparvez@gmail.com
               <span className="text-2xl">👋</span>
             </a>
           </div>

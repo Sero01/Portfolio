@@ -1,11 +1,10 @@
 "use client";
 
-import { useRef } from "react";
 import { photos } from "@/data/photography";
 import { ScrollReveal } from "./scroll-reveal";
 
 export function Photography() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const duplicated = [...photos, ...photos];
 
   return (
     <section id="photography" className="py-24 sm:py-32">
@@ -22,42 +21,44 @@ export function Photography() {
 
       <ScrollReveal delay={0.1}>
         <div
-          ref={scrollRef}
-          className="photography-scroll flex gap-4 overflow-x-auto px-6 snap-x snap-mandatory cursor-grab active:cursor-grabbing"
+          className="overflow-hidden"
+          style={{
+            maskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+          }}
         >
-          {/* Left spacer for alignment */}
-          <div className="shrink-0 w-[calc((100vw-72rem)/2)]" />
-
-          {photos.map((photo) => (
-            <div
-              key={photo.id}
-              className="shrink-0 snap-start"
-            >
-              <div className="w-72 sm:w-80 md:w-96 aspect-[3/4] rounded-2xl bg-[var(--color-card)] border border-[var(--color-border)] overflow-hidden flex items-center justify-center">
-                {photo.src ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={photo.src}
-                    alt={photo.alt}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="text-center text-[var(--color-muted)]">
-                    <span className="text-4xl block mb-2">📷</span>
-                    <span className="text-xs uppercase tracking-widest">Photo</span>
-                  </div>
+          <div
+            className="flex gap-4 hover:[animation-play-state:paused]"
+            style={{
+              animation: "photo-scroll 60s linear infinite",
+              width: "max-content",
+            }}
+          >
+            {duplicated.map((photo, i) => (
+              <div key={`${photo.id}-${i}`} className="shrink-0">
+                <div className="w-72 sm:w-80 md:w-96 aspect-[3/4] rounded-2xl bg-[var(--color-card)] border border-[var(--color-border)] overflow-hidden flex items-center justify-center">
+                  {photo.src ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={photo.src}
+                      alt={photo.alt}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-center text-[var(--color-muted)]">
+                      <span className="text-4xl block mb-2">📷</span>
+                      <span className="text-xs uppercase tracking-widest">Photo</span>
+                    </div>
+                  )}
+                </div>
+                {photo.caption && (
+                  <p className="mt-3 text-sm text-[var(--color-muted)] px-1">
+                    {photo.caption}
+                  </p>
                 )}
               </div>
-              {photo.caption && (
-                <p className="mt-3 text-sm text-[var(--color-muted)] px-1">
-                  {photo.caption}
-                </p>
-              )}
-            </div>
-          ))}
-
-          {/* Right spacer */}
-          <div className="shrink-0 w-6" />
+            ))}
+          </div>
         </div>
       </ScrollReveal>
     </section>

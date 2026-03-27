@@ -17,7 +17,7 @@ Minimalist portfolio website for Parvez (Full-Stack Developer), inspired by whyr
 - **Styling:** Tailwind CSS v4 with CSS custom properties for theming
 - **Animation:** Framer Motion (scroll reveal animations)
 - **Theme:** next-themes (dark/light mode toggle)
-- **Fonts:** Inter (body via --font-sans), Space Grotesk (display via --font-display)
+- **Fonts:** Inter (body via --font-sans), Space Grotesk (display via --font-display), Array (hero display font)
 
 ## Commands
 - `npm run dev` — Start dev server (Turbopack)
@@ -26,8 +26,8 @@ Minimalist portfolio website for Parvez (Full-Stack Developer), inspired by whyr
 
 ## Architecture
 - `src/app/` — Next.js App Router (layout.tsx, page.tsx, globals.css)
-- `src/components/` — React components (navbar, hero, projects, skills, experience, contact, footer, theme-toggle, scroll-reveal, theme-provider)
-- `src/data/` — Static data arrays (projects.ts, skills.ts, experience.ts, social.ts)
+- `src/components/` — React components (navbar, hero, tech-marquee, projects, skills, experience, photography, contact, footer, theme-toggle, scroll-reveal, theme-provider)
+- `src/data/` — Static data arrays (projects.ts, skills.ts, experience.ts, photography.ts, social.ts)
 - Theme colors defined as CSS custom properties in globals.css (--color-bg, --color-fg, --color-muted, --color-border, --color-card, --color-accent)
 
 ## Conventions
@@ -35,7 +35,7 @@ Minimalist portfolio website for Parvez (Full-Stack Developer), inspired by whyr
 - Display font applied via `font-[family-name:var(--font-display)]`
 - Sections use `max-w-6xl mx-auto px-6` for consistent container width
 - Scroll animations wrapped in `<ScrollReveal>` component (framer-motion, `"use client"`)
-- Navigation uses anchor links (#projects, #skills, #experience, #contact)
+- Navigation uses anchor links (#projects, #about, #contact) + external Resume link (/resume.pdf)
 - Dark mode via `@custom-variant dark (&:where(.dark, .dark *))` in globals.css (class-based, not media query)
 - Hydration-safe client detection uses `useSyncExternalStore` pattern (not useState+useEffect — triggers lint error)
 - `next-themes` ThemeProvider wraps app in layout.tsx with `attribute="class"`, `defaultTheme="dark"`, `enableSystem`
@@ -44,7 +44,8 @@ Minimalist portfolio website for Parvez (Full-Stack Developer), inspired by whyr
 
 ## Data Layer
 - All content data lives in `src/data/` as typed arrays with exported interfaces
-- Projects, skills, experience, social links are placeholder data — replace with real content
+- Experience data is real (Northern Trust, Skoda VW). Projects and skills are placeholder — replace with real content
+- Photography images stored in public/photography/ (14 photos)
 - Project cards support optional `metric`/`metricLabel` fields for key stats
 - Social links conditionally open in new tab for external URLs
 

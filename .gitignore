@@ -42,3 +42,8 @@ next-env.d.ts
 
 # superpowers
 .superpowers/
+
+/memory
+/plans
+/skills
+CLAUDE.md

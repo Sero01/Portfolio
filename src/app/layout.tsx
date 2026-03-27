@@ -14,7 +14,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Parvez — Full-Stack Developer",
+  title: "Parvez — Creative Designer",
   description: "Portfolio of Parvez, a Full-Stack Developer building modern web applications.",
 };
 

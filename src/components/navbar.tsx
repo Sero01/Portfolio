@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
 
-const navLinks = [
+const navLinks: { label: string; href: string; external?: boolean }[] = [
   { label: "Work", href: "#projects" },
   { label: "About", href: "#about" },
-  { label: "Photography", href: "#photography" },
+  { label: "Resume", href: "/resume.pdf", external: true },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -33,6 +33,7 @@ export function Navbar() {
             <a
               key={link.href}
               href={link.href}
+              {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="text-sm uppercase tracking-widest text-[var(--color-muted)] hover:text-[var(--color-fg)] transition-colors"
             >
               {link.label}
@@ -43,7 +44,7 @@ export function Navbar() {
         {/* Right: LinkedIn + Theme Toggle */}
         <div className="flex items-center gap-4">
           <a
-            href="https://linkedin.com/in/parvez"
+            href="https://www.linkedin.com/in/parvez-ahmed-b47680124/"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:block text-sm uppercase tracking-widest text-[var(--color-muted)] hover:text-[var(--color-fg)] transition-colors"
@@ -90,6 +91,7 @@ export function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
+                {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => setMobileOpen(false)}
                 className="text-sm uppercase tracking-widest text-[var(--color-muted)] hover:text-[var(--color-fg)] transition-colors"
               >
@@ -97,7 +99,7 @@ export function Navbar() {
               </a>
             ))}
             <a
-              href="https://linkedin.com/in/parvez"
+              href="https://www.linkedin.com/in/parvez-ahmed-b47680124/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm uppercase tracking-widest text-[var(--color-muted)] hover:text-[var(--color-fg)] transition-colors sm:hidden"
