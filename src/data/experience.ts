@@ -7,21 +7,22 @@ export interface Experience {
 
 export const experience: Experience[] = [
   {
-    year: "2024",
-    role: "Full-Stack Developer",
-    company: "Company Name",
-    description: "Brief description of role and impact.",
+    year: "2026",
+    role: "Senior Analyst",
+    company: "Northern Trust",
+    description:
+      "Built a RAG pipeline for an AS/400 legacy codebase using Azure GAI and Neo4j graph database.",
   },
   {
-    year: "2023",
-    role: "Software Engineer",
-    company: "Company Name",
+    year: "2024",
+    role: "Analyst",
+    company: "Northern Trust",
     description: "Brief description of role and impact.",
   },
   {
     year: "2022",
-    role: "Junior Developer",
-    company: "Company Name",
+    role: "",
+    company: "Skoda Volkswagen",
     description: "Brief description of role and impact.",
   },
 ];

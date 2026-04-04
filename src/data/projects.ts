@@ -19,7 +19,8 @@ export const projects: Project[] = [
     tags: ["Python", "Ollama", "Qwen3 4B", "FastAPI", "httpx"],
     metric: "<3s",
     metricLabel: "Tool-Use Latency",
-    href: "#",
+    href: "https://github.com/Sero01/Norman",
+    image: "/projects/Norman.png",
     featured: true,
   },
   {
@@ -30,26 +31,19 @@ export const projects: Project[] = [
     tags: ["Astro 5", "Starlight", "Cloudflare Pages"],
     metric: "1.3K+",
     metricLabel: "Requests",
-    href: "#",
+    href: "https://github.com/Sero01/ai-agents-guide",
+    image: "/projects/agentguides.png",
   },
   {
     id: 3,
-    title: "Understanding Claude",
-    description:
-      "A 3-layer multi-AI orchestration platform (directives → orchestration → execution) integrating Claude, GPT-4o, Gemini, and Cohere for automated workflows: job scraping, RAG pipelines, and Google Sheets reporting. Implements RAG with Pinecone vector DB, browser automation with Playwright, and webhook-driven orchestration via Trigger.dev.",
-    tags: ["Python", "Claude", "GPT-4o", "Gemini", "Pinecone", "Playwright", "Trigger.dev"],
-    href: "#",
-  },
-  {
-    id: 4,
     title: "WhispnoteAI — AI Voice Note App",
     description:
       "A mobile-first AI voice note app that transcribes speech via OpenAI Whisper and structures notes into cards and decks using GPT-4o — from raw voice to searchable, tagged note in under 4 seconds. Features local-first SQLite storage, Zustand state management, and masonry card layout with pinning, tagging, and full-text search.",
     tags: ["React Native", "Expo", "TypeScript", "Whisper", "GPT-4o", "SQLite", "Zustand"],
     metric: "<4s",
     metricLabel: "Voice to Note",
-    href: "#",
-    featured: true,
+    href: "https://github.com/Sero01/WhispnoteAI",
+    image: "/projects/whispnoteai.png",
   },
   {
     id: 5,
@@ -57,6 +51,8 @@ export const projects: Project[] = [
     description:
       "A self-hosted two-person watch party app streaming video in sync across the internet — host controls propagate to guests in real time via WebRTC peer-to-peer voice and Socket.io signaling.",
     tags: ["Node.js", "Express", "Socket.io", "WebRTC", "Cloudflare Tunnel"],
-    href: "#",
+    href: "https://github.com/Sero01/watchparty",
+    image: "/projects/watchparty.png",
+    featured: true,
   },
 ];

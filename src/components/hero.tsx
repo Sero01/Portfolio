@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -84,9 +85,36 @@ export function Hero() {
         >
           <div className="w-8 sm:w-12 h-px bg-[var(--color-border)]" />
           <p className="text-sm sm:text-base text-[var(--color-muted)] tracking-wide">
-            Building scalable apps, websites, and automations
+            I&apos;m an India-based Software Developer and AI Engineer
           </p>
           <div className="w-8 sm:w-12 h-px bg-[var(--color-border)]" />
+        </motion.div>
+
+        {/* Mobile polaroid — visible below lg, complements the scroll-driven ProfileCard (hidden lg:block) */}
+        <motion.div
+          className="mt-10 flex justify-center lg:hidden"
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          custom={6}
+        >
+          <div
+            className="w-[140px] bg-white p-2 pb-8 rounded-sm shadow-[0_8px_30px_rgba(0,0,0,0.15)]"
+            style={{ transform: "rotate(-3deg)" }}
+          >
+            <div className="relative w-[124px] h-[152px] overflow-hidden rounded-[1px]">
+              <Image
+                src="/profile.jpg"
+                alt="Parvez"
+                fill
+                className="object-cover"
+                sizes="124px"
+              />
+            </div>
+            <p className="mt-1.5 text-center text-[10px] text-gray-500 font-mono tracking-wide">
+              Parvez
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>

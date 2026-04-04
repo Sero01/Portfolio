@@ -18,10 +18,17 @@ export function Contact() {
             </p>
             <a
               href="mailto:126ahmedparvez@gmail.com"
-              className="inline-flex items-center gap-2 text-lg sm:text-xl font-medium hover:text-[var(--color-accent)] transition-colors"
+              className="inline-flex items-center gap-2 text-lg sm:text-xl font-medium hover:text-[var(--color-accent)] mb-6 transition-colors"
             >
               126ahmedparvez@gmail.com
-              <span className="text-2xl">👋</span>
+            </a>
+            <p className="text-sm uppercase tracking-widest text-[var(--color-muted)] mb-3">
+              Call Today
+            </p>
+            <a
+              className="inline-flex items-center gap-2 text-lg sm:text-xl font-medium hover:text-[var(--color-accent)] transition-colors"
+            >
+              +91 78988 15419
             </a>
           </div>
         </ScrollReveal>

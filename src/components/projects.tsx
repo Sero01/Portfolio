@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { projects } from "@/data/projects";
 import { ScrollReveal } from "./scroll-reveal";
 
@@ -5,19 +6,31 @@ function ProjectCard({ project, layout }: { project: typeof projects[0]; layout:
   const isFullWidth = layout === "full";
 
   return (
-    <a href={project.href} className="group block">
+    <a href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
       <div
         className="rounded-xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-muted)] transition-colors"
       >
-        {/* Image placeholder */}
+        {/* Project image */}
         <div
-          className={`bg-[var(--color-card)] ${
+          className={`relative bg-[var(--color-card)] ${
             isFullWidth ? "aspect-[16/9]" : "aspect-[4/3]"
-          } flex items-center justify-center`}
+          } overflow-hidden`}
         >
-          <span className="text-[var(--color-muted)] text-sm uppercase tracking-widest">
-            Image →
-          </span>
+          {project.image ? (
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes={isFullWidth ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <span className="text-[var(--color-muted)] text-sm uppercase tracking-widest">
+                Image →
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Content */}

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ParticleField } from "@/components/particle-field";
+import { CursorCircle } from "@/components/cursor-circle";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,6 +25,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         <ThemeProvider>
+          <ParticleField />
+          <CursorCircle />
           {children}
         </ThemeProvider>
       </body>

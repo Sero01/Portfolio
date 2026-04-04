@@ -17,9 +17,19 @@ const milestones: Milestone[] = [
   {
     id: 1,
     company: "Northern Trust",
+    role: "Senior Analyst, Software Engineer",
+    location: "Bengaluru, India",
+    period: "2026 – Present",
+    highlights: [
+      "Architected a Retrieval-Augmented Generation pipeline over a legacy AS/400 codebase, leveraging Azure Generative AI for semantic search and Neo4j graph database for dependency mapping — enabling developers to query and understand decades-old business logic in natural language.",
+    ],
+  },
+  {
+    id: 2,
+    company: "Northern Trust",
     role: "Analyst, Software Engineer",
     location: "Bengaluru, India",
-    period: "Aug 2024 – Present",
+    period: "Aug 2024 – 2026",
     highlights: [
       "Led end-to-end migration of 21 Spring Boot microservices from v2.1.x to v2.7.x, resolving dependency conflicts and ensuring zero-downtime rollout across enterprise banking infrastructure.",
       "Remediated 800+ container vulnerabilities across 21 microservices by upgrading dependencies and hardening container configurations.",
@@ -29,7 +39,7 @@ const milestones: Milestone[] = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     company: "Northern Trust",
     role: "Front-End Engineering Intern",
     location: "Bengaluru, India",
@@ -41,7 +51,7 @@ const milestones: Milestone[] = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     company: "Skoda Volkswagen Training Academy",
     role: "Full-Stack Developer Intern",
     location: "Pune, India",

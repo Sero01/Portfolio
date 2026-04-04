@@ -22,5 +22,9 @@
 ## Project Context
 - Building a personal portfolio website
 - Name: Parvez
-- Role: Full-Stack Developer
-- Portfolio has placeholder data — real content not yet added
+- Role: Senior Analyst, Software Engineer at Northern Trust (promoted 2026)
+- Previously: Analyst at Northern Trust (Aug 2024–2026), Front-End Intern at Northern Trust, Full-Stack Intern at Skoda Volkswagen
+- Current work: RAG pipeline for AS/400 legacy codebase using Azure GAI + Neo4j
+- Project images and experience data populated; skills and social links still placeholder
+- Prefers theme-aware colors over hardcoded values (e.g. use CSS vars, not #111/white)
+- Prefers merged/unified UI elements over duplicated ones (e.g. single expanding card, not pill + separate overlay)

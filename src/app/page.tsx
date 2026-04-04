@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
+import { ProfileCard } from "@/components/profile-card";
 import { TechMarquee } from "@/components/tech-marquee";
 import { Skills } from "@/components/skills";
 import { Experience } from "@/components/experience";
@@ -13,6 +14,7 @@ export default function Home() {
     <>
       <Navbar />
       <main>
+        <ProfileCard />
         <Hero />
         <TechMarquee />
         <Skills />
