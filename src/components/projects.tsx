@@ -8,7 +8,7 @@ function ProjectCard({ project, layout }: { project: typeof projects[0]; layout:
   return (
     <a href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
       <div
-        className="rounded-xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-muted)] transition-colors"
+        className="relative z-10 rounded-xl overflow-hidden border border-[var(--color-border)] hover:border-[var(--color-muted)] transition-colors bg-[var(--color-bg)]"
       >
         {/* Project image */}
         <div
