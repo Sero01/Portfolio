@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✓</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#F3F6F1;
@@ -18,28 +18,44 @@
     --credit:#1E7A46;
     --debit:#B0372E;
     --stamp:#2B4ACB;
+    --pen:#C42B20;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
     --sans:"IBM Plex Sans",system-ui,sans-serif;
     --disp:"IBM Plex Sans Condensed",var(--sans);
+    --hand:"Caveat",cursive;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
   body{
     font-family:var(--sans);color:var(--ink);background:var(--paper);
     background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--rule) 31px,var(--rule) 32px);
-    line-height:1.55;font-size:16px;
+    line-height:1.55;font-size:16px;overflow-x:hidden;
   }
   a{color:var(--stamp);text-decoration-thickness:1px;text-underline-offset:3px}
   a:hover{text-decoration-thickness:2px}
   :focus-visible{outline:2px solid var(--stamp);outline-offset:3px}
   .sheet{max-width:920px;margin:0 auto;padding:0 24px}
 
+  /* ---- red-pen layer ---- */
+  .rp{position:relative}
+  .rp-nowrap{display:inline-block}
+  .rp svg{position:absolute;overflow:visible;pointer-events:none}
+  .rp svg path{fill:none;stroke:var(--pen);stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s cubic-bezier(.4,0,.2,1) .15s}
+  .rp.drawn svg path{stroke-dashoffset:0}
+  .rp-note{
+    font-family:var(--hand);font-weight:600;color:var(--pen);font-size:19px;line-height:1.15;
+    text-transform:none;letter-spacing:0;
+    display:inline-block;transform:rotate(-2deg);
+    opacity:0;transition:opacity .5s ease .55s;
+  }
+  .rp.drawn .rp-note{opacity:1}
+
   /* header */
   header{border-bottom:2px solid var(--ink)}
   .head-row{display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;gap:16px;flex-wrap:wrap}
   .acct{font-family:var(--mono);font-size:13px;color:var(--ink-soft);letter-spacing:.04em}
-  nav{display:flex;gap:20px;font-family:var(--mono);font-size:13px}
+  nav{display:flex;gap:20px;font-family:var(--mono);font-size:13px;flex-wrap:wrap}
 
   /* hero */
   .hero{padding:72px 0 56px;position:relative}
@@ -52,17 +68,22 @@
   .stamp{
     position:absolute;right:12px;top:64px;transform:rotate(7deg);
     border:3px double var(--stamp);color:var(--stamp);border-radius:6px;
+    background:none;cursor:pointer;
     font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.14em;
     padding:8px 14px;text-transform:uppercase;opacity:.9;
     animation:stamp .35s cubic-bezier(.2,1.6,.4,1) both;animation-delay:.4s
   }
+  .stamp:hover{opacity:1}
   @keyframes stamp{from{transform:rotate(7deg) scale(2.4);opacity:0}to{transform:rotate(7deg) scale(1);opacity:.9}}
-  @media (prefers-reduced-motion: reduce){.stamp{animation:none}}
   @media (max-width:640px){.stamp{position:static;display:inline-block;margin-top:24px}}
 
   /* section scaffolding */
   section{padding:56px 0;border-top:1px solid var(--ink)}
   .sec-label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:28px}
+
+  /* scroll reveal */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
 
   /* reconciliation table */
   .recon-wrap{overflow-x:auto}
@@ -77,6 +98,7 @@
   .matched{color:var(--credit);font-weight:600}
   .private{color:var(--debit);font-weight:600}
   .recon-foot{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:16px}
+  .recon .rp-note{font-size:17px;margin-top:6px}
 
   /* artifacts */
   .art{display:grid;grid-template-columns:1fr;gap:1px;background:var(--ink);border:1px solid var(--ink)}
@@ -94,7 +116,46 @@
   .figures .dr{color:var(--debit)}
   @media (max-width:700px){.figures{border-left:none;border-top:2px solid var(--rule);padding:14px 0 0}}
 
-  /* background */
+  /* transaction history (experience) */
+  .txn{display:grid;grid-template-columns:170px minmax(0,1fr);gap:24px;padding:26px 0;border-bottom:1px solid var(--rule)}
+  .txn:last-of-type{border-bottom:none}
+  @media (max-width:700px){.txn{grid-template-columns:1fr;gap:8px}}
+  .txn .dates{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);letter-spacing:.06em;padding-top:4px}
+  .txn h3{font-family:var(--disp);text-transform:uppercase;font-size:21px;letter-spacing:.01em}
+  .txn .org{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin:2px 0 10px}
+  .txn ul{list-style:none;max-width:62ch}
+  .txn li{padding-left:18px;position:relative;margin-bottom:8px;color:var(--ink-soft)}
+  .txn li::before{content:"›";position:absolute;left:0;color:var(--ink);font-family:var(--mono)}
+  .txn li .num{font-family:var(--mono);color:var(--ink);font-weight:500;white-space:nowrap}
+  .txn-annot{margin-top:4px}
+  .txn-annot .rp-note{font-size:20px}
+
+  /* earlier entries */
+  .early-wrap{overflow-x:auto}
+  table.early{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+  .early td{border-bottom:1px solid var(--rule);padding:14px 12px;vertical-align:baseline}
+  .early td.name{font-weight:600;white-space:nowrap}
+  .early td.what{color:var(--ink-soft)}
+  .early td.fig{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right;color:var(--ink)}
+  .early td.lnk{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right}
+
+  /* off-ledger assets (photography) */
+  .assets{padding-bottom:64px}
+  .assets .sheet{position:relative}
+  .assets .rp-note{font-size:20px;margin-left:12px}
+  .strip{
+    display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;
+    padding:10px max(24px,calc((100vw - 920px)/2 + 24px)) 18px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .strip::-webkit-scrollbar{height:8px}
+  .strip::-webkit-scrollbar-thumb{background:var(--rule);border-radius:4px}
+  .strip figure{flex:none;scroll-snap-align:center;background:#FDFEFC;border:1px solid var(--ink);padding:8px 8px 6px}
+  .strip img{display:block;height:320px;width:auto}
+  @media (max-width:640px){.strip img{height:240px}}
+  .strip figcaption{font-family:var(--mono);font-size:11px;color:var(--ink-soft);padding-top:6px;letter-spacing:.04em}
+
+  /* background note */
   .bg p{max-width:62ch;margin-bottom:16px}
   .bg .quiet{color:var(--ink-soft)}
 
@@ -102,7 +163,16 @@
   .contact{border-top:2px solid var(--ink);text-align:left;padding-bottom:88px}
   .contact h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(28px,4.5vw,44px);line-height:1.05;max-width:22ch}
   .contact .links{margin-top:24px;font-family:var(--mono);font-size:15px;display:flex;gap:28px;flex-wrap:wrap}
-  footer{border-top:1px solid var(--ink);padding:18px 0 40px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer{border-top:1px solid var(--ink);padding:18px 0 40px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+
+  /* reduced motion: everything visible, nothing animates */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    .stamp{animation:none}
+    .reveal{opacity:1;transform:none;transition:none}
+    .rp svg path{stroke-dashoffset:0;transition:none}
+    .rp-note{opacity:1;transition:none}
+  }
 </style>
 </head>
 <body>
@@ -113,6 +183,8 @@
     <nav aria-label="Site">
       <a href="#reconciled">Claims</a>
       <a href="#artifacts">Artifacts</a>
+      <a href="#history">History</a>
+      <a href="#assets">Photos</a>
       <a href="#contact">Contact</a>
     </nav>
   </div>
@@ -124,12 +196,12 @@
     <h1>Messy financial documents in. <span class="out">Validated, reconciled data out.</span></h1>
     <p class="sub">Extraction pipelines, deterministic validation, and transaction
       matching — built the way back-office systems have to be built:
-      <strong>with the accuracy numbers published, including the bad ones.</strong></p>
-    <span class="stamp" aria-hidden="true">Held-out · verified</span>
+      <strong>with the accuracy numbers published, <span class="rp rp-nowrap" id="rp-hero">including the bad ones.<svg viewBox="0 0 300 12" preserveAspectRatio="none" style="left:-2px;right:-2px;bottom:-9px;height:12px;width:calc(100% + 4px)" aria-hidden="true"><path d="M2 7 C 40 3, 75 9, 118 6 S 205 3, 252 7 S 288 5, 298 6" stroke-width="2.2" pathLength="1"/></svg></span></strong></p>
+    <button class="stamp" id="stamp" type="button" title="Run the audit pass again" aria-label="Held-out, verified — click to replay the audit marks">Held-out · verified</button>
   </div>
 
   <section id="reconciled">
-    <div class="sheet">
+    <div class="sheet reveal">
       <p class="sec-label">Reconciliation report — claims vs. public evidence</p>
       <div class="recon-wrap">
       <table class="recon">
@@ -144,8 +216,8 @@
           </tr>
           <tr>
             <td class="claim">Reconciliation is the moat, not a feature</td>
-            <td class="evidence">ReconMatch held-out, never tuned: <span class="num">95.4% auto-match at precision 1.00</span>, pair F1 <span class="num">0.976</span>. Tiered deterministic matching — explainable, no black box.</td>
-            <td class="status matched">✓ MATCHED</td>
+            <td class="evidence">ReconMatch held-out, never tuned: <span class="num rp" id="rp-circle">95.4% auto-match<svg viewBox="0 0 160 34" preserveAspectRatio="none" style="left:-8px;top:-7px;width:calc(100% + 16px);height:34px" aria-hidden="true"><path d="M14 17 C 12 5, 60 1, 92 3 C 132 5, 158 9, 152 19 C 146 30, 96 33, 56 30 C 22 27, 8 24, 14 13" stroke-width="1.8" pathLength="1"/></svg></span> at precision 1.00, pair F1 <span class="num">0.976</span>. Tiered deterministic matching — explainable, no black box.</td>
+            <td class="status matched">✓ MATCHED<br><span class="rp-note rp-child">checked — it&rsquo;s real</span></td>
           </tr>
           <tr>
             <td class="claim">Validation should be arithmetic, not an LLM judging an LLM</td>
@@ -165,7 +237,7 @@
   </section>
 
   <section id="artifacts">
-    <div class="sheet">
+    <div class="sheet reveal">
       <p class="sec-label">Artifacts — live, tested, numbered</p>
       <div class="art">
 
@@ -184,8 +256,8 @@
           </div>
           <dl class="figures">
             <dt>Held-out txn F1</dt><dd>0.92 syn / <span class="dr">0.12 scans</span><!-- POST-EVAL: update --></dd>
-            <dt>Header accuracy</dt><dd>0.89</dd>
-            <dt>Cost per document</dt><dd class="cr">$0.005</dd>
+            <dt>Header accuracy</dt><dd><span class="tick" data-target="0.89" data-decimals="2">0.89</span></dd>
+            <dt>Cost per document</dt><dd class="cr">$<span class="tick" data-target="0.005" data-decimals="3">0.005</span></dd>
           </dl>
         </article>
 
@@ -203,8 +275,8 @@
             </div>
           </div>
           <dl class="figures">
-            <dt>Auto-match rate</dt><dd class="cr">95.4% @ P 1.00</dd>
-            <dt>Pair F1</dt><dd>0.976</dd>
+            <dt>Auto-match rate</dt><dd class="cr"><span class="tick" data-target="95.4" data-decimals="1">95.4</span>% @ P 1.00</dd>
+            <dt>Pair F1</dt><dd><span class="tick" data-target="0.976" data-decimals="3">0.976</span></dd>
             <dt>Held-out, never tuned</dt><dd>50 sets × 40 entries</dd>
           </dl>
         </article>
@@ -232,8 +304,137 @@
     </div>
   </section>
 
+  <section id="history">
+    <div class="sheet reveal">
+      <p class="sec-label">Transaction history — professional experience, newest first</p>
+
+      <div class="txn">
+        <div class="dates">APR 2026 — PRESENT</div>
+        <div>
+          <h3>Senior Analyst — AI Engineer</h3>
+          <p class="org">Northern Trust · Bengaluru</p>
+          <ul>
+            <li>Agentic RAG over a legacy AS/400 codebase — Azure OpenAI + a Neo4j
+              knowledge graph with LLM-generated Cypher, so developers query
+              decades-old business logic in plain English.</li>
+            <li>Trained an ML model on historical manual-match data to resolve the
+              one-to-many and many-to-many reconciliation breaks TLM's
+              auto-matcher can't touch.</li>
+            <li>Upgraded <span class="num">16 microservices</span> Java 8 → 21,
+              Spring Boot 2 → 3 with zero production downtime; remediated
+              <span class="num">800+ CVEs</span>.</li>
+          </ul>
+          <p class="txn-annot rp" id="rp-history"><span class="rp-note">↑ the artifacts above are this job, rebuilt in the open</span></p>
+        </div>
+      </div>
+
+      <div class="txn">
+        <div class="dates">AUG 2024 — MAR 2026</div>
+        <div>
+          <h3>Analyst, Software Engineer</h3>
+          <p class="org">Northern Trust · Bengaluru</p>
+          <ul>
+            <li>Zero-downtime migration of <span class="num">21 Spring Boot services</span>
+              across enterprise banking infrastructure.</li>
+            <li>TLM HTML reports → optimized XLSX: load time from minutes to
+              <span class="num">&lt;5 s</span>; adopted company-wide by operations teams.</li>
+            <li>ISO → CAMT.053 conversion pipeline: <span class="num">~9 min → &lt;50 s (−82%)</span>
+              on large financial XML.</li>
+            <li>CI/CD via GitHub Actions (<span class="num">deploy time −40%</span>);
+              RHEL 7 → 8 on a production system with 30+ upstream dependencies.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="txn">
+        <div class="dates">JUN — SEP 2023</div>
+        <div>
+          <h3>Front-End Engineering Intern</h3>
+          <p class="org">Northern Trust · Bengaluru</p>
+          <ul>
+            <li>Lighthouse scores <span class="num">+25%</span> via targeted audits,
+              code-splitting, and accessibility fixes on financial dashboards.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="txn">
+        <div class="dates">OCT 2022 — MAR 2023</div>
+        <div>
+          <h3>Full-Stack Developer Intern</h3>
+          <p class="org">Skoda Volkswagen Training Academy · Pune</p>
+          <ul>
+            <li>Decision-support system (Django, React, PostgreSQL, Docker) for
+              sales &amp; HR analytics across <span class="num">100+ dealership branches</span> —
+              replaced manual CSV aggregation with on-demand reporting.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="earlier">
+    <div class="sheet reveal">
+      <p class="sec-label">Earlier entries — side projects, carried forward</p>
+      <div class="early-wrap">
+      <table class="early">
+        <tbody>
+          <tr>
+            <td class="name">Norman</td>
+            <td class="what">Fully local, tool-using AI agent on CPU-only hardware — persistent memory, multi-tool execution, no cloud.</td>
+            <td class="fig">&lt;3 s tool-use</td>
+            <td class="lnk"><a href="https://github.com/Sero01/Norman">GitHub →</a></td>
+          </tr>
+          <tr>
+            <td class="name">agentguides.dev</td>
+            <td class="what">Writing on AI agents, MCP, and agentic workflow patterns — published weekly.</td>
+            <td class="fig">1.3K+ requests</td>
+            <td class="lnk"><a href="https://github.com/Sero01/ai-agents-guide">GitHub →</a></td>
+          </tr>
+          <tr>
+            <td class="name">WhispnoteAI</td>
+            <td class="what">Voice → structured, searchable notes on mobile (Whisper + GPT-4o, local-first SQLite).</td>
+            <td class="fig">&lt;4 s voice→note</td>
+            <td class="lnk"><a href="https://github.com/Sero01/WhispnoteAI">GitHub →</a></td>
+          </tr>
+          <tr>
+            <td class="name">Watch Party</td>
+            <td class="what">Self-hosted two-person watch party — synced playback with WebRTC voice.</td>
+            <td class="fig">realtime sync</td>
+            <td class="lnk"><a href="https://github.com/Sero01/watchparty">GitHub →</a></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="assets" class="assets">
+    <div class="sheet reveal">
+      <p class="sec-label" style="margin-bottom:6px">Off-ledger assets — photography, unaudited
+        <span class="rp rp-inline" id="rp-photo"><span class="rp-note">not everything needs an F1 score</span></span></p>
+    </div>
+    <div class="strip" tabindex="0" aria-label="Photography gallery, scrolls horizontally">
+      <figure><img src="assets/photos/photo-01.webp" width="899" height="1200" alt="Night traffic seen from above, headlights scattered like bokeh" loading="lazy" decoding="async"><figcaption>FR-01 · night traffic, from above</figcaption></figure>
+      <figure><img src="assets/photos/photo-02.webp" width="1200" height="676" alt="Koi fish streaking through dark water, long exposure" loading="lazy" decoding="async"><figcaption>FR-02 · koi, long exposure</figcaption></figure>
+      <figure><img src="assets/photos/photo-03.webp" width="900" height="1200" alt="Green mountain ridge fading into haze" loading="lazy" decoding="async"><figcaption>FR-03 · the ghats, in haze</figcaption></figure>
+      <figure><img src="assets/photos/photo-04.webp" width="1200" height="675" alt="Silhouettes crossing a rail footbridge at dusk" loading="lazy" decoding="async"><figcaption>FR-04 · footbridge at dusk</figcaption></figure>
+      <figure><img src="assets/photos/photo-05.webp" width="900" height="1200" alt="A lantern glowing among dark leaves at night" loading="lazy" decoding="async"><figcaption>FR-05 · lantern</figcaption></figure>
+      <figure><img src="assets/photos/photo-06.webp" width="676" height="1200" alt="Orange marigold in close-up against deep blue" loading="lazy" decoding="async"><figcaption>FR-06 · marigold</figcaption></figure>
+      <figure><img src="assets/photos/photo-07.webp" width="1200" height="675" alt="City lights and highways at night from a hilltop" loading="lazy" decoding="async"><figcaption>FR-07 · city grid, night</figcaption></figure>
+      <figure><img src="assets/photos/photo-08.webp" width="675" height="1200" alt="Sunlight glittering on the sea below a dark headland" loading="lazy" decoding="async"><figcaption>FR-08 · sea glitter</figcaption></figure>
+      <figure><img src="assets/photos/photo-09.webp" width="900" height="1200" alt="White ship docked in a harbor under a clear blue sky" loading="lazy" decoding="async"><figcaption>FR-09 · harbor</figcaption></figure>
+      <figure><img src="assets/photos/photo-10.webp" width="675" height="1200" alt="A person walking through a narrow alley strung with laundry lines" loading="lazy" decoding="async"><figcaption>FR-10 · alley, laundry line</figcaption></figure>
+      <figure><img src="assets/photos/photo-11.webp" width="901" height="1200" alt="White wildflowers against dark foliage" loading="lazy" decoding="async"><figcaption>FR-11 · night blossoms</figcaption></figure>
+      <figure><img src="assets/photos/photo-12.webp" width="900" height="1200" alt="Muted blossoms at dusk" loading="lazy" decoding="async"><figcaption>FR-12 · dusk flowers</figcaption></figure>
+      <figure><img src="assets/photos/photo-13.webp" width="899" height="1200" alt="A walker on a rural road framed through a hanging tire swing" loading="lazy" decoding="async"><figcaption>FR-13 · through the tire swing</figcaption></figure>
+      <figure><img src="assets/photos/photo-14.webp" width="923" height="1200" alt="A figure walking through a warmly lit archway at home" loading="lazy" decoding="async"><figcaption>FR-14 · home, archway</figcaption></figure>
+    </div>
+  </section>
+
   <section class="bg">
-    <div class="sheet">
+    <div class="sheet reveal">
       <p class="sec-label">Background</p>
       <p>Day job: shared-services engineering at a global bank — where I built a
         16-microservice document-validation platform, trained ML matching models
@@ -245,24 +446,94 @@
   </section>
 
   <section id="contact" class="contact">
-    <div class="sheet">
+    <div class="sheet reveal">
       <p class="sec-label">Open items</p>
       <h2>If your ops team drowns in statements, invoices, or reconciliation breaks — let's talk.</h2>
       <div class="links">
         <a href="mailto:126ahmedparvez@gmail.com">126ahmedparvez@gmail.com</a>
         <a href="https://github.com/Sero01">github.com/Sero01</a>
-        <a href="https://www.linkedin.com/">LinkedIn</a><!-- LINKEDIN-URL: set real profile -->
+        <a href="https://www.linkedin.com/in/parvez-ahmed-b47680124/">LinkedIn</a>
       </div>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="sheet" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;width:100%">
-    <span>No number on this page is unpublished or unverifiable.</span>
+  <div class="sheet" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <span>No number on this page is unpublished or unverifiable. E&amp;OE.</span>
     <span>© 2026 Parvez Ahmed</span>
   </div>
 </footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* status-cell note participates in the circle's draw timing */
+  var circleNote = document.querySelector('.rp-child');
+  var circle = document.getElementById('rp-circle');
+  if (circleNote && circle){
+    new MutationObserver(function(){
+      circleNote.style.opacity = circle.classList.contains('drawn') ? 1 : 0;
+    }).observe(circle, {attributes:true, attributeFilter:['class']});
+    circleNote.style.transition = 'opacity .5s ease .7s';
+    if (!reduced) circleNote.style.opacity = 0;
+  }
+
+  var pens = Array.prototype.slice.call(document.querySelectorAll('.rp'));
+  var reveals = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  var ticks = Array.prototype.slice.call(document.querySelectorAll('.tick'));
+
+  if (reduced || !('IntersectionObserver' in window)){
+    pens.forEach(function(el){ el.classList.add('drawn'); });
+    reveals.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      var el = e.target;
+      if (el.classList.contains('reveal')) el.classList.add('in');
+      if (el.classList.contains('rp')) el.classList.add('drawn');
+      if (el.classList.contains('tick')) runTick(el);
+      io.unobserve(el);
+    });
+  }, {threshold: 0.12, rootMargin: '0px 0px -40px 0px'});
+
+  reveals.forEach(function(el){ io.observe(el); });
+  pens.forEach(function(el){ io.observe(el); });
+  ticks.forEach(function(el){ io.observe(el); });
+
+  function runTick(el){
+    var target = parseFloat(el.dataset.target);
+    var dec = parseInt(el.dataset.decimals || '0', 10);
+    var t0 = null, dur = 900;
+    function step(t){
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = (target * eased).toFixed(dec);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* easter egg: the stamp re-runs the audit pass */
+  var stamp = document.getElementById('stamp');
+  stamp.addEventListener('click', function(){
+    if (reduced) return;
+    stamp.style.animation = 'none';
+    void stamp.offsetWidth;
+    stamp.style.animation = '';
+    pens.forEach(function(el){ el.classList.remove('drawn'); });
+    void document.body.offsetWidth;
+    pens.forEach(function(el, i){
+      setTimeout(function(){ el.classList.add('drawn'); }, 250 + i * 450);
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
