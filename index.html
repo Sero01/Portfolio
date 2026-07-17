@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parvez Ahmed — Document extraction &amp; reconciliation for financial ops</title>
+<meta name="description" content="I turn messy financial documents into validated, reconciled data — and I publish the accuracy numbers. DocVal, ReconMatch, and the eval harness behind them.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✓</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3F6F1;
+    --rule:#D9E2D5;
+    --ink:#1B2735;
+    --ink-soft:#54616E;
+    --credit:#1E7A46;
+    --debit:#B0372E;
+    --stamp:#2B4ACB;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --sans:"IBM Plex Sans",system-ui,sans-serif;
+    --disp:"IBM Plex Sans Condensed",var(--sans);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{
+    font-family:var(--sans);color:var(--ink);background:var(--paper);
+    background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--rule) 31px,var(--rule) 32px);
+    line-height:1.55;font-size:16px;
+  }
+  a{color:var(--stamp);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{text-decoration-thickness:2px}
+  :focus-visible{outline:2px solid var(--stamp);outline-offset:3px}
+  .sheet{max-width:920px;margin:0 auto;padding:0 24px}
+
+  /* header */
+  header{border-bottom:2px solid var(--ink)}
+  .head-row{display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;gap:16px;flex-wrap:wrap}
+  .acct{font-family:var(--mono);font-size:13px;color:var(--ink-soft);letter-spacing:.04em}
+  nav{display:flex;gap:20px;font-family:var(--mono);font-size:13px}
+
+  /* hero */
+  .hero{padding:72px 0 56px;position:relative}
+  .hero h1{font-family:var(--disp);font-weight:700;text-transform:uppercase;
+    font-size:clamp(38px,7vw,72px);line-height:.95;letter-spacing:-.01em;max-width:14ch}
+  .hero h1 .out{color:var(--credit)}
+  .kicker{font-family:var(--mono);font-size:14px;color:var(--ink-soft);margin-bottom:18px}
+  .sub{font-size:19px;max-width:52ch;margin-top:24px}
+  .sub strong{color:var(--ink)}
+  .stamp{
+    position:absolute;right:12px;top:64px;transform:rotate(7deg);
+    border:3px double var(--stamp);color:var(--stamp);border-radius:6px;
+    font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.14em;
+    padding:8px 14px;text-transform:uppercase;opacity:.9;
+    animation:stamp .35s cubic-bezier(.2,1.6,.4,1) both;animation-delay:.4s
+  }
+  @keyframes stamp{from{transform:rotate(7deg) scale(2.4);opacity:0}to{transform:rotate(7deg) scale(1);opacity:.9}}
+  @media (prefers-reduced-motion: reduce){.stamp{animation:none}}
+  @media (max-width:640px){.stamp{position:static;display:inline-block;margin-top:24px}}
+
+  /* section scaffolding */
+  section{padding:56px 0;border-top:1px solid var(--ink)}
+  .sec-label{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:28px}
+
+  /* reconciliation table */
+  .recon-wrap{overflow-x:auto}
+  table.recon{width:100%;border-collapse:collapse;font-size:15px;min-width:640px}
+  .recon th{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    text-align:left;color:var(--ink-soft);border-bottom:2px solid var(--ink);padding:0 12px 10px}
+  .recon td{border-bottom:1px solid var(--rule);padding:14px 12px;vertical-align:top}
+  .recon td.claim{font-weight:600;width:34%}
+  .recon td.evidence{color:var(--ink-soft)}
+  .recon td.evidence .num{font-family:var(--mono);color:var(--ink);font-weight:500;white-space:nowrap}
+  .recon td.status{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right}
+  .matched{color:var(--credit);font-weight:600}
+  .private{color:var(--debit);font-weight:600}
+  .recon-foot{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-top:16px}
+
+  /* artifacts */
+  .art{display:grid;grid-template-columns:1fr;gap:1px;background:var(--ink);border:1px solid var(--ink)}
+  .entry{background:var(--paper);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:24px}
+  @media (max-width:700px){.entry{grid-template-columns:1fr}}
+  .entry h3{font-family:var(--disp);text-transform:uppercase;font-size:24px;letter-spacing:.01em}
+  .entry .role{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin:4px 0 12px}
+  .entry p{max-width:56ch}
+  .entry .links{margin-top:14px;font-family:var(--mono);font-size:13.5px;display:flex;gap:18px;flex-wrap:wrap}
+  .figures{font-family:var(--mono);font-size:13.5px;border-left:2px solid var(--rule);padding-left:18px;align-self:start}
+  .figures dt{color:var(--ink-soft);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;margin-top:12px}
+  .figures dt:first-child{margin-top:0}
+  .figures dd{font-weight:600;font-size:15px}
+  .figures .cr{color:var(--credit)}
+  .figures .dr{color:var(--debit)}
+  @media (max-width:700px){.figures{border-left:none;border-top:2px solid var(--rule);padding:14px 0 0}}
+
+  /* background */
+  .bg p{max-width:62ch;margin-bottom:16px}
+  .bg .quiet{color:var(--ink-soft)}
+
+  /* contact */
+  .contact{border-top:2px solid var(--ink);text-align:left;padding-bottom:88px}
+  .contact h2{font-family:var(--disp);text-transform:uppercase;font-size:clamp(28px,4.5vw,44px);line-height:1.05;max-width:22ch}
+  .contact .links{margin-top:24px;font-family:var(--mono);font-size:15px;display:flex;gap:28px;flex-wrap:wrap}
+  footer{border-top:1px solid var(--ink);padding:18px 0 40px;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sheet head-row">
+    <span class="acct">STATEMENT OF WORK · PARVEZ AHMED · PAGE 1 OF 1</span>
+    <nav aria-label="Site">
+      <a href="#reconciled">Claims</a>
+      <a href="#artifacts">Artifacts</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="sheet hero">
+    <p class="kicker">Parvez Ahmed — AI engineer, financial operations</p>
+    <h1>Messy financial documents in. <span class="out">Validated, reconciled data out.</span></h1>
+    <p class="sub">Extraction pipelines, deterministic validation, and transaction
+      matching — built the way back-office systems have to be built:
+      <strong>with the accuracy numbers published, including the bad ones.</strong></p>
+    <span class="stamp" aria-hidden="true">Held-out · verified</span>
+  </div>
+
+  <section id="reconciled">
+    <div class="sheet">
+      <p class="sec-label">Reconciliation report — claims vs. public evidence</p>
+      <div class="recon-wrap">
+      <table class="recon">
+        <thead>
+          <tr><th scope="col">Claim</th><th scope="col">Evidence</th><th scope="col" style="text-align:right">Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="claim">Extraction accuracy is measured, not vibed</td>
+            <td class="evidence">DocVal held-out eval, 100 docs never used for tuning: transaction F1 published split by source — <span class="num">0.92 synthetic / 0.12 real scans</span><!-- POST-EVAL: update both numbers --> at <span class="num">$0.005/doc</span>. Regression gate in CI on every push.</td>
+            <td class="status matched">✓ MATCHED</td>
+          </tr>
+          <tr>
+            <td class="claim">Reconciliation is the moat, not a feature</td>
+            <td class="evidence">ReconMatch held-out, never tuned: <span class="num">95.4% auto-match at precision 1.00</span>, pair F1 <span class="num">0.976</span>. Tiered deterministic matching — explainable, no black box.</td>
+            <td class="status matched">✓ MATCHED</td>
+          </tr>
+          <tr>
+            <td class="claim">Validation should be arithmetic, not an LLM judging an LLM</td>
+            <td class="evidence">Every DocVal extraction must satisfy balance continuity: opening + every transaction = closing, row by row. Pure functions over a typed schema. <a href="https://docval-yy4s.onrender.com">Try it live.</a></td>
+            <td class="status matched">✓ MATCHED</td>
+          </tr>
+          <tr>
+            <td class="claim">Ships production systems inside a real bank</td>
+            <td class="evidence">16-microservice document-validation platform, ML matching for reconciliation, RAG in production — at a global bank, under compliance constraints. Not open-sourceable.</td>
+            <td class="status private">● PRIVATE — ask me</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="recon-foot">3 of 4 claims auto-matched against public artifacts. 1 break: evidence held privately. No unmatched claims.</p>
+    </div>
+  </section>
+
+  <section id="artifacts">
+    <div class="sheet">
+      <p class="sec-label">Artifacts — live, tested, numbered</p>
+      <div class="art">
+
+        <article class="entry">
+          <div>
+            <h3>DocVal</h3>
+            <p class="role">Bank-statement extraction + validation pipeline</p>
+            <p>Native PDF or scan in; typed, validated transactions out. Hybrid
+              routing — deterministic parsing when a text layer exists, vision-LLM
+              per page when it doesn't — landing in one Pydantic schema, checked by
+              a balance-continuity validator no model can sweet-talk.</p>
+            <div class="links">
+              <a href="https://docval-yy4s.onrender.com">Live demo →</a>
+              <a href="https://github.com/Sero01/docval">GitHub + eval harness →</a>
+            </div>
+          </div>
+          <dl class="figures">
+            <dt>Held-out txn F1</dt><dd>0.92 syn / <span class="dr">0.12 scans</span><!-- POST-EVAL: update --></dd>
+            <dt>Header accuracy</dt><dd>0.89</dd>
+            <dt>Cost per document</dt><dd class="cr">$0.005</dd>
+          </dl>
+        </article>
+
+        <article class="entry">
+          <div>
+            <h3>ReconMatch</h3>
+            <p class="role">Transaction matching + break resolution</p>
+            <p>Statement lines vs. internal ledger: exact, date-windowed, and
+              split-matching tiers, deterministic and greedy — every match
+              explainable. Unmatched lines get classified breaks with suggested
+              resolutions, so ops attention goes only where trust ran out.</p>
+            <div class="links">
+              <a href="https://github.com/Sero01/reconmatch">GitHub + eval harness →</a>
+              <a href="#contact">Live demo — deploying now</a><!-- RECONMATCH-URL: swap for live demo link -->
+            </div>
+          </div>
+          <dl class="figures">
+            <dt>Auto-match rate</dt><dd class="cr">95.4% @ P 1.00</dd>
+            <dt>Pair F1</dt><dd>0.976</dd>
+            <dt>Held-out, never tuned</dt><dd>50 sets × 40 entries</dd>
+          </dl>
+        </article>
+
+        <article class="entry">
+          <div>
+            <h3>The eval case study</h3>
+            <p class="role">How I measure accuracy in document-extraction pipelines</p>
+            <p>Schema enforcement, deterministic validation, held-out evals with
+              cost tracked next to accuracy — and what the harness caught that
+              vibes never would: output-cap truncation, temperature-0
+              nondeterminism, provider flakiness, and a third-party benchmark
+              whose own scorer was broken.</p>
+            <div class="links">
+              <a href="https://github.com/Sero01/docval">Read the writeup →</a><!-- WRITEUP-URL: swap to published post -->
+            </div>
+          </div>
+          <dl class="figures">
+            <dt>Layers of trust</dt><dd>schema → arithmetic → eval</dd>
+            <dt>Regression gate</dt><dd>CI, every push, ±1pt</dd>
+          </dl>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="bg">
+    <div class="sheet">
+      <p class="sec-label">Background</p>
+      <p>Day job: shared-services engineering at a global bank — where I built a
+        16-microservice document-validation platform, trained ML matching models
+        for reconciliation (TLM/SmartStream world), and shipped RAG in
+        production under real compliance constraints.</p>
+      <p class="quiet">The artifacts above are that experience rebuilt in the
+        open, on synthetic and public data, where the numbers can be checked.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="sheet">
+      <p class="sec-label">Open items</p>
+      <h2>If your ops team drowns in statements, invoices, or reconciliation breaks — let's talk.</h2>
+      <div class="links">
+        <a href="mailto:126ahmedparvez@gmail.com">126ahmedparvez@gmail.com</a>
+        <a href="https://github.com/Sero01">github.com/Sero01</a>
+        <a href="https://www.linkedin.com/">LinkedIn</a><!-- LINKEDIN-URL: set real profile -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="sheet" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;width:100%">
+    <span>No number on this page is unpublished or unverifiable.</span>
+    <span>© 2026 Parvez Ahmed</span>
+  </div>
+</footer>
+
+</body>
+</html>
