@@ -21,8 +21,8 @@ npx wrangler pages deploy . --project-name parvez-ahmed --branch main --commit-d
   Render service exists (GitHub link already in).
 - `WRITEUP-URL`: point at the published eval case study once it's on
   LinkedIn/blog.
-- `LINKEDIN-URL`: set the real LinkedIn profile URL (currently a bare
-  linkedin.com link).
+
+(`LINKEDIN-URL` resolved 2026-07-18 — real profile URL is in.)
 
 Optional: add a custom domain later via the Cloudflare dashboard → Pages →
 parvez-ahmed → Custom domains.
