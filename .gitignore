@@ -1,0 +1,5 @@
+# Playwright MCP debug artifacts
+.playwright-mcp/
+
+# OS / editor
+.DS_Store

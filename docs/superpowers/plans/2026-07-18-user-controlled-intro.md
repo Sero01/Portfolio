@@ -10,9 +10,9 @@
 
 ## Global Constraints
 
-- `Hi, I am Parvez` is the large primary heading.
-- `What would you like to know?` is a smaller supporting line.
-- The simulated cursor is a pixelated hand that moves to Send and pulsates until Send is clicked.
+- `What would you like to know?` is a smaller supporting line above the heading.
+- `Hi, I am Parvez` is the large primary heading below it.
+- The simulated cursor uses a locally vendored Pixelarticons `pointer` SVG, moves to Send, and pulsates until Send is clicked.
 - Portfolio content must not render before Send activation.
 - Background clicks, Enter, and Escape must not launch the portfolio.
 - Reduced-motion mode hides the decorative cursor but still requires Send activation.

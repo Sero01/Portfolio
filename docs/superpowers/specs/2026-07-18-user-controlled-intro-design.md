@@ -10,10 +10,10 @@ Send-button click before any portfolio content renders.
 
 ## Visual hierarchy
 
-- `Hi, I am Parvez` is the large primary heading.
-- `What would you like to know?` is a smaller supporting line.
+- `What would you like to know?` is a smaller supporting line above the heading.
+- `Hi, I am Parvez` is the large primary heading below it.
 - The existing prompt types `Tell me about yourself`.
-- When typing finishes, a pixelated hand-shaped simulated cursor moves to the
+- When typing finishes, the vendored Pixelarticons `pointer` icon moves to the
   Send button and pulsates there until the user clicks Send.
 
 ## Interaction
