@@ -13,8 +13,8 @@ Send-button click before any portfolio content renders.
 - `Hi, I am Parvez` is the large primary heading.
 - `What would you like to know?` is a smaller supporting line.
 - The existing prompt types `Tell me about yourself`.
-- When typing finishes, the simulated cursor moves to the Send button and
-  pulsates there until the user clicks Send.
+- When typing finishes, a pixelated hand-shaped simulated cursor moves to the
+  Send button and pulsates there until the user clicks Send.
 
 ## Interaction
 
