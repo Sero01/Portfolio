@@ -20,13 +20,13 @@ Emma and WhispnoteAI are removed from both the gallery data and the Side project
 
 ## Layout
 
-The desktop wall uses a four-column CSS grid with a deliberate mixture of wide, tall, and standard tiles. Each project declares a small layout variant through a CSS class rather than relying on hover state or JavaScript measurements. The arrangement should feel editorial and irregular while retaining clear alignment and predictable reading order.
+The Side projects conversation expands to a maximum width of 1185 px, 50% wider than the normal 790 px thread. The desktop wall uses three masonry-style CSS columns. Each tile's height is driven by its image or GIF rather than a fixed grid row, producing varied native proportions without empty letterbox bars or cropped edges.
 
-At narrower widths, spans are simplified so tiles stay legible and do not overflow. The wall becomes a two-column mosaic on tablet/mobile widths, with wide tiles spanning both columns and other tiles occupying one column. At very narrow widths it becomes one column and all projects use a consistent readable height.
+At narrower widths, the wall becomes two columns and then one column. The expanded thread remains capped by the available viewport width and does not create horizontal overflow.
 
 ## Tile Presentation
 
-Each tile is a normal external link. Its image or GIF fills the tile immediately using `object-fit: cover`; animated GIFs play through the browser's native image behavior. A compact, always-visible placard overlays the bottom edge with the project name and metadata. There is no cover layer, hover reveal, hover translation, or hover-only information.
+Each tile is a normal external link. Its image or GIF renders at `width: 100%` and `height: auto`, so the complete asset is visible at its intrinsic aspect ratio; animated GIFs play through the browser's native image behavior. A compact, always-visible placard overlays the bottom edge with the project name and metadata. There is no cover layer, hover reveal, hover translation, or hover-only information.
 
 Keyboard focus remains visibly outlined. Links open in a new tab with `rel="noopener"`, and every image has a project-specific alt description.
 
@@ -38,8 +38,8 @@ Users who prefer reduced motion see every tile immediately with no meaningful de
 
 ## Implementation Boundaries
 
-- `script.js` owns project content, destination URLs, image paths, layout class names, and generated gallery markup.
-- `styles.css` owns the varied grid spans, image-first tile presentation, the 500 ms stagger calculation, responsive fallbacks, and reduced-motion behavior.
+- `script.js` owns project content, destination URLs, image paths, and generated gallery markup, and marks the project thread for the wider layout.
+- `styles.css` owns masonry columns, native-ratio image presentation, the project-only 1185 px width, the 500 ms stagger calculation, responsive fallbacks, and reduced-motion behavior.
 - `index.html` updates only the Side projects sidebar summary.
 - `tests/gallery-wall.test.js` verifies project membership, assets and destination, removal of hover-driven markup/copy, varied layout hooks, stagger timing, and reduced-motion compatibility.
 
