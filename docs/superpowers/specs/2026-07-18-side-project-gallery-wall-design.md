@@ -20,9 +20,9 @@ Emma and WhispnoteAI are removed from both the gallery data and the Side project
 
 ## Layout
 
-The Side projects conversation keeps the normal 790 px thread width. The desktop wall uses two masonry-style CSS columns, making each project roughly twice the width of the original four-column cards. Each tile's height is driven by its image or GIF rather than a fixed grid row, producing varied native proportions without empty letterbox bars or cropped edges.
+The Side projects conversation keeps the normal 790 px thread width. The desktop wall uses a two-column, row-major CSS grid, making each project roughly twice the width of the original four-column cards. Projects fill horizontally from left to right before starting the next row. Each tile's height is driven by its image or GIF rather than a fixed grid row, producing varied native proportions without empty letterbox bars or cropped edges.
 
-At narrower widths, the wall becomes two columns and then one column. The expanded thread remains capped by the available viewport width and does not create horizontal overflow.
+At narrow mobile widths, the wall becomes one column. The thread remains capped by the available viewport width and does not create horizontal overflow.
 
 ## Tile Presentation
 
@@ -36,12 +36,12 @@ When the Side projects response is rendered, each tile receives the existing cas
 
 Users who prefer reduced motion see every tile immediately with no meaningful delay or movement.
 
-Two seconds after the Side projects answer and heading are inserted, the chat scrolls to the bottom once. The scheduled scroll checks the active render sequence and does nothing if the visitor has switched sections.
+As each tile reaches its 500 ms reveal point, the chat scrolls toward the current bottom so the newest project remains visible. Scheduled scrolls check the active render sequence and do nothing if the visitor has switched sections.
 
 ## Implementation Boundaries
 
 - `script.js` owns project content, destination URLs, image paths, and generated gallery markup.
-- `styles.css` owns the two-column masonry wall, native-ratio image presentation, the 500 ms stagger calculation, responsive fallbacks, and reduced-motion behavior.
+- `styles.css` owns the horizontal-first two-column grid, native-ratio image presentation, the 500 ms stagger calculation, responsive fallback, and reduced-motion behavior.
 - `index.html` updates only the Side projects sidebar summary.
 - `tests/gallery-wall.test.js` verifies project membership, assets and destination, removal of hover-driven markup/copy, varied layout hooks, stagger timing, and reduced-motion compatibility.
 
