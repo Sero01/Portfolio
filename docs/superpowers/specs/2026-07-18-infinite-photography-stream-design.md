@@ -2,7 +2,7 @@
 
 ## Goal
 
-Turn Photography into a continuously arriving vertical chat stream that cycles through all 14 photos and supplied captions at approximately one photo per second without allowing the DOM to grow indefinitely.
+Turn Photography into a continuously arriving vertical chat stream that cycles through all 14 photos and supplied captions at approximately one photo every two seconds without allowing the DOM to grow indefinitely.
 
 ## Content
 
@@ -27,7 +27,7 @@ After photo 14, the sequence restarts at photo 1.
 
 ## Rendering and Timing
 
-The existing Photography heading renders first. The stream then appends one assistant photo message at the existing photo cadence: typing delay plus reveal and inter-message gap total approximately one second. Each inserted photo scrolls into view through the existing chat scroll behavior.
+The existing Photography heading renders first. The stream then appends one assistant photo message every approximately two seconds, including the typing delay, reveal, and inter-message gap. Each inserted photo scrolls into view through the existing chat scroll behavior. Images use a maximum width of 384 px, 20% smaller than the previous 480 px maximum.
 
 The loop is tied to the active render sequence. Switching to another portfolio section invalidates the sequence, so the next scheduled iteration exits without appending another photo.
 
