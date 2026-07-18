@@ -35,6 +35,8 @@ The loop is tied to the active render sequence. Switching to another portfolio s
 
 After each photo finishes rendering, photo-loop messages whose bottom edge is fully above the chat viewport are removed. The currently visible message and any partially visible message remain. Non-photo messages, including the Photography heading, are never removed by the pruning function.
 
+Pruning records the container height and scroll position, then offsets `scrollTop` by the exact height removed. This keeps the currently visible photo stationary instead of letting the viewport jump when earlier messages leave the DOM.
+
 ## Accessibility and Motion
 
 Every image uses its caption as alt text and retains the visible `FR-XX · caption` label. Reduced-motion mode skips typing animation but preserves the stream cadence and scrolling behavior. Image sizing continues to preserve native aspect ratio.
