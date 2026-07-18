@@ -36,7 +36,7 @@ When the Side projects response is rendered, each tile receives the existing cas
 
 Users who prefer reduced motion see every tile immediately with no meaningful delay or movement.
 
-As each tile reaches its 500 ms reveal point, the chat scrolls toward the current bottom so the newest project remains visible. Scheduled scrolls check the active render sequence and do nothing if the visitor has switched sections. Reduced-motion mode performs one immediate scroll after the complete wall is inserted.
+Two seconds after the Side projects answer and heading are inserted, the chat scrolls to the bottom once. The scheduled scroll checks the active render sequence and does nothing if the visitor has switched sections.
 
 ## Implementation Boundaries
 
