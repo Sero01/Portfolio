@@ -36,7 +36,7 @@ When the Side projects response is rendered, each tile receives the existing cas
 
 Users who prefer reduced motion see every tile immediately with no meaningful delay or movement.
 
-The chat scrolls each tile into view 1.2 seconds after that tile's 500 ms reveal point, allowing the project to load before the viewport follows it. Scheduled scrolls check the active render sequence and do nothing if the visitor has switched sections.
+The chat scrolls each tile into view 2 seconds after that tile's 500 ms reveal point, allowing the project to load before the viewport follows it. Scheduled scrolls check the active render sequence and do nothing if the visitor has switched sections.
 
 ## Implementation Boundaries
 
