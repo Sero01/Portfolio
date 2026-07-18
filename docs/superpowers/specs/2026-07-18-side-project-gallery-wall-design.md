@@ -20,7 +20,7 @@ Emma and WhispnoteAI are removed from both the gallery data and the Side project
 
 ## Layout
 
-The Side projects conversation expands to a maximum width of 1185 px, 50% wider than the normal 790 px thread. The desktop wall uses three masonry-style CSS columns. Each tile's height is driven by its image or GIF rather than a fixed grid row, producing varied native proportions without empty letterbox bars or cropped edges.
+The Side projects conversation keeps the normal 790 px thread width. The desktop wall uses two masonry-style CSS columns, making each project roughly twice the width of the original four-column cards. Each tile's height is driven by its image or GIF rather than a fixed grid row, producing varied native proportions without empty letterbox bars or cropped edges.
 
 At narrower widths, the wall becomes two columns and then one column. The expanded thread remains capped by the available viewport width and does not create horizontal overflow.
 
@@ -38,8 +38,8 @@ Users who prefer reduced motion see every tile immediately with no meaningful de
 
 ## Implementation Boundaries
 
-- `script.js` owns project content, destination URLs, image paths, and generated gallery markup, and marks the project thread for the wider layout.
-- `styles.css` owns masonry columns, native-ratio image presentation, the project-only 1185 px width, the 500 ms stagger calculation, responsive fallbacks, and reduced-motion behavior.
+- `script.js` owns project content, destination URLs, image paths, and generated gallery markup.
+- `styles.css` owns the two-column masonry wall, native-ratio image presentation, the 500 ms stagger calculation, responsive fallbacks, and reduced-motion behavior.
 - `index.html` updates only the Side projects sidebar summary.
 - `tests/gallery-wall.test.js` verifies project membership, assets and destination, removal of hover-driven markup/copy, varied layout hooks, stagger timing, and reduced-motion compatibility.
 
