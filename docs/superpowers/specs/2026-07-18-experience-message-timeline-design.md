@@ -13,7 +13,7 @@ visual continuity of the existing vertical timeline and its orange role dots.
 The Experience section contains five assistant messages after the existing user
 prompt:
 
-1. A short introduction with the eyebrow, heading, and hover/click hint.
+1. A short introduction with the eyebrow and heading.
 2. Senior Analyst — AI Engineer, Northern Trust, Apr 2026–present.
 3. Analyst, Software Engineer, Northern Trust, Aug 2024–Mar 2026.
 4. Front-End Engineering Intern, Northern Trust, Jun–Sep 2023.
@@ -32,7 +32,9 @@ Each role retains its current date, organization, and bullet-point copy.
 - The first role begins the line at its dot; the last role ends the line at its
   dot. Middle roles connect in both directions.
 - The assistant `P` mark remains visible for each separate message.
-- Hover and click continue to expand a role's bullet-point story.
+- Every role's bullet-point story is visible as soon as its message renders.
+- Roles are static content: no hover expansion, click toggling, pointer cursor,
+  or disclosure hint is shown.
 
 ## Motion and responsiveness
 
