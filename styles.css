@@ -212,8 +212,7 @@ svg[hidden]{display:none}
   background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);
 }
 .menu{display:none;border:0;background:none;font-size:20px;cursor:pointer}
-.conversation-title{border:0;background:none;font:500 15px var(--serif);cursor:pointer}
-.conversation-title span{font:12px var(--sans);color:var(--muted)}
+.conversation-title{border:0;background:none;font:500 15px var(--serif);cursor:pointer;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:6px}
 .topbar-actions .icon-btn:hover{color:var(--orange)}
 
@@ -397,6 +396,8 @@ textarea.contact-control{min-height:130px;resize:vertical;line-height:1.6}
   .lead{font-size:18px!important}
   .model-select b{display:none}
   .composer-bottom>small{display:none}
+  .conversation-title{font-size:14px}
+  .menu{font-size:17px}
 }
 @media(hover:none){
   .story{grid-template-rows:0fr}

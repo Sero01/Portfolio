@@ -93,7 +93,7 @@ const content = {
   contact: { title: "Let’s talk", thread: [
     { u: "How can I reach you?" },
     { a: `
-    <div class="eyebrow">Open items</div><h1>Let’s build something<br><em>people can trust.</em></h1><p class="lead">If you're working on something that has to actually work — documents, agents, matching, realtime — I'd like to hear about it.</p>
+    <div class="eyebrow">Open items</div><h1>Let’s build something<br><em>together.</em></h1><p class="lead">If you're working on something that has to actually work — documents, agents, matching, realtime — I'd like to hear about it.</p>
     <div class="contact-card">
       <form class="contact-form" action="https://formspree.io/f/xdaqgnvj" method="POST">
         <div class="contact-fields">
