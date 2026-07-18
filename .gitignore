@@ -3,3 +3,9 @@
 
 # OS / editor
 .DS_Store
+
+# Internal planning/design docs — keep out of the public repo
+docs/
+
+# Editable resume source (only the built PDF is published)
+*.docx
