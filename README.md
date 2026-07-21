@@ -3,8 +3,10 @@
 One-page portfolio (roadmap Weeks 1–8 parallel task). Single static
 `index.html`, no build step, Google Fonts only external dependency.
 
-**Live: https://parvez-ahmed.pages.dev** (Cloudflare Pages, project
-`parvez-ahmed`, deployed 2026-07-18 via wrangler).
+**Live: https://parvez-ahmed.com** — custom domain on Cloudflare Pages,
+project `parvez-ahmed`. The `parvez-ahmed.pages.dev` address still serves the
+same deployment and is what `wrangler` prints, so treat it as the build URL
+and the custom domain as the public one.
 
 ## Redeploy after edits
 
@@ -34,5 +36,8 @@ not implement it, so the live demo does **not** score 88.65%. Keep the
 "not yet folded into the live demo" caveat in the copy until a production
 fold lands.
 
-Optional: add a custom domain later via the Cloudflare dashboard → Pages →
-parvez-ahmed → Custom domains.
+## Domain
+
+Apex `parvez-ahmed.com` is attached and serving. **`www.parvez-ahmed.com` has
+no DNS record** — it does not resolve. Add a CNAME for `www` in the
+Cloudflare dashboard if you want the www form to work or redirect.
