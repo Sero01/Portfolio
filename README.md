@@ -8,13 +8,6 @@ project `parvez-ahmed`. The `parvez-ahmed.pages.dev` address still serves the
 same deployment and is what `wrangler` prints, so treat it as the build URL
 and the custom domain as the public one.
 
-## Redeploy after edits
-
-```bash
-cd ~/Projects/portfolio-site
-npx wrangler pages deploy . --project-name parvez-ahmed --branch main --commit-dirty=true
-```
-
 ## Slots still to fill
 
 - `WRITEUP-URL`: point at the published eval case study once it's on
