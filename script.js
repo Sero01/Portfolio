@@ -9,8 +9,9 @@ const workDetails = {
   reconmatch: { name: "ReconMatch", ask: "Tell me more about ReconMatch", html: `
     <p class="lead">ReconMatch pairs two transaction ledgers and explains every decision it makes.</p>
     <p>Matching runs in tiers — exact, date-windowed, then split matching for the one-to-many cases that break naive joins. Nothing is a black box: every match carries its reasoning, and every unmatched line is classified as a typed break with a suggested resolution instead of being dumped into an "exceptions" pile.</p>
-    <div class="stat-grid"><div class="stat"><b>95.4%</b><small>auto-match rate</small></div><div class="stat"><b>1.00</b><small>precision at that rate</small></div><div class="stat"><b>0.976</b><small>pair F1</small></div><div class="stat"><b>100%</b><small>matches explainable</small></div></div>
-    <p>Precision 1.00 is the number that matters: at a 95.4% auto-match rate it makes zero wrong pairings on the held-out set, because a reconciliation tool that guesses is worse than no tool at all.</p>
+    <div class="stat-grid"><div class="stat"><b>95.9%</b><small>auto-match rate</small></div><div class="stat"><b>1.00</b><small>precision at that rate</small></div><div class="stat"><b>0.98</b><small>pair F1</small></div><div class="stat"><b>100%</b><small>matches explainable</small></div></div>
+    <p>Precision 1.00 is the number that matters: at a 95.9% auto-match rate it makes zero wrong pairings on the held-out set, because a reconciliation tool that guesses is worse than no tool at all.</p>
+    <p>I then took the approach to <b>BenchRec</b> (ICAIF 2023), a third-party reconciliation benchmark with a published baseline. One frozen held-out run, strict exact-set scoring, nothing tuned against it: <b>88.65% versus the published baseline's 62.45%</b>, and the first method to score above zero on many-to-many groups — 70.4% against 0.00%. The same work also proved a 99.8% auto-accept bar is <em>unreachable</em> on that dataset, because group membership there is genuinely underdetermined from the observable fields. So those matches ship as review-grade suggestions, and that research lives in a branch — it is not yet folded into the live demo.</p>
     <p class="card-links"><a href="https://reconmatch-aa9c.onrender.com" target="_blank" rel="noopener">Live demo ↗</a> · <a href="https://github.com/Sero01/reconmatch" target="_blank" rel="noopener">GitHub ↗</a></p>`},
   evals: { name: "the eval harness", ask: "Tell me more about the eval harness", html: `
     <p class="lead">The part nobody demos: proving the numbers are real.</p>
@@ -57,7 +58,7 @@ const content = {
     <div class="eyebrow">Parvez Ahmed · AI engineer · Bengaluru</div>
     <h1>I design, build, and <em>ship </em>systems </h1>
     <p class="lead">Agents, document intelligence, designs, realtime apps, and automations. Everything here is shipped, measured, and public.</p>
-    <div class="stat-grid"><div class="stat"><b>10+</b><small>systems shipped &amp; live</small></div><div class="stat"><b>95.4%</b><small>auto-match @ precision 1.00</small></div><div class="stat"><b>16</b><small>services modernized</small></div><div class="stat"><b>800+</b><small>CVEs closed</small></div></div>
+    <div class="stat-grid"><div class="stat"><b>10+</b><small>systems shipped &amp; live</small></div><div class="stat"><b>95.9%</b><small>auto-match @ precision 1.00</small></div><div class="stat"><b>16</b><small>services modernized</small></div><div class="stat"><b>800+</b><small>CVEs closed</small></div></div>
     <div class="pills"><span class="pill">Agents &amp; RAG</span><span class="pill">Document AI</span><span class="pill">Voice &amp; local-first</span><span class="pill">Realtime · WebRTC</span><span class="pill">Java · Python</span></div>
     <p>By day I'm an AI engineer at a global bank — agentic RAG over legacy systems, reconciliation ML, and the unglamorous migrations that keep it all running. After hours I run a small fleet of my own: local agents with their own memory and dashboards, voice tools, a generative-typography journal, a watch-party app. </p>` }
   ]},
@@ -67,7 +68,7 @@ const content = {
     <div class="eyebrow">Selected work · live, tested, numbered</div><h2>Systems built for trust, not demos.</h2><p>Click any card and I'll go deeper.</p>
     <div class="work-list">
       <button class="work-card" data-detail="docval"><span class="work-head"><h3>DocVal</h3><b>0.92 F1</b></span><p>Bank statements — native or scanned — into validated, typed transactions.</p><span class="work-more">Click to know more →</span></button>
-      <button class="work-card" data-detail="reconmatch"><span class="work-head"><h3>ReconMatch</h3><b>95.4% @ P 1.00</b></span><p>Two ledgers in, explained matches and classified breaks out.</p><span class="work-more">Click to know more →</span></button>
+      <button class="work-card" data-detail="reconmatch"><span class="work-head"><h3>ReconMatch</h3><b>95.9% @ P 1.00</b></span><p>Two ledgers in, explained matches and classified breaks out.</p><span class="work-more">Click to know more →</span></button>
       <button class="work-card" data-detail="evals"><span class="work-head"><h3>The eval harness</h3><b>held-out</b></span><p>The regression-gated benchmark spine both systems answer to.</p><span class="work-more">Click to know more →</span></button>
     </div>` }
   ]},

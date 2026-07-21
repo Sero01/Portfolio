@@ -13,16 +13,26 @@ cd ~/Projects/portfolio-site
 npx wrangler pages deploy . --project-name parvez-ahmed --branch main --commit-dirty=true
 ```
 
-## Slots still to fill (marked as HTML comments in index.html)
+## Slots still to fill
 
-- `POST-EVAL` (×2): held-out F1 numbers — Claude updates these when the
-  post-paged-extraction eval lands, then redeploys.
-- `RECONMATCH-URL`: swap "deploying now" link for the live demo URL once the
-  Render service exists (GitHub link already in).
 - `WRITEUP-URL`: point at the published eval case study once it's on
-  LinkedIn/blog.
+  LinkedIn/blog. Not present in source yet — add the link when it exists.
 
-(`LINKEDIN-URL` resolved 2026-07-18 — real profile URL is in.)
+Resolved: `POST-EVAL` (DocVal held-out F1 is in), `RECONMATCH-URL` (live
+Render demo linked), `LINKEDIN-URL` (2026-07-18).
+
+## Where the ReconMatch numbers come from
+
+Card and stat grid — 95.9% auto-match @ precision 1.00, pair F1 0.98 — are
+the internal held-out eval, sourced from `reconmatch/README.md`.
+
+The BenchRec paragraph — 88.65% vs the published 62.45% baseline — is the
+single frozen held-out run in
+`reconmatch/data/benchrec/artifacts/frozen_eval.md`. That work is
+**review-grade** and lives in `experiments/benchrec/`; `src/reconmatch/` does
+not implement it, so the live demo does **not** score 88.65%. Keep the
+"not yet folded into the live demo" caveat in the copy until a production
+fold lands.
 
 Optional: add a custom domain later via the Cloudflare dashboard → Pages →
 parvez-ahmed → Custom domains.
