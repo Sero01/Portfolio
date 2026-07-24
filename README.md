@@ -39,10 +39,13 @@ ECE 0.245→0.000 with the unsafe count unmoved, 11→7 after the content-trust
 layer — is from `tiny-router-poc/CASE_STUDY.md` (§4a–4c), reproducible via
 `python3 eval_harness.py --router rules --curve` and `python3 ablations.py`.
 
-Two caveats to keep in the copy: the **26M fine-tune was never trained** (the
+One caveat to keep in the copy: the **26M fine-tune was never trained** (the
 exporter is built and verified, the run is deferred for lack of a training
-runtime), and **Council has no public repo or hosted demo**, which is why the
-card carries no links. Add them if either changes.
+runtime). Both repos are now public and linked from the card —
+`github.com/Sero01/tiny-router-poc` (standalone study) and
+`github.com/Sero01/council` (the workspace, POC nested inside). There is
+**no hosted demo**; both run locally only. Drop the "no hosted demo" line if
+that changes.
 
 ## Domain
 
