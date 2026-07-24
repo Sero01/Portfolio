@@ -29,6 +29,21 @@ not implement it, so the live demo does **not** score 88.65%. Keep the
 "not yet folded into the live demo" caveat in the copy until a production
 fold lands.
 
+## Where the Council numbers come from
+
+The Council card covers two things: the agent workspace at
+`~/Projects/council` and the tiny-router study its agents built in
+`council/tiny-router-poc/`. Every figure in the copy — 1028-example corpus,
+88.1% baseline action accuracy at 74.8% coverage, 11 unsafe executions,
+ECE 0.245→0.000 with the unsafe count unmoved, 11→7 after the content-trust
+layer — is from `tiny-router-poc/CASE_STUDY.md` (§4a–4c), reproducible via
+`python3 eval_harness.py --router rules --curve` and `python3 ablations.py`.
+
+Two caveats to keep in the copy: the **26M fine-tune was never trained** (the
+exporter is built and verified, the run is deferred for lack of a training
+runtime), and **Council has no public repo or hosted demo**, which is why the
+card carries no links. Add them if either changes.
+
 ## Domain
 
 Apex `parvez-ahmed.com` is attached and serving. **`www.parvez-ahmed.com` has
