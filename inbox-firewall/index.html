@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Interactive, mock-only Inbox Firewall evaluation demo."
+    >
+    <title>Inbox Firewall — Live Lab</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Inbox Firewall home">
+        <span class="brand-mark">IF</span>
+        <span>
+          <strong>INBOX FIREWALL</strong>
+          <small>SELECTIVE AUTOMATION LAB</small>
+        </span>
+      </a>
+      <div class="status-strip">
+        <span class="live-dot"></span>
+        <span>MEASURED TEST DATA</span>
+        <span class="status-divider"></span>
+        <span>226 SYNTHETIC MESSAGES</span>
+      </div>
+      <div class="mock-badge">MOCK EXECUTOR ONLY</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">CASE STUDY / 26M CASCADE COMPONENTS</p>
+          <h1>What actually keeps<br>an AI action <em>safe?</em></h1>
+        </div>
+        <p class="hero-copy">
+          Route inbox messages into typed actions. Add defenses one layer at a
+          time. Watch valid-but-wrong actions survive the validator—and see
+          where calibrated confidence stops helping.
+        </p>
+      </section>
+
+      <section class="control-deck panel">
+        <div class="control-group">
+          <span class="control-label">ROUTER</span>
+          <div class="segmented" id="router-control">
+            <button class="active" data-router="rules">Rules baseline</button>
+            <button data-router="escalate">Always escalate</button>
+          </div>
+        </div>
+        <div class="control-group layer-control">
+          <span class="control-label">DEFENSE STACK</span>
+          <div class="segmented" id="layer-control">
+            <button data-layer="0">Raw</button>
+            <button data-layer="1">+ Validator</button>
+            <button data-layer="2">+ Tier policy</button>
+            <button class="active" data-layer="3">+ Injection defense</button>
+          </div>
+        </div>
+        <label class="threshold-control">
+          <span>
+            <span class="control-label">GLOBAL GATE</span>
+            <strong id="threshold-value">0.00</strong>
+          </span>
+          <input
+            id="threshold"
+            type="range"
+            min="0"
+            max="1"
+            value="0"
+            step="0.05"
+          >
+        </label>
+      </section>
+
+      <section class="metric-grid" aria-label="Current evaluation metrics">
+        <article class="metric-card">
+          <span>COVERAGE</span>
+          <strong id="metric-coverage">—</strong>
+          <small>messages executed locally</small>
+        </article>
+        <article class="metric-card">
+          <span>ACTION ACCURACY</span>
+          <strong id="metric-accuracy">—</strong>
+          <small>tool + exact arguments</small>
+        </article>
+        <article class="metric-card danger">
+          <span>UNSAFE EXECUTED</span>
+          <strong id="metric-unsafe">—</strong>
+          <small id="metric-unsafe-detail">should-escalate rows</small>
+        </article>
+        <article class="metric-card">
+          <span>SELECTIVE RISK</span>
+          <strong id="metric-risk">—</strong>
+          <small>wrong among executed</small>
+        </article>
+      </section>
+
+      <section class="lab-grid">
+        <article class="panel inbox-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">STREAM 01</p>
+              <h2>Incoming message</h2>
+            </div>
+            <div class="stream-controls">
+              <button id="previous-message" aria-label="Previous message">←</button>
+              <button id="play-stream"><span>▶</span> Play stream</button>
+              <button id="next-message" aria-label="Next message">→</button>
+            </div>
+          </div>
+          <div class="message-tabs" id="message-tabs"></div>
+          <div class="message-card">
+            <div class="message-meta">
+              <span id="message-id">—</span>
+              <span id="message-slice" class="slice-badge">—</span>
+            </div>
+            <h3 id="message-subject">Loading measured results…</h3>
+            <p class="sender" id="message-sender">—</p>
+            <div class="message-body" id="message-body"></div>
+          </div>
+          <div class="truth-row">
+            <span>HUMAN LABEL</span>
+            <code id="gold-action">—</code>
+          </div>
+        </article>
+
+        <article class="panel trace-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">DECISION TRACE</p>
+              <h2>Why this happened</h2>
+            </div>
+            <span class="outcome-pill" id="outcome-pill">WAITING</span>
+          </div>
+          <ol class="trace-list" id="trace-list"></ol>
+          <div class="proposal-box">
+            <span>ROUTER PROPOSAL</span>
+            <code id="proposal-dsl">—</code>
+          </div>
+        </article>
+      </section>
+
+      <section class="evidence-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">MONEY FIGURE</p>
+              <h2>Risk vs. coverage</h2>
+            </div>
+            <div class="chart-legend">
+              <span><i class="legend-line"></i> current stack</span>
+              <span><i class="legend-dot"></i> selected gate</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg
+              id="risk-chart"
+              viewBox="0 0 720 320"
+              role="img"
+              aria-label="Risk coverage curve"
+            ></svg>
+          </div>
+          <p class="chart-note">
+            Better is bottom-right: more local handling, fewer wrong executions.
+            Tight gates move left; they do not make the router smarter.
+          </p>
+        </article>
+
+        <article class="panel ablation-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LAYER ABLATION</p>
+              <h2>What moves unsafe?</h2>
+            </div>
+          </div>
+          <div id="ablation-bars" class="ablation-bars"></div>
+          <div class="calibration-callout">
+            <span class="callout-number">11 → 11</span>
+            <div>
+              <strong>Calibration fixed ECE, not safety.</strong>
+              <p>
+                Clean held-out ECE reached 0.000. Every unsafe execution
+                survived adversarial distribution shift.
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="thesis panel">
+        <p class="eyebrow">THE RESULT</p>
+        <blockquote>
+          Confidence is a <em>coverage instrument</em>, not a safety boundary.
+        </blockquote>
+        <p>
+          Typed outputs catch malformed actions. Content-trust checks catch
+          obvious injections. Phishing remains. The honest system escalates
+          what its deterministic layers cannot prove safe.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <span>INBOX FIREWALL / COUNCIL CASE STUDY</span>
+      <span>NO EMAILS ARE READ, SENT, ARCHIVED, OR MODIFIED</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

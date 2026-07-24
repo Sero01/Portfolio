@@ -39,13 +39,23 @@ ECE 0.245→0.000 with the unsafe count unmoved, 11→7 after the content-trust
 layer — is from `tiny-router-poc/CASE_STUDY.md` (§4a–4c), reproducible via
 `python3 eval_harness.py --router rules --curve` and `python3 ablations.py`.
 
+This is now **two** Selected-work cards: **Inbox Firewall** (`tinyrouter` in
+`workDetails`) is the study; **Council** (`council`) is the collaboration tool
+that built it. The old standalone `evals` card is gone — its content is folded
+into the DocVal detail, since the eval harness is DocVal's and ReconMatch's
+shared spine.
+
+The demo is **hosted on the site** at `/inbox-firewall/` — the four static
+files (`index.html`, `styles.css`, `app.js`, `data.json`) live in
+`inbox-firewall/`, copied verbatim from `council/tiny-router-poc/demo/` and
+served as-is by the Pages deploy (`data.json` loads via a same-origin
+`fetch`). To refresh it, re-run `python3 demo/export_data.py` in the POC and
+re-copy the four files. The Inbox Firewall card's "Live demo" points here.
+
 One caveat to keep in the copy: the **26M fine-tune was never trained** (the
 exporter is built and verified, the run is deferred for lack of a training
-runtime). Both repos are now public and linked from the card —
-`github.com/Sero01/tiny-router-poc` (standalone study) and
-`github.com/Sero01/council` (the workspace, POC nested inside). There is
-**no hosted demo**; both run locally only. Drop the "no hosted demo" line if
-that changes.
+runtime). Repos linked from the cards: `github.com/Sero01/tiny-router-poc`
+(study) and `github.com/Sero01/council` (workspace, POC nested inside).
 
 ## Domain
 
