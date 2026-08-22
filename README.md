@@ -4,9 +4,18 @@ One-page portfolio (roadmap Weeks 1–8 parallel task). Single static
 `index.html`, no build step, Google Fonts only external dependency.
 
 **Live: https://parvez-ahmed.com** — custom domain on Cloudflare Pages,
-project `parvez-ahmed`. The `parvez-ahmed.pages.dev` address still serves the
-same deployment and is what `wrangler` prints, so treat it as the build URL
-and the custom domain as the public one.
+project **`portfolio`** (build URL `portfolio-4ye.pages.dev`), which is
+Git-connected to this repo with **`static`** as its production branch.
+Pushing to `static` builds production; `main` and `master` only produce
+preview deployments, so keep all three in step:
+
+```sh
+git push origin master:master master:static master:main
+```
+
+There is a second, older Pages project called `parvez-ahmed` serving
+`parvez-ahmed.pages.dev` from a direct upload. It is not what the custom
+domain points at — don't deploy there expecting the live site to change.
 
 ## Slots still to fill
 
