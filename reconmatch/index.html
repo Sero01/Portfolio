@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="ReconMatch aligns bank-statement lines to ledger entries deterministically, scores every match, and classifies every break. 88.65% on the BenchRec held-out set against a published 62.45% — and still no auto-match claimed.">
+  <meta property="og:title" content="A reconciliation tool that guesses is worse than none">
+  <meta property="og:description" content="96% of true matches clear automatically with zero false matches on my own data. On somebody else's, the auto-match bar was not met — and that is the more useful result.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" id="metaTheme" content="#f7f6f2">
+  <title>ReconMatch — a tool that guesses is worse than none — Parvez Ahmed</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='28' fill='%23d97757'/%3E%3Ctext x='50' y='71' font-size='58' font-family='Georgia,serif' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+  <script>(function(){var t=localStorage.getItem('portfolio-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Opens the connection to the demo host before the wake request below needs it. -->
+  <link rel="preconnect" href="https://reconmatch-aa9c.onrender.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --paper:#f7f6f2; --ink:#2b2926; --body:#4f4b46; --muted:#77736d;
+    --line:#dedcd5; --card:#ffffff; --hover:#e6e4de; --rule:#e7e5de;
+    --orange:#d97757; --link:#ad553c; --shadow:48,42,34;
+    /* Chart series. Validated as a categorical pair against the card surface:
+       lightness band, chroma floor, CVD separation, contrast — all pass. */
+    --s1:#d97757; --s2:#00819e; --track:#efece5; --ref:#a9a49b;
+    --serif:"Newsreader",Georgia,serif;
+    --sans:"Styrene B","Styrene B LC","Instrument Sans",system-ui,sans-serif;
+    --mono:"DM Mono",ui-monospace,monospace;
+  }
+  :root[data-theme="dark"]{
+    --paper:#262624; --ink:#eceae5; --body:#c9c5bd; --muted:#a29d94;
+    --line:#3b3936; --card:#2f2e2b; --hover:#343230; --rule:#37352f;
+    --orange:#d97757; --link:#e08b6d; --shadow:0,0,0;
+    /* Re-stepped for the dark surface, not flipped: same two checks re-run. */
+    --s1:#d3714f; --s2:#2ba3c0; --track:#3a3835; --ref:#6c6862;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--body);
+    font:400 19px/1.68 var(--serif);
+    transition:background .3s ease,color .3s ease;
+  }
+  a{color:var(--link);text-decoration:none;border-bottom:1px solid rgba(var(--shadow),.22)}
+  a:hover{border-bottom-color:var(--link)}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:3px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:10;padding:14px 0;
+    background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    max-width:800px;margin:0 auto;padding:0 max(24px,6vw);
+  }
+  .home{
+    display:inline-flex;align-items:center;gap:9px;border:0;
+    font:500 13px/1 var(--sans);letter-spacing:.02em;color:var(--muted);
+  }
+  .home:hover{color:var(--ink)}
+  .home .p{
+    display:grid;place-items:center;width:24px;height:24px;border-radius:7px;
+    background:var(--orange);color:#fff;font:500 14px/1 var(--serif);
+  }
+  .theme-toggle{
+    display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:8px;
+    background:none;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;
+  }
+  .theme-toggle:hover{background:var(--hover);color:var(--ink)}
+  .theme-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  :root[data-theme="dark"] .ic-sun{display:block}
+  :root[data-theme="dark"] .ic-moon{display:none}
+  .ic-sun{display:none}
+
+  /* ---------- article ---------- */
+  article{max-width:800px;margin:0 auto;padding:56px max(24px,6vw) 96px}
+  .eyebrow{margin:0 0 20px;font:600 11.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+  h1{
+    margin:0 0 22px;color:var(--ink);
+    font:500 clamp(34px,5.2vw,52px)/1.08 var(--serif);letter-spacing:-.025em;text-wrap:balance;
+  }
+  .dateline{
+    margin:0 0 40px;padding-bottom:28px;border-bottom:1px solid var(--rule);
+    font:400 13.5px/1.6 var(--sans);color:var(--muted);
+  }
+  .dateline b{color:var(--body);font-weight:500}
+  p{margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink)}
+  h2{margin:52px 0 18px;color:var(--ink);font:500 clamp(23px,3vw,29px)/1.2 var(--serif);letter-spacing:-.015em}
+  strong{color:var(--ink);font-weight:600}
+  ol,ul{margin:0 0 22px;padding-left:1.3em}
+  li{margin-bottom:12px}
+  li::marker{color:var(--muted)}
+
+  /* ---------- figures / charts ---------- */
+  figure{margin:34px 0;padding:24px 26px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+  figure h3{margin:0 0 5px;font:600 11.5px/1.3 var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  figure .sub{margin:0 0 20px;font:400 13.5px/1.55 var(--sans);color:var(--muted)}
+  figcaption{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);font:400 13px/1.55 var(--sans);color:var(--muted)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 18px;font:400 13px/1 var(--sans);color:var(--body)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:11px;height:11px;border-radius:3px;background:var(--s1)}
+  .legend .k2 i{background:var(--s2)}
+
+  .bars{display:grid;gap:16px}
+  .bar-row{display:grid;grid-template-columns:minmax(0,152px) 1fr;gap:5px 14px;align-items:center}
+  .bar-label{font:400 13.5px/1.35 var(--sans);color:var(--body)}
+  .bar-label small{display:block;font-size:12px;color:var(--muted)}
+  .bar-group{display:grid;gap:2px}
+  .track{position:relative;height:22px;margin-right:62px;background:var(--track);border-radius:4px}
+  /* The 62px gutter holds the value label. It shrinks the track box itself, so
+     fill widths and reference lines stay on the same percentage base. */
+  .fill{
+    height:100%;min-width:2px;background:var(--s1);
+    border-radius:0 4px 4px 0;position:relative;
+  }
+  .fill.k2{background:var(--s2)}
+  .fill b{
+    position:absolute;left:calc(100% + 9px);top:50%;transform:translateY(-50%);
+    font:500 13px/1 var(--mono);color:var(--ink);white-space:nowrap;
+  }
+  .fill.zero{background:var(--ref);min-width:3px}
+  /* Reference line: the bar a result had to clear. */
+  .refline{position:absolute;top:-5px;bottom:-5px;width:0;border-left:2px dashed var(--ref)}
+  .refnote{display:flex;align-items:center;gap:7px;margin:14px 0 0;font:400 12.5px/1.4 var(--sans);color:var(--muted)}
+  .refnote i{width:16px;border-top:2px dashed var(--ref);flex:none}
+
+  /* ---------- stat tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:30px 0}
+  .tile{padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+  .tile b{display:block;font:500 27px/1.1 var(--mono);color:var(--ink);letter-spacing:-.02em}
+  .tile small{display:block;margin-top:6px;font:400 12.5px/1.45 var(--sans);color:var(--muted)}
+
+  /* ---------- the disposition callout ---------- */
+  .callout{
+    margin:34px 0;padding:24px 26px;background:var(--card);
+    border:1px solid var(--line);border-left:2px solid var(--orange);border-radius:0 14px 14px 0;
+  }
+  .callout b.tag{
+    display:inline-block;margin-bottom:12px;padding:5px 10px;border-radius:6px;
+    background:var(--hover);color:var(--ink);
+    font:500 11.5px/1 var(--mono);letter-spacing:.06em;
+  }
+  .callout p{margin:0;font:400 15px/1.65 var(--sans);color:var(--body)}
+  .callout p + p{margin-top:14px}
+
+  /* ---------- demo call to action ---------- */
+  .cta{
+    margin:44px 0;padding:26px 28px;background:var(--card);
+    border:1px solid var(--line);border-left:2px solid var(--orange);border-radius:0 14px 14px 0;
+  }
+  .cta h3{margin:0 0 8px;font:500 20px/1.3 var(--serif);color:var(--ink)}
+  .cta p{margin:0 0 18px;font:400 14.5px/1.6 var(--sans);color:var(--body)}
+  .cta-go{
+    display:inline-flex;align-items:center;gap:9px;padding:11px 19px;border:0;border-radius:10px;
+    background:var(--orange);color:#fff;font:500 14.5px/1 var(--sans);
+  }
+  .cta-go:hover{background:var(--link);border:0}
+  .cta-status{
+    display:flex;align-items:center;gap:8px;margin:14px 0 0;
+    font:400 12.5px/1.4 var(--sans);color:var(--muted);
+  }
+  .cta-status i{
+    width:7px;height:7px;border-radius:50%;background:var(--ref);flex:none;
+    transition:background .3s ease;
+  }
+  .cta[data-state="ready"] .cta-status i{background:#3f8f5f}
+
+  /* ---------- tables ---------- */
+  .table-wrap{margin:28px 0;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:14.5px}
+  caption{margin-bottom:12px;text-align:left;font:600 11.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  th,td{padding:13px 4px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:baseline}
+  thead th{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom-color:var(--line)}
+  td:last-child,th:last-child{text-align:right}
+  td:last-child{font-family:var(--mono);color:var(--ink);white-space:nowrap}
+  td .qual{display:block;font-family:var(--sans);font-size:12.5px;color:var(--muted);margin-top:3px}
+  table.tiers td:last-child,table.tiers th:last-child{text-align:right}
+  table.tiers td:nth-child(2){font-family:var(--sans);color:var(--body)}
+
+  code{font:400 .88em/1 var(--mono);color:var(--ink)}
+
+  /* ---------- closing ---------- */
+  .endnote{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule);font:400 15px/1.65 var(--sans);color:var(--muted)}
+  .endnote p{margin:0 0 10px}
+  .backlink{margin-top:28px;font:500 14px/1 var(--sans)}
+
+  @media (max-width:620px){
+    body{font-size:18px}
+    article{padding-top:40px}
+    .bar-row{grid-template-columns:1fr;gap:7px}
+    .fill b{font-size:12px}
+    .cta,.callout{padding:20px;border-radius:0 12px 12px 0}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+  <a class="home" href="/"><span class="p" aria-hidden="true">P</span>Parvez Ahmed</a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Switch theme">
+    <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  </button>
+  </div>
+</header>
+
+<article>
+  <p class="eyebrow">Project · ReconMatch</p>
+  <h1>A reconciliation tool that guesses is worse than no tool</h1>
+  <p class="dateline">
+    <b>Parvez Ahmed</b> · Internal held-out baseline <b>19 July 2026</b>;
+    third-party frozen run <b>21 July 2026</b>.
+  </p>
+
+  <p class="lede">
+    Reconciliation is the job of proving two records of the same money agree. When they
+    don't, somebody has to find out why — and the cost of a tool that pairs the wrong
+    two lines is not a lower score. It is a person spending a day chasing a break that
+    was never there.
+  </p>
+
+  <p>
+    ReconMatch aligns bank-statement lines to internal ledger entries, gives every match
+    a confidence and names the rule that produced it, and classifies everything left over
+    as a typed break with a suggested resolution. The matcher is deterministic: same
+    inputs, same output, no inference cost, no model in the loop. That is a design
+    decision rather than a limitation — it means the numbers reproduce exactly and every
+    decision can be explained to an auditor who does not care how clever the system is.
+  </p>
+
+  <h2>How the matching works</h2>
+
+  <p>
+    One deterministic pass. Every tier proposes candidates, and they compete in a single
+    greedy assignment ordered by confidence, so a strong exact match always beats a
+    weaker split that wants to poach its records. No line and no entry is ever used
+    twice.
+  </p>
+
+  <div class="table-wrap">
+    <table class="tiers">
+      <caption>Four tiers, one competitive pass</caption>
+      <thead>
+        <tr><th scope="col">Tier</th><th scope="col">Rule</th><th scope="col">Confidence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1 — exact</th>
+          <td>Same signed amount, same date, plus a reference match or description similarity ≥ 0.55</td>
+          <td>0.95–1.00</td>
+        </tr>
+        <tr>
+          <th scope="row">2 — windowed</th>
+          <td>Same amount, date within ±3 days, description similarity ≥ 0.55</td>
+          <td>0.6–0.95</td>
+        </tr>
+        <tr>
+          <th scope="row">3 — split</th>
+          <td>Two or three statement lines summing exactly to one ledger entry inside the window — partial and split payments</td>
+          <td>~0.55</td>
+        </tr>
+        <tr>
+          <th scope="row">4 — batch</th>
+          <td>Two or three ledger entries summing exactly to one statement line — payroll runs, bulk supplier payments</td>
+          <td>~0.55</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Amounts are <code>Decimal</code> everywhere and never float, because a reconciliation
+    engine that introduces its own rounding error has defeated its own purpose.
+    Descriptions are compared with a character-ratio and token-containment blend, since
+    banks mangle payee names with channel prefixes, uppercasing and truncation.
+  </p>
+
+  <h2>On my own data, it looks excellent</h2>
+
+  <div class="tiles">
+    <div class="tile"><b>95.9%</b><small>auto-match rate at the ≥0.99 precision bar</small></div>
+    <div class="tile"><b>1.00</b><small>observed pair precision at that rate</small></div>
+    <div class="tile"><b>0.98</b><small>pair F1 — precision 1.00, recall 0.96</small></div>
+    <div class="tile"><b>0.83</b><small>break-classification F1</small></div>
+  </div>
+
+  <p>
+    Fifty held-out sets, seeds 100–149, never tuned on. The headline is the one a
+    reconciliation team would actually buy: <strong>96% of true matches clear
+    automatically with zero false matches</strong>, leaving only genuine exceptions for a
+    human. Break recall is 0.97 — few real exceptions get missed — while break precision
+    sits lower at 0.75, because the engine deliberately over-flags amount-mismatch
+    suspects rather than hide a possible error.
+  </p>
+
+  <p>
+    And then the caveat that makes the rest of this page worth reading: <strong>those are
+    numbers on my own generator.</strong> My synthetic data and my matcher were built by
+    the same person with the same assumptions about what a payment looks like. Evaluating
+    one on the other partly measures how consistent I am with myself.
+  </p>
+
+  <h2>So I took it to somebody else's data</h2>
+
+  <p>
+    BenchRec cash v1.0 is a licensed third-party reconciliation dataset with a published
+    reference result. I reserved a single held-out scoring run, fixed every method
+    decision on the training split first, and executed once. Scoring is strict exact-set:
+    a record counts as correct only if its complete predicted allocation set equals the
+    target set. I validated the scorer by reproducing the published reference's own
+    figures under the same rule, so this is like-for-like.
+  </p>
+
+  <figure>
+    <h3>BenchRec cash v1.0 — exact-set match rate</h3>
+    <p class="sub">32,048 held-out B records. One frozen run, nothing tuned against it.</p>
+    <div class="legend">
+      <span><i aria-hidden="true"></i>ReconMatch</span>
+      <span class="k2"><i aria-hidden="true"></i>MatcherByChatGPT (published reference)</span>
+    </div>
+    <div class="bars">
+      <div class="bar-row">
+        <span class="bar-label">All records<small>32,048</small></span>
+        <div class="bar-group">
+          <div class="track"><div class="fill" style="width:88.65%"><b>88.65%</b></div></div>
+          <div class="track"><div class="fill k2" style="width:62.45%"><b>62.45%</b></div></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Single-A<small>30,057 · the 1:1 backbone</small></span>
+        <div class="bar-group">
+          <div class="track"><div class="fill" style="width:89.70%"><b>89.70%</b></div></div>
+          <div class="track"><div class="fill k2" style="width:65.88%"><b>65.88%</b></div></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Multi-A<small>1,779 · many-to-many groups</small></span>
+        <div class="bar-group">
+          <div class="track"><div class="fill" style="width:70.43%"><b>70.43%</b></div></div>
+          <div class="track"><div class="fill k2 zero" style="width:0"><b>0.00%</b></div></div>
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      The multi-A bar is a measured zero, not missing data: the reference emitted 884
+      predictions on that stratum and got none of them exactly right. Many-to-many groups
+      are the case the tiered split-and-batch design was built for.
+    </figcaption>
+  </figure>
+
+  <p>
+    Precision on emitted predictions is <strong>93.33%</strong> overall, with a Wilson 95%
+    lower bound of 93.09%. The reference is more precise where it answers — 95.20% — but
+    it answers far less often: 20,800 predictions against ReconMatch's 30,228 out of the
+    same 32,048 records. Declining to answer is a legitimate strategy, and comparing raw
+    precision without coverage would hide that trade entirely.
+  </p>
+
+  <h2>The result I did not want</h2>
+
+  <p>
+    Before that run I fixed an auto-match bar in advance: a Wilson 95% lower bound of
+    99.8% precision at 50% coverage or better. Anything clearing it could be auto-matched.
+    Anything short of it could not.
+  </p>
+
+  <p>It did not clear it.</p>
+
+  <figure>
+    <h3>Coverage clearing the 99.8% precision bar</h3>
+    <p class="sub">The share of records that could be auto-matched at the pre-registered precision floor.</p>
+    <div class="bars">
+      <div class="bar-row">
+        <span class="bar-label">In-sample<small>the data decisions were made on</small></span>
+        <div class="track">
+          <div class="fill" style="width:89.78%"><b>89.78%</b></div>
+          <div class="refline" style="left:50%"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Held out<small>the frozen run</small></span>
+        <div class="track">
+          <div class="fill" style="width:6.8%"><b>6.80%</b></div>
+          <div class="refline" style="left:50%"></div>
+        </div>
+      </div>
+    </div>
+    <p class="refnote"><i aria-hidden="true"></i> The 50% coverage the auto-match bar required</p>
+    <figcaption>
+      That gap is overfitting, measured rather than suspected. No observable abstention
+      predicate generalised: 16 of 16 decision-tree configurations passed on the
+      development split and failed on validation.
+    </figcaption>
+  </figure>
+
+  <div class="callout">
+    <b class="tag">SUGGESTED_FOR_REVIEW</b>
+    <p>
+      So the BenchRec results ship as review-grade suggestions, and <strong>no auto-match
+      is claimed on that data</strong>. The 95.9% auto-match rate at the top of this page
+      is a statement about my generator's data and nothing else.
+    </p>
+    <p>
+      That work also lives in <code>experiments/benchrec/</code> rather than in the
+      shipped matcher, which means the live demo does not score 88.65%. It runs the
+      deterministic tiers described above.
+    </p>
+  </div>
+
+  <p>
+    The honest reading is that group membership on BenchRec is genuinely underdetermined
+    from the observable fields — there is not enough signal in the data to know which
+    records belong together with the certainty auto-matching requires. Beating a published
+    baseline by 26 points and still declining to claim auto-match is a strange thing to
+    publish. It is also the finding that would actually matter to anyone deploying this
+    against real money.
+  </p>
+
+  <h2>What happens to everything unmatched</h2>
+
+  <p>
+    Breaks are not an undifferentiated exceptions pile. Every residual item is classified,
+    in order: an <strong>amount-mismatch suspect</strong> (a near-miss or digit
+    transposition against an in-window line, with both sides linked), a
+    <strong>duplicate suspect</strong> (identical to an already-matched line),
+    <strong>missing in ledger</strong> (a statement line with no entry — usually a bank
+    fee), or <strong>missing in statement</strong> (an entry the bank never saw). Each one
+    carries a plain-language suggestion naming the amounts involved, so the reviewer
+    starts from a hypothesis instead of a spreadsheet.
+  </p>
+
+  <div class="cta" id="demoCta">
+    <h3>Run it on two ledgers</h3>
+    <p>
+      A bundled sample pair, or upload your own two CSVs in
+      <code>id,date,description,amount[,reference]</code> form with signed amounts. Every
+      match comes back with its tier, its confidence and its reasoning.
+    </p>
+    <a class="cta-go" href="https://reconmatch-aa9c.onrender.com" target="_blank" rel="noopener">Open the live demo ↗</a>
+    <p class="cta-status"><i aria-hidden="true"></i><span id="demoStatus">Waking the demo server…</span></p>
+  </div>
+
+  <h2>Where it sits in the pipeline</h2>
+  <p>
+    ReconMatch is the second half of a pair. <a href="/docval/">DocVal</a> turns a
+    statement PDF into validated, typed transactions; the adapter maps its result JSON
+    straight into statement lines, signed as <code>credit − debit</code>, with no package
+    dependency between the two repositories. A PDF goes in one end and a classified set of
+    breaks comes out the other.
+  </p>
+
+  <div class="endnote">
+    <p>
+      ReconMatch is open source:
+      <a href="https://github.com/Sero01/reconmatch" target="_blank" rel="noopener">github.com/Sero01/reconmatch</a>.
+      Full run provenance, input hashes and the experiment ladder are in
+      <code>data/benchrec/artifacts/</code>. The BenchRec dataset is licensed CC BY 4.0
+      and is not redistributed in the repository.
+      I build document-extraction and reconciliation systems for financial operations.
+    </p>
+    <p class="backlink"><a href="/">← Back to parvez-ahmed.com</a></p>
+  </div>
+</article>
+
+<script>
+  var root = document.documentElement, meta = document.getElementById('metaTheme');
+  function apply(t){
+    root.dataset.theme = t;
+    localStorage.setItem('portfolio-theme', t);
+    meta.content = t === 'dark' ? '#262624' : '#f7f6f2';
+    document.getElementById('themeToggle').setAttribute('aria-label', 'Switch to ' + (t === 'dark' ? 'light' : 'dark') + ' mode');
+  }
+  apply(root.dataset.theme || 'light');
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    apply(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+<script>
+/* Wake the demo while the article is being read.
+
+   The demo runs on Render's free tier, which spins the instance down after 15
+   idle minutes and takes about a minute to boot. Firing a request the moment
+   this page opens means the container is usually up by the time anyone reaches
+   the button. The response is opaque — cross-origin, no CORS headers, nothing
+   readable — and it does not need to be read. Only the request arriving at
+   Render matters. */
+(function () {
+  var DEMO = 'https://reconmatch-aa9c.onrender.com/';
+  var cta = document.getElementById('demoCta');
+  var status = document.getElementById('demoStatus');
+  if (!window.fetch || !cta || !status) return;
+
+  function wake() {
+    return fetch(DEMO, { mode: 'no-cors', cache: 'no-store' });
+  }
+
+  wake().then(function () {
+    /* An opaque response still resolves once the server has answered, which is
+       the only signal needed here: the instance is awake. */
+    status.textContent = 'Demo is awake — it will open straight away';
+    cta.dataset.state = 'ready';
+  }).catch(function () {
+    status.textContent = 'First load may take about a minute to wake';
+  });
+
+  /* A slow read can outlast the 15-minute idle timer, so keep it up. */
+  setInterval(wake, 10 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="DocVal turns bank statements — native PDFs or phone scans — into typed transactions, then checks the arithmetic. Held-out transaction F1 0.63: 0.92 synthetic, 0.42 real scans.">
+  <meta property="og:title" content="Extraction is the easy half">
+  <meta property="og:description" content="Every demo extracts documents. DocVal validates them — opening balance plus every transaction has to equal closing, or the extraction doesn't ship.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" id="metaTheme" content="#f7f6f2">
+  <title>DocVal — extraction is the easy half — Parvez Ahmed</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='28' fill='%23d97757'/%3E%3Ctext x='50' y='71' font-size='58' font-family='Georgia,serif' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+  <script>(function(){var t=localStorage.getItem('portfolio-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Opens the connection to the demo host before the wake request below needs it. -->
+  <link rel="preconnect" href="https://docval-yy4s.onrender.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --paper:#f7f6f2; --ink:#2b2926; --body:#4f4b46; --muted:#77736d;
+    --line:#dedcd5; --card:#ffffff; --hover:#e6e4de; --rule:#e7e5de;
+    --orange:#d97757; --link:#ad553c; --shadow:48,42,34;
+    /* Chart series. Validated as a categorical pair against the card surface:
+       lightness band, chroma floor, CVD separation, contrast — all pass. */
+    --s1:#d97757; --s2:#00819e; --track:#efece5; --ref:#a9a49b;
+    --serif:"Newsreader",Georgia,serif;
+    --sans:"Styrene B","Styrene B LC","Instrument Sans",system-ui,sans-serif;
+    --mono:"DM Mono",ui-monospace,monospace;
+  }
+  :root[data-theme="dark"]{
+    --paper:#262624; --ink:#eceae5; --body:#c9c5bd; --muted:#a29d94;
+    --line:#3b3936; --card:#2f2e2b; --hover:#343230; --rule:#37352f;
+    --orange:#d97757; --link:#e08b6d; --shadow:0,0,0;
+    /* Re-stepped for the dark surface, not flipped: same two checks re-run. */
+    --s1:#d3714f; --s2:#2ba3c0; --track:#3a3835; --ref:#6c6862;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--body);
+    font:400 19px/1.68 var(--serif);
+    transition:background .3s ease,color .3s ease;
+  }
+  a{color:var(--link);text-decoration:none;border-bottom:1px solid rgba(var(--shadow),.22)}
+  a:hover{border-bottom-color:var(--link)}
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:3px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:10;padding:14px 0;
+    background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    max-width:800px;margin:0 auto;padding:0 max(24px,6vw);
+  }
+  .home{
+    display:inline-flex;align-items:center;gap:9px;border:0;
+    font:500 13px/1 var(--sans);letter-spacing:.02em;color:var(--muted);
+  }
+  .home:hover{color:var(--ink)}
+  .home .p{
+    display:grid;place-items:center;width:24px;height:24px;border-radius:7px;
+    background:var(--orange);color:#fff;font:500 14px/1 var(--serif);
+  }
+  .theme-toggle{
+    display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:8px;
+    background:none;color:var(--muted);cursor:pointer;transition:background .2s,color .2s;
+  }
+  .theme-toggle:hover{background:var(--hover);color:var(--ink)}
+  .theme-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  :root[data-theme="dark"] .ic-sun{display:block}
+  :root[data-theme="dark"] .ic-moon{display:none}
+  .ic-sun{display:none}
+
+  /* ---------- article ---------- */
+  article{max-width:800px;margin:0 auto;padding:56px max(24px,6vw) 96px}
+  .eyebrow{margin:0 0 20px;font:600 11.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+  h1{
+    margin:0 0 22px;color:var(--ink);
+    font:500 clamp(34px,5.2vw,52px)/1.08 var(--serif);letter-spacing:-.025em;text-wrap:balance;
+  }
+  .dateline{
+    margin:0 0 40px;padding-bottom:28px;border-bottom:1px solid var(--rule);
+    font:400 13.5px/1.6 var(--sans);color:var(--muted);
+  }
+  .dateline b{color:var(--body);font-weight:500}
+  p{margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink)}
+  h2{margin:52px 0 18px;color:var(--ink);font:500 clamp(23px,3vw,29px)/1.2 var(--serif);letter-spacing:-.015em}
+  strong{color:var(--ink);font-weight:600}
+  ol,ul{margin:0 0 22px;padding-left:1.3em}
+  li{margin-bottom:12px}
+  li::marker{color:var(--muted)}
+
+  /* ---------- pipeline ---------- */
+  .flow{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:30px 0;
+    font-family:var(--sans);
+  }
+  .flow-step{
+    padding:15px 16px;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;
+  }
+  .flow-step b{display:block;font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+  .flow-step span{font:400 13.5px/1.5 var(--sans);color:var(--body)}
+
+  /* ---------- figures / charts ---------- */
+  figure{margin:34px 0;padding:24px 26px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+  figure h3{margin:0 0 5px;font:600 11.5px/1.3 var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  figure .sub{margin:0 0 20px;font:400 13.5px/1.55 var(--sans);color:var(--muted)}
+  figcaption{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);font:400 13px/1.55 var(--sans);color:var(--muted)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 18px;font:400 13px/1 var(--sans);color:var(--body)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:11px;height:11px;border-radius:3px;background:var(--s1)}
+  .legend .k2 i{background:var(--s2)}
+
+  .bars{display:grid;gap:16px}
+  .bar-row{display:grid;grid-template-columns:minmax(0,142px) 1fr;gap:5px 14px;align-items:center}
+  .bar-label{font:400 13.5px/1.35 var(--sans);color:var(--body)}
+  .bar-label small{display:block;font-size:12px;color:var(--muted)}
+  .bar-group{display:grid;gap:2px}
+  .track{position:relative;height:24px;margin-right:62px;background:var(--track);border-radius:4px}
+  /* The 62px gutter holds the value label. It shrinks the track box itself, so
+     fill widths and reference lines stay on the same percentage base. */
+  .fill{
+    height:100%;min-width:2px;background:var(--s1);
+    border-radius:0 4px 4px 0;position:relative;
+  }
+  .fill.k2{background:var(--s2)}
+  .fill b{
+    position:absolute;left:calc(100% + 9px);top:50%;transform:translateY(-50%);
+    font:500 13px/1 var(--mono);color:var(--ink);white-space:nowrap;
+  }
+  .fill.zero{background:var(--ref);min-width:3px}
+  /* Reference line: the aggregate, or the bar a result had to clear. */
+  .refline{position:absolute;top:-5px;bottom:-5px;width:0;border-left:2px dashed var(--ref)}
+  .refnote{display:flex;align-items:center;gap:7px;margin:14px 0 0;font:400 12.5px/1.4 var(--sans);color:var(--muted)}
+  .refnote i{width:16px;border-top:2px dashed var(--ref);flex:none}
+
+  /* ---------- small multiples ---------- */
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .panel h4{margin:0 0 14px;font:500 13.5px/1.3 var(--sans);color:var(--ink)}
+  .panel .scale{margin:8px 0 0;font:400 12px/1 var(--mono);color:var(--muted)}
+
+  /* ---------- stat tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:30px 0}
+  .tile{padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+  .tile b{display:block;font:500 27px/1.1 var(--mono);color:var(--ink);letter-spacing:-.02em}
+  .tile small{display:block;margin-top:6px;font:400 12.5px/1.45 var(--sans);color:var(--muted)}
+  .tile .delta{color:var(--orange);font-weight:500}
+
+  /* ---------- demo call to action ---------- */
+  .cta{
+    margin:44px 0;padding:26px 28px;background:var(--card);
+    border:1px solid var(--line);border-left:2px solid var(--orange);border-radius:0 14px 14px 0;
+  }
+  .cta h3{margin:0 0 8px;font:500 20px/1.3 var(--serif);color:var(--ink)}
+  .cta p{margin:0 0 18px;font:400 14.5px/1.6 var(--sans);color:var(--body)}
+  .cta-go{
+    display:inline-flex;align-items:center;gap:9px;padding:11px 19px;border:0;border-radius:10px;
+    background:var(--orange);color:#fff;font:500 14.5px/1 var(--sans);
+  }
+  .cta-go:hover{background:var(--link);border:0}
+  .cta-status{
+    display:flex;align-items:center;gap:8px;margin:14px 0 0;
+    font:400 12.5px/1.4 var(--sans);color:var(--muted);
+  }
+  .cta-status i{
+    width:7px;height:7px;border-radius:50%;background:var(--ref);flex:none;
+    transition:background .3s ease;
+  }
+  .cta[data-state="ready"] .cta-status i{background:#3f8f5f}
+
+  /* ---------- tables ---------- */
+  .table-wrap{margin:28px 0;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:14.5px}
+  caption{margin-bottom:12px;text-align:left;font:600 11.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  th,td{padding:13px 4px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:baseline}
+  thead th{font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom-color:var(--line)}
+  td:last-child,th:last-child{text-align:right}
+  td:last-child{font-family:var(--mono);color:var(--ink);white-space:nowrap}
+  td .qual{display:block;font-family:var(--sans);font-size:12.5px;color:var(--muted);margin-top:3px}
+
+  code{font:400 .88em/1 var(--mono);color:var(--ink)}
+
+  /* ---------- closing ---------- */
+  .endnote{margin-top:56px;padding-top:26px;border-top:1px solid var(--rule);font:400 15px/1.65 var(--sans);color:var(--muted)}
+  .endnote p{margin:0 0 10px}
+  .backlink{margin-top:28px;font:500 14px/1 var(--sans)}
+
+  @media (max-width:620px){
+    body{font-size:18px}
+    article{padding-top:40px}
+    .panels{grid-template-columns:1fr;gap:30px}
+    .bar-row{grid-template-columns:1fr;gap:7px}
+    .fill b{font-size:12px}
+    .flow{grid-template-columns:1fr}
+    .cta{padding:20px;border-radius:0 12px 12px 0}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+  <a class="home" href="/"><span class="p" aria-hidden="true">P</span>Parvez Ahmed</a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Switch theme">
+    <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  </button>
+  </div>
+</header>
+
+<article>
+  <p class="eyebrow">Project · DocVal</p>
+  <h1>Extraction is the easy half</h1>
+  <p class="dateline">
+    <b>Parvez Ahmed</b> · Numbers from the held-out re-run of <b>18 July 2026</b>,
+    100 documents the pipeline had never seen.
+  </p>
+
+  <p class="lede">
+    Getting a model to read a bank statement takes an afternoon. Knowing whether it
+    read the statement <em>correctly</em> is the actual engineering problem, and it
+    is the one almost nobody demos.
+  </p>
+
+  <p>
+    DocVal takes a bank statement — a native PDF or a photographed scan — and returns
+    typed, structured transactions. Then it does the part that matters: it checks the
+    arithmetic. Opening balance plus every credit minus every debit must equal the
+    closing balance. The running-balance chain has to hold row by row. Dates have to
+    fall inside the statement period and stay in order. If the maths doesn't hold, the
+    extraction doesn't ship clean — it ships flagged.
+  </p>
+
+  <p>
+    That check is possible because a bank statement is one of the rare documents that
+    carries its own answer key. The numbers on it have to add up. So instead of asking
+    a second model whether the first model did well, you can just do the sum.
+  </p>
+
+  <h2>How a document moves through it</h2>
+
+  <div class="flow">
+    <div class="flow-step">
+      <b>1 · Triage</b>
+      <span>Does the PDF have a real text layer, or is it pixels?</span>
+    </div>
+    <div class="flow-step">
+      <b>2 · Extract</b>
+      <span>Native PDFs go through a deterministic <code>pdfplumber</code> parser. Scans go to Gemini 2.5 Flash-Lite vision, per page.</span>
+    </div>
+    <div class="flow-step">
+      <b>3 · Schema</b>
+      <span>Both paths land in one Pydantic model. Money is <code>Decimal</code>, never float.</span>
+    </div>
+    <div class="flow-step">
+      <b>4 · Validate</b>
+      <span>Balance continuity, running-balance chain, date sanity. Pure functions, no model in the loop.</span>
+    </div>
+  </div>
+
+  <p>
+    The vision model returns a <em>wire</em> schema of plain strings, and normalisation
+    into canonical types is ordinary deterministic code. That split is deliberate:
+    models copy what is printed on the page no matter how firmly you ask them not to,
+    so <code>$</code> becomes <code>USD</code> in Python, with a test, rather than in a
+    prompt.
+  </p>
+
+  <h2>The number, and the number underneath it</h2>
+
+  <p>
+    Held-out transaction F1 is <strong>0.63</strong>. On its own that is a mediocre
+    number and it tells you almost nothing. Split by where the documents came from, it
+    tells you everything:
+  </p>
+
+  <figure>
+    <h3>Transaction F1 by data source</h3>
+    <p class="sub">Held out, 100 documents, never used for tuning. A predicted row counts
+      as matched only on exact date and exact signed amount.</p>
+    <div class="bars">
+      <div class="bar-row">
+        <span class="bar-label">Synthetic statements<small>42 documents, generated</small></span>
+        <div class="track">
+          <div class="fill" style="width:92%"><b>0.92</b></div>
+          <div class="refline" style="left:63%"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Real scanned statements<small>58 documents, AgamiAI corpus</small></span>
+        <div class="track">
+          <div class="fill" style="width:42%"><b>0.42</b></div>
+          <div class="refline" style="left:63%"></div>
+        </div>
+      </div>
+    </div>
+    <p class="refnote"><i aria-hidden="true"></i> Headline figure, 0.63 — the document-weighted average of the two bars</p>
+    <figcaption>
+      The headline is arithmetically true and practically useless. It describes no
+      document that exists: nothing in the corpus scores 0.63. One aggregate would have
+      hidden both that the pipeline works and where it breaks.
+    </figcaption>
+  </figure>
+
+  <p>
+    Flash-Lite reads clean synthetic pages almost perfectly and garbles dense real
+    statements — rows shifted across columns, debit and credit swapped, digits misread.
+    The validation layer flags exactly those documents rather than accepting them
+    quietly, which is why the validation pass rate is a deeply unglamorous
+    <strong>0.25</strong>. A low pass rate on hard documents is the system working.
+    A high one would mean the checks were too weak to notice.
+  </p>
+
+  <h2>The fix that moved it</h2>
+
+  <p>
+    The first held-out run scored 0.12 on real scans with a 13% error rate. The eval
+    told me why: 10 of 13 failures were the model running through a 32k output-token
+    cap on dense multi-page documents, collapsing or dropping rows. That is not "bad
+    extraction" — it is a structural failure with a structural fix. Dense documents now
+    get extracted a page at a time and merged, with the running-balance validator
+    checking the seams.
+  </p>
+
+  <figure>
+    <h3>Before and after per-page extraction</h3>
+    <p class="sub">Same held-out set, same model. One change to how dense documents are chunked.</p>
+    <div class="legend">
+      <span class="k2"><i aria-hidden="true"></i>Before</span>
+      <span><i aria-hidden="true"></i>After</span>
+    </div>
+    <div class="panels">
+      <div class="panel">
+        <h4>Real-scan transaction F1</h4>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="bar-label">Before</span>
+            <div class="track"><div class="fill k2" style="width:12%"><b>0.12</b></div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">After</span>
+            <div class="track"><div class="fill" style="width:42%"><b>0.42</b></div></div>
+          </div>
+        </div>
+        <p class="scale">scale 0 – 1.0 · higher is better</p>
+      </div>
+      <div class="panel">
+        <h4>Document error rate</h4>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="bar-label">Before</span>
+            <div class="track"><div class="fill k2" style="width:86.7%"><b>13%</b></div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">After</span>
+            <div class="track"><div class="fill" style="width:6.7%"><b>1%</b></div></div>
+          </div>
+        </div>
+        <p class="scale">scale 0 – 15% · lower is better</p>
+      </div>
+    </div>
+    <figcaption>
+      Two measures, two scales, two panels — plotting F1 and an error rate against one
+      axis would make the pair look comparable when they are not. The remaining failure
+      is a single statement where the model persistently emits malformed decimals that
+      schema validation rejects.
+    </figcaption>
+  </figure>
+
+  <div class="tiles">
+    <div class="tile"><b>0.42</b><small>real-scan F1, <span class="delta">up from 0.12</span></small></div>
+    <div class="tile"><b>1%</b><small>error rate, <span class="delta">down from 13%</span></small></div>
+    <div class="tile"><b>1.6×</b><small>the per-document cost of that fix</small></div>
+    <div class="tile"><b>$0.008</b><small>mean cost per document, retries billed</small></div>
+  </div>
+
+  <p>
+    The cost line is there on purpose. An accuracy gain that multiplies your bill by ten
+    is a different decision from a free one, and you cannot make that call if you only
+    ever measured accuracy. Mean latency is <strong>70.9 seconds</strong> per document
+    on the vision path; native-text PDFs cost nothing and return immediately.
+  </p>
+
+  <h2>What the data itself got wrong</h2>
+
+  <p>
+    The validation layer earned its place before the pipeline was even finished. Running
+    it over the primary corpus surfaced that roughly <strong>12% of transaction rows in
+    the AgamiAI dataset have internally inconsistent running balances</strong> — not from
+    a bad extraction, but in the published ground-truth JSON <em>and</em> in the rendered
+    PDFs themselves. The source data does not add up.
+  </p>
+
+  <p>
+    You only ever find that by checking. A pipeline that trusts its inputs would have
+    quietly scored itself against wrong answers and reported a number nobody could have
+    challenged.
+  </p>
+
+  <h2>The full held-out numbers</h2>
+
+  <div class="table-wrap">
+    <table>
+      <caption>Held-out set · 100 documents · gemini-2.5-flash-lite</caption>
+      <thead>
+        <tr><th scope="col">Metric</th><th scope="col">Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Transaction F1</th><td>0.63<span class="qual">synthetic 0.92 / real scans 0.42</span></td></tr>
+        <tr><th scope="row">Header field accuracy</th><td>0.87</td></tr>
+        <tr><th scope="row">Validation pass rate</th><td>0.25</td></tr>
+        <tr><th scope="row">Error rate</th><td>1%</td></tr>
+        <tr><th scope="row">Mean cost per document</th><td>$0.008</td></tr>
+        <tr><th scope="row">Mean latency per document</th><td>70.9 s</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    Publishing 0.42 is uncomfortable. It is also the whole argument: that number is
+    where the remaining work is, and a pipeline whose author knows its worst number is
+    more deployable than one carrying a single proud average. The weakest figure goes in
+    the README on purpose.
+  </p>
+
+  <div class="cta" id="demoCta">
+    <h3>Try it on a real statement</h3>
+    <p>
+      Two tabs: precomputed samples that cost nothing to run, and a rate-limited live
+      upload capped at 5 pages and 10&nbsp;MB. Bring your own statement, or use one of
+      the bundled ones.
+    </p>
+    <a class="cta-go" href="https://docval-yy4s.onrender.com" target="_blank" rel="noopener">Open the live demo ↗</a>
+    <p class="cta-status"><i aria-hidden="true"></i><span id="demoStatus">Waking the demo server…</span></p>
+  </div>
+
+  <h2>Where the eval detail lives</h2>
+  <p>
+    The measurement side — how the row matcher earns a match, why circular evals on your
+    own generated data flatter you, the twin-leakage trap in the public dataset, and the
+    CI gate that runs a free subset on every push — is written up separately in
+    <a href="/eval-case-study/">how I measure accuracy in document-extraction pipelines</a>.
+  </p>
+
+  <div class="endnote">
+    <p>
+      DocVal is open source:
+      <a href="https://github.com/Sero01/docval" target="_blank" rel="noopener">github.com/Sero01/docval</a>.
+      Its sister project <a href="/reconmatch/">ReconMatch</a> takes these extracted
+      statement lines and reconciles them against an internal ledger.
+      I build document-extraction and reconciliation systems for financial operations.
+    </p>
+    <p class="backlink"><a href="/">← Back to parvez-ahmed.com</a></p>
+  </div>
+</article>
+
+<script>
+  var root = document.documentElement, meta = document.getElementById('metaTheme');
+  function apply(t){
+    root.dataset.theme = t;
+    localStorage.setItem('portfolio-theme', t);
+    meta.content = t === 'dark' ? '#262624' : '#f7f6f2';
+    document.getElementById('themeToggle').setAttribute('aria-label', 'Switch to ' + (t === 'dark' ? 'light' : 'dark') + ' mode');
+  }
+  apply(root.dataset.theme || 'light');
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    apply(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+<script>
+/* Wake the demo while the article is being read.
+
+   The demo runs on Render's free tier, which spins the instance down after 15
+   idle minutes and takes about a minute to boot. Firing a request the moment
+   this page opens means the container is usually up by the time anyone reaches
+   the button. The response is opaque — cross-origin, no CORS headers, nothing
+   readable — and it does not need to be read. Only the request arriving at
+   Render matters. */
+(function () {
+  var DEMO = 'https://docval-yy4s.onrender.com/';
+  var cta = document.getElementById('demoCta');
+  var status = document.getElementById('demoStatus');
+  if (!window.fetch || !cta || !status) return;
+
+  function wake() {
+    return fetch(DEMO, { mode: 'no-cors', cache: 'no-store' });
+  }
+
+  wake().then(function () {
+    /* An opaque response still resolves once the server has answered, which is
+       the only signal needed here: the instance is awake. */
+    status.textContent = 'Demo is awake — it will open straight away';
+    cta.dataset.state = 'ready';
+  }).catch(function () {
+    status.textContent = 'First load may take about a minute to wake';
+  });
+
+  /* A slow read can outlast the 15-minute idle timer, so keep it up. */
+  setInterval(wake, 10 * 60 * 1000);
+})();
+</script>
+</body>
+</html>

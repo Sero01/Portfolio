@@ -37,6 +37,52 @@ DocVal card links to it.
 If the writeup changes in `docval`, the page does not follow automatically —
 re-copy the changed prose by hand.
 
+## The project pages
+
+`/docval/` and `/reconmatch/` are self-contained story pages built on the same
+pattern as `/eval-case-study/` — one `index.html` with inline CSS, no build
+step, reusing the site's tokens and the `portfolio-theme` localStorage key. Both
+project cards link to them as "How it works".
+
+They are deliberately *not* duplicates of the eval case study: `/docval/` is the
+project story (what the pipeline does, what it scores, the fix that moved it),
+while `/eval-case-study/` is the measurement methodology. The DocVal page links
+across to it rather than repeating it.
+
+**Every figure is sourced from the repos, not retyped from memory:**
+
+| Page | Numbers from |
+|---|---|
+| `/docval/` | `docval/README.md` — held-out table (F1 0.63 = 0.92 synthetic / 0.42 real, header 0.87, validation pass 0.25, error 1%, $0.008/doc, 70.9 s/doc), the 0.12 → 0.42 per-page fix, and the ~12% inconsistent running balances in the AgamiAI corpus |
+| `/reconmatch/` | `reconmatch/README.md` for the internal held-out figures (95.9% @ precision 1.00, pair F1 0.98, break F1 0.83) and `reconmatch/data/benchrec/artifacts/frozen_eval.md` for the BenchRec table (88.65 / 89.70 / 70.43 against 62.45 / 65.88 / 0.00, precision 93.33%, Wilson LB 93.09%) |
+
+The BenchRec caveat is carried in the copy and must stay there: that work lives
+in `experiments/benchrec/`, so **the live demo does not score 88.65%**, and the
+disposition is `SUGGESTED_FOR_REVIEW` — no auto-match is claimed on that data.
+
+### Charts
+
+Bars are plain HTML/CSS, no chart library. The two series use a categorical pair
+validated against the card surface in both modes — `#d97757`/`#00819e` on light,
+re-stepped to `#d3714f`/`#2ba3c0` on dark rather than flipped. Each `.track`
+carries a 62px right margin that holds the value label; because it shrinks the
+track box itself, fill widths and reference lines stay on one percentage base.
+Don't remove it — the widest bars overflow the card without it.
+
+### Waking the demo
+
+Both pages fire a `fetch(DEMO_URL, {mode:'no-cors'})` on load. Render's free tier
+spins the instance down after 15 idle minutes and takes about a minute to boot,
+so the request goes out while the article is being read and the demo is usually
+awake by the time anyone reaches the button. The response is opaque and is never
+read — only the request arriving at Render matters — but it still resolves once
+the server has answered, which is what flips the status line to "Demo is awake".
+A `setInterval` re-pings every 10 minutes so a slow read cannot outlast the idle
+timer.
+
+This is a mitigation, not a fix: it does nothing for anyone who lands on the
+demo link from somewhere other than these two pages.
+
 ## Where the ReconMatch numbers come from
 
 Card and stat grid — 95.9% auto-match @ precision 1.00, pair F1 0.98 — are
