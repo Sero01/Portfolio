@@ -10,11 +10,23 @@ and the custom domain as the public one.
 
 ## Slots still to fill
 
-- `WRITEUP-URL`: point at the published eval case study once it's on
-  LinkedIn/blog. Not present in source yet — add the link when it exists.
+None outstanding.
 
 Resolved: `POST-EVAL` (DocVal held-out F1 is in), `RECONMATCH-URL` (live
-Render demo linked), `LINKEDIN-URL` (2026-07-18).
+Render demo linked), `LINKEDIN-URL` (2026-07-18), `WRITEUP-URL` (2026-08-22 —
+the eval case study is hosted here, see below).
+
+## The eval case study
+
+`/eval-case-study/` is a self-contained page — one `index.html` with inline
+CSS, no build step — carrying the text of
+`docval/docs/writeups/eval-case-study.md` verbatim, minus the draft header.
+It reuses the site's tokens and the same `portfolio-theme` localStorage key,
+so the light/dark choice follows the reader across from the main page. The
+DocVal card links to it.
+
+If the writeup changes in `docval`, the page does not follow automatically —
+re-copy the changed prose by hand.
 
 ## Where the ReconMatch numbers come from
 
