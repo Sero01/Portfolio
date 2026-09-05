@@ -112,12 +112,24 @@ that built it. The old standalone `evals` card is gone — its content is folded
 into the DocVal detail, since the eval harness is DocVal's and ReconMatch's
 shared spine.
 
-The demo is **hosted on the site** at `/inbox-firewall/` — the four static
-files (`index.html`, `styles.css`, `app.js`, `data.json`) live in
-`inbox-firewall/`, copied verbatim from `council/tiny-router-poc/demo/` and
+The study is **hosted on the site** at `/inbox-firewall/` — four static files
+(`index.html`, `styles.css`, `app.js`, `data.json`) in `inbox-firewall/`,
 served as-is by the Pages deploy (`data.json` loads via a same-origin
-`fetch`). To refresh it, re-run `python3 demo/export_data.py` in the POC and
-re-copy the four files. The Inbox Firewall card's "Live demo" points here.
+`fetch`). The Inbox Firewall card's "Case study & live lab" points here.
+
+**These files have diverged from `council/tiny-router-poc/demo/` — do not
+re-copy all four.** Only `data.json` is still verbatim from the POC; to
+refresh the numbers, re-run `python3 demo/export_data.py` there and copy
+**that file alone**. The other three are now site-owned: `index.html` carries
+the written case study (the four paragraphs lifted from the `tinyrouter` card
+in `script.js`), the byline, the repo/portfolio links and the Open Graph tags;
+`styles.css` carries the site's rounded geometry and sentence-case labels; and
+`app.js` differs only in its display strings. Re-copying them from the POC
+would silently drop all of that.
+
+The page is the shared link — a recruiter or a Show HN comment lands here, not
+on the homepage — so it has to carry the argument and a way back out on its
+own. That is why the prose lives on the page and not only in `script.js`.
 
 One caveat to keep in the copy: the **26M fine-tune was never trained** (the
 exporter is built and verified, the run is deferred for lack of a training

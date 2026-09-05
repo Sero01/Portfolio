@@ -5,53 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Interactive, mock-only Inbox Firewall evaluation demo."
+      content="A ~26M router turns inbox messages into a typed action DSL. Held-out calibration drove ECE to 0.000 and moved unsafe executions by exactly zero. Calibration is a coverage instrument, not a safety one — with an interactive lab you can re-run."
     >
-    <title>Inbox Firewall — Live Lab</title>
+    <link rel="canonical" href="https://parvez-ahmed.com/inbox-firewall/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://parvez-ahmed.com/inbox-firewall/">
+    <meta property="og:site_name" content="Parvez Ahmed">
+    <meta
+      property="og:title"
+      content="Calibration is a coverage instrument, not a safety one"
+    >
+    <meta
+      property="og:description"
+      content="Held-out calibration drove ECE to 0.000 and changed the count of unsafe executions by exactly zero. A 26M router, a typed DSL, and an interactive lab where you can strip the defenses out one layer at a time."
+    >
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Calibration is a coverage instrument, not a safety one">
+    <meta
+      name="twitter:description"
+      content="Held-out calibration drove ECE to 0.000 and changed the count of unsafe executions by exactly zero. A 26M router, a typed DSL, and a lab you can re-run."
+    >
+    <meta name="author" content="Parvez Ahmed">
+    <meta name="theme-color" content="#101310">
+    <title>Inbox Firewall — a safety study, with a live lab — Parvez Ahmed</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23d5ff4c'/%3E%3Ctext x='50' y='70' font-size='56' font-family='Georgia,serif' fill='%23101310' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="noise" aria-hidden="true"></div>
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Inbox Firewall home">
-        <span class="brand-mark">IF</span>
+      <a class="brand" href="/" aria-label="Back to parvez-ahmed.com">
+        <span class="brand-mark">P</span>
         <span>
-          <strong>INBOX FIREWALL</strong>
-          <small>SELECTIVE AUTOMATION LAB</small>
+          <strong>Parvez Ahmed</strong>
+          <small>Inbox firewall · selective automation lab</small>
         </span>
       </a>
       <div class="status-strip">
         <span class="live-dot"></span>
-        <span>MEASURED TEST DATA</span>
+        <span>Measured test data</span>
         <span class="status-divider"></span>
-        <span>226 SYNTHETIC MESSAGES</span>
+        <span>226-message held-out split</span>
       </div>
-      <div class="mock-badge">MOCK EXECUTOR ONLY</div>
+      <div class="topbar-links">
+        <a
+          class="ghost-pill"
+          href="https://github.com/Sero01/tiny-router-poc"
+          target="_blank"
+          rel="noopener"
+        >Repo ↗</a>
+        <span class="mock-badge">Mock executor only</span>
+      </div>
     </header>
 
     <main>
       <section class="hero">
         <div>
-          <p class="eyebrow">CASE STUDY / 26M CASCADE COMPONENTS</p>
+          <p class="eyebrow">Case study · 26M router · Parvez Ahmed</p>
           <h1>What actually keeps<br>an AI action <em>safe?</em></h1>
         </div>
         <p class="hero-copy">
-          Route inbox messages into typed actions. Add defenses one layer at a
-          time. Watch valid-but-wrong actions survive the validator—and see
-          where calibrated confidence stops helping.
+          The short version: not the confidence score. Below is the argument in
+          four paragraphs, and then a lab where you can pull each defense out
+          and watch the numbers move.
+        </p>
+      </section>
+
+      <article class="preamble panel">
+        <p class="eyebrow">The study</p>
+
+        <p class="lead">
+          One question, answered with numbers: <b>how small can a model get
+          before local automation stops being safe?</b>
+        </p>
+
+        <p>
+          A ~26M router — about a thousandth the size of a frontier model —
+          turns each inbox message into one line of a closed, typed action DSL.
+          A hand-written validator parses it, never <code>eval</code>; a tier
+          policy decides what may auto-execute; and anything ambiguous,
+          hostile, or malformed escalates instead of acting. The safety
+          boundary lives in the validator and policy, not in the model.
+        </p>
+
+        <div class="stat-strip">
+          <div class="stat"><b>1028</b><small>labelled messages, splits disjoint</small></div>
+          <div class="stat"><b>88.1%</b><small>baseline action accuracy</small></div>
+          <div class="stat"><b>11</b><small>unsafe executions calibration didn't fix</small></div>
+          <div class="stat"><b>7</b><small>unsafe after the content-trust layer</small></div>
+        </div>
+
+        <p>
+          The headline is the one I didn't expect. The keyword baseline is
+          strong — 88.1% action accuracy at 74.8% coverage — but it confidently
+          acts on 11 messages it should have escalated, and every one of them is
+          a <em>valid</em> action the validator is powerless against. Held-out
+          calibration then drove ECE to 0.000 and moved that count by exactly
+          zero: confidence carries no signal about an adversary it never saw at
+          calibration time. What did move it was a deterministic content-trust
+          layer that treats the message body as untrusted — unsafe 11 → 7, for
+          about two points of coverage. <b>Calibration is a coverage
+          instrument, not a safety one.</b>
+        </p>
+
+        <p>
+          Reported plainly, because it is the honest part: the remaining 7 are
+          phishing and social engineering — a different threat needing a
+          different layer, and unsafe → 0 is genuinely hard. The 26M fine-tune
+          is deferred, not done — the training exporter is built and verified,
+          but this machine has no training runtime, and I won't quote a number
+          I haven't measured. The whole thing was built collaboratively in
+          <b>Council</b>, a terminal chat where Claude Code and Codex work the
+          same repo alongside me.
+        </p>
+
+        <p class="preamble-links">
+          <a href="https://github.com/Sero01/tiny-router-poc" target="_blank" rel="noopener">Read the code ↗</a>
+          <span aria-hidden="true">·</span>
+          <a href="/">More of my work →</a>
+        </p>
+      </article>
+
+      <section class="lab-intro">
+        <p class="eyebrow">The lab</p>
+        <h2>Now take the defenses apart yourself.</h2>
+        <p>
+          Everything below runs on the 226-message held-out test split, in your
+          browser. Swap the router, remove a defense layer, drag the gate — the
+          metrics, the trace, and the risk curve all recompute from the measured
+          results.
         </p>
       </section>
 
       <section class="control-deck panel">
         <div class="control-group">
-          <span class="control-label">ROUTER</span>
+          <span class="control-label">Router</span>
           <div class="segmented" id="router-control">
             <button class="active" data-router="rules">Rules baseline</button>
             <button data-router="escalate">Always escalate</button>
           </div>
         </div>
         <div class="control-group layer-control">
-          <span class="control-label">DEFENSE STACK</span>
+          <span class="control-label">Defense stack</span>
           <div class="segmented" id="layer-control">
             <button data-layer="0">Raw</button>
             <button data-layer="1">+ Validator</button>
@@ -61,7 +156,7 @@
         </div>
         <label class="threshold-control">
           <span>
-            <span class="control-label">GLOBAL GATE</span>
+            <span class="control-label">Global gate</span>
             <strong id="threshold-value">0.00</strong>
           </span>
           <input
@@ -77,22 +172,22 @@
 
       <section class="metric-grid" aria-label="Current evaluation metrics">
         <article class="metric-card">
-          <span>COVERAGE</span>
+          <span>Coverage</span>
           <strong id="metric-coverage">—</strong>
           <small>messages executed locally</small>
         </article>
         <article class="metric-card">
-          <span>ACTION ACCURACY</span>
+          <span>Action accuracy</span>
           <strong id="metric-accuracy">—</strong>
           <small>tool + exact arguments</small>
         </article>
         <article class="metric-card danger">
-          <span>UNSAFE EXECUTED</span>
+          <span>Unsafe executed</span>
           <strong id="metric-unsafe">—</strong>
           <small id="metric-unsafe-detail">should-escalate rows</small>
         </article>
         <article class="metric-card">
-          <span>SELECTIVE RISK</span>
+          <span>Selective risk</span>
           <strong id="metric-risk">—</strong>
           <small>wrong among executed</small>
         </article>
@@ -102,7 +197,7 @@
         <article class="panel inbox-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">STREAM 01</p>
+              <p class="eyebrow">Stream 01</p>
               <h2>Incoming message</h2>
             </div>
             <div class="stream-controls">
@@ -122,7 +217,7 @@
             <div class="message-body" id="message-body"></div>
           </div>
           <div class="truth-row">
-            <span>HUMAN LABEL</span>
+            <span>Human label</span>
             <code id="gold-action">—</code>
           </div>
         </article>
@@ -130,14 +225,14 @@
         <article class="panel trace-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">DECISION TRACE</p>
+              <p class="eyebrow">Decision trace</p>
               <h2>Why this happened</h2>
             </div>
-            <span class="outcome-pill" id="outcome-pill">WAITING</span>
+            <span class="outcome-pill" id="outcome-pill">Waiting</span>
           </div>
           <ol class="trace-list" id="trace-list"></ol>
           <div class="proposal-box">
-            <span>ROUTER PROPOSAL</span>
+            <span>Router proposal</span>
             <code id="proposal-dsl">—</code>
           </div>
         </article>
@@ -147,7 +242,7 @@
         <article class="panel chart-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">MONEY FIGURE</p>
+              <p class="eyebrow">The money figure</p>
               <h2>Risk vs. coverage</h2>
             </div>
             <div class="chart-legend">
@@ -172,7 +267,7 @@
         <article class="panel ablation-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">LAYER ABLATION</p>
+              <p class="eyebrow">Layer ablation</p>
               <h2>What moves unsafe?</h2>
             </div>
           </div>
@@ -191,7 +286,7 @@
       </section>
 
       <section class="thesis panel">
-        <p class="eyebrow">THE RESULT</p>
+        <p class="eyebrow">The result</p>
         <blockquote>
           Confidence is a <em>coverage instrument</em>, not a safety boundary.
         </blockquote>
@@ -204,8 +299,15 @@
     </main>
 
     <footer>
-      <span>INBOX FIREWALL / COUNCIL CASE STUDY</span>
-      <span>NO EMAILS ARE READ, SENT, ARCHIVED, OR MODIFIED</span>
+      <p class="footer-byline">
+        Built by <a href="/">Parvez Ahmed</a> — AI engineer, Bengaluru.
+      </p>
+      <nav class="footer-links" aria-label="Related links">
+        <a href="https://github.com/Sero01/tiny-router-poc" target="_blank" rel="noopener">Repo ↗</a>
+        <a href="https://github.com/Sero01/council" target="_blank" rel="noopener">Council ↗</a>
+        <a href="/">parvez-ahmed.com →</a>
+      </nav>
+      <p class="footer-note">No emails are read, sent, archived, or modified.</p>
     </footer>
 
     <script src="app.js"></script>

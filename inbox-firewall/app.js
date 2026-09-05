@@ -66,27 +66,27 @@ function decide(message, threshold = state.threshold) {
   };
 
   if (layers.injection && proposal.injection_suspected) {
-    return { executed: false, code: "INJECTION BLOCKED", stage: "injection" };
+    return { executed: false, code: "Injection blocked", stage: "injection" };
   }
   if (proposal.is_escalation) {
-    return { executed: false, code: "MODEL ESCALATED", stage: "model" };
+    return { executed: false, code: "Model escalated", stage: "model" };
   }
   if (layers.validator && !proposal.valid) {
-    return { executed: false, code: "MALFORMED REJECTED", stage: "validator" };
+    return { executed: false, code: "Malformed rejected", stage: "validator" };
   }
   if (proposal.confidence < threshold) {
-    return { executed: false, code: "GLOBAL GATE", stage: "confidence" };
+    return { executed: false, code: "Below global gate", stage: "confidence" };
   }
   if (
     layers.tier &&
     proposal.tier === "gated" &&
     proposal.confidence < state.data.meta.gated_policy_threshold
   ) {
-    return { executed: false, code: "POLICY BLOCKED", stage: "policy" };
+    return { executed: false, code: "Policy blocked", stage: "policy" };
   }
   return {
     executed: true,
-    code: proposal.proposal_correct ? "MOCK EXECUTED" : "UNSAFE EXECUTED",
+    code: proposal.proposal_correct ? "Mock executed" : "Unsafe executed",
     stage: "execute",
   };
 }
@@ -153,7 +153,7 @@ function traceStep(index, title, detail, status, tone = "") {
 function renderTrace(message) {
   const proposal = proposalFor(message);
   const decision = decide(message);
-  const layerNames = ["OFF", "ON", "ON", "ON"];
+  const layerNames = ["Off", "On", "On", "On"];
   const validatorOn = state.layer >= 1;
   const tierOn = state.layer >= 2;
   const injectionOn = state.layer >= 3;
@@ -167,8 +167,8 @@ function renderTrace(message) {
     traceStep(
       1,
       "Router proposal",
-      `${proposal.proposed} at ${(proposal.confidence * 100).toFixed(0)}% confidence.`,
-      proposal.is_escalation ? "DECLINE" : "EMIT",
+      `Proposed <code>${proposal.proposed}</code> at ${(proposal.confidence * 100).toFixed(0)}% confidence.`,
+      proposal.is_escalation ? "Declined" : "Emitted",
     ),
     traceStep(
       2,
@@ -176,23 +176,23 @@ function renderTrace(message) {
       validatorOn
         ? `Schema is ${proposal.valid ? "valid" : "invalid"}; closed enums and message-id checked.`
         : "Layer removed for ablation; malformed output would pass.",
-      validatorOn ? (proposal.valid ? "PASS" : "BLOCK") : layerNames[0],
+      validatorOn ? (proposal.valid ? "Pass" : "Blocked") : layerNames[0],
       validatorOn && !proposal.valid ? "blocked" : "",
     ),
     traceStep(
       3,
       "Global confidence gate",
       `Score ${(proposal.confidence * 100).toFixed(0)}% vs threshold ${(state.threshold * 100).toFixed(0)}%.`,
-      confidencePass ? "PASS" : "BLOCK",
+      confidencePass ? "Pass" : "Blocked",
       confidencePass ? "" : "blocked",
     ),
     traceStep(
       4,
       "Tier policy",
       tierOn
-        ? `${proposal.tier.toUpperCase()} tier; archive floor is 70%.`
+        ? `Tier <code>${proposal.tier}</code>; archive floor is 70%.`
         : "Layer removed for ablation; every valid tier may execute.",
-      tierOn ? (policyPass ? "PASS" : "BLOCK") : "OFF",
+      tierOn ? (policyPass ? "Pass" : "Blocked") : "Off",
       tierOn && !policyPass ? "blocked" : "",
     ),
     traceStep(
@@ -205,9 +205,9 @@ function renderTrace(message) {
         : "Layer removed; message content is treated as trusted.",
       injectionOn
         ? proposal.injection_suspected
-          ? "BLOCK"
-          : "PASS"
-        : "OFF",
+          ? "Blocked"
+          : "Pass"
+        : "Off",
       injectionOn && proposal.injection_suspected ? "blocked" : "",
     ),
     traceStep(
@@ -218,7 +218,7 @@ function renderTrace(message) {
           ? "Action is structurally valid—but wrong for this message."
           : "Action matches the human label."
         : `Refused at ${decision.stage}; no inbox mutation occurs.`,
-      decision.executed ? (unsafe ? "UNSAFE" : "EXECUTE") : "ESCALATE",
+      decision.executed ? (unsafe ? "Unsafe" : "Executed") : "Escalated",
       unsafe ? "danger" : decision.executed ? "" : "blocked",
     ),
   ];
@@ -237,11 +237,11 @@ function renderTrace(message) {
 function renderMessage() {
   const focusId = state.data.meta.focus_ids[state.focusIndex];
   const message = state.data.messages.find((item) => item.id === focusId);
-  elements.messageId.textContent = `MESSAGE-ID: ${message.message.id}`;
+  elements.messageId.textContent = `Message id · ${message.message.id}`;
   elements.messageSlice.textContent = message.slice;
   elements.messageSlice.className = `slice-badge ${message.slice}`;
   elements.messageSubject.textContent = message.message.subject;
-  elements.messageSender.textContent = `FROM / ${message.message.sender}`;
+  elements.messageSender.textContent = `From · ${message.message.sender}`;
   elements.messageBody.textContent = message.message.body;
   elements.goldAction.textContent = goldDsl(message);
 
@@ -395,7 +395,7 @@ function renderChart() {
     "font-size": 10,
     "text-anchor": "middle",
   });
-  xLabel.textContent = "LOCAL COVERAGE →";
+  xLabel.textContent = "Local coverage →";
   svg.appendChild(xLabel);
 }
 
@@ -471,7 +471,7 @@ async function boot() {
   } catch (error) {
     document.querySelector("main").innerHTML = `
       <section class="thesis panel">
-        <p class="eyebrow">DEMO DATA UNAVAILABLE</p>
+        <p class="eyebrow">Demo data unavailable</p>
         <blockquote>Serve <em>demo/</em> over HTTP.</blockquote>
         <p>Run <code>python3 -m http.server 8000 --directory demo</code>, then open localhost:8000.</p>
       </section>
