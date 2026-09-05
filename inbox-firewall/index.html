@@ -79,7 +79,7 @@
         </div>
         <p class="hero-copy">
           The short version: not the confidence score. Below is the argument in
-          four paragraphs, and then a lab where you can pull each defense out
+          five paragraphs, and then a lab where you can pull each defense out
           and watch the numbers move.
         </p>
       </section>
@@ -88,8 +88,8 @@
         <p class="eyebrow">The study</p>
 
         <p class="lead">
-          One question, answered with numbers: <b>how small can a model get
-          before local automation stops being safe?</b>
+          I started with a simple question: <b>how small can an AI model be
+          before it stops being safe to let it act on your inbox?</b>
         </p>
 
         <figure class="pipeline">
@@ -106,10 +106,12 @@
         </figure>
 
         <p>
-          A ~26M router — a thousandth the size of a frontier model — turns
-          each message into one line of a closed, typed DSL. A hand-written
-          validator parses it, never <code>eval</code>. The safety boundary is
-          the validator and the tier policy, not the model.
+          I built a system where every email had to become one of five actions:
+          ignore it, mark it urgent, archive it, draft a reply, or escalate it
+          to a human. I tested this on 1,028 messages, keeping the difficult and
+          malicious ones hidden until the final test. Even a simple rules-based
+          system performed surprisingly well, correctly routing 88.1% of
+          messages while handling about 75% automatically.
         </p>
 
         <div class="stat-strip">
@@ -120,24 +122,40 @@
         </div>
 
         <p>
-          The baseline is strong — 88.1% accuracy at 74.8% coverage — yet it
-          confidently acts on 11 messages it should have escalated, every one a
-          <em>valid</em> action the validator cannot catch. Held-out
-          calibration drove ECE to 0.000 and moved that count by exactly zero.
-          A deterministic content-trust layer did move it: 11 → 7, for about
-          two points of coverage. <b>Calibration is a coverage instrument, not
-          a safety one.</b>
+          The baseline is regex and keywords, no learning at all. Then I found
+          the 11: messages it acted on confidently that it should have handed to
+          a human. Six were prompt injections, the rest phishing. Every one
+          produced a perfectly well-formed action, so the validator was
+          powerless.
         </p>
 
         <p>
-          Reported plainly, because it is the honest part: the remaining 7 are
-          phishing and social engineering — a different threat needing a
-          different layer, and unsafe → 0 is genuinely hard. The 26M fine-tune
-          is deferred, not done — the training exporter is built and verified,
-          but this machine has no training runtime, and I won't quote a number
-          I haven't measured. The whole thing was built collaboratively in
-          <b>Council</b>, a terminal chat where Claude Code and Codex work the
-          same repo alongside me.
+          The obvious fix was calibration, and it failed in an interesting way.
+          Fitting the confidence scores on held-out clean data drove calibration
+          error from 0.245 to 0.000, but unsafe executions were still at 11. On
+          clean data the router is almost always right when it's confident, so
+          calibration maps nearly every score to ~1.0, and the gate ends up
+          waving the confident injections through. That showed me something
+          important: <b>being confident, even being well-calibrated, doesn't
+          mean you're safe when an attacker controls the input.</b>
+        </p>
+
+        <p>
+          I then added a simple security layer that treated the email itself as
+          untrusted and looked for signs that it was trying to manipulate the
+          AI. This reduced unsafe actions from 11 to 7, including reducing
+          prompt-injection failures from 6 to 2, with only a small drop in
+          coverage. The remaining failures were harder phishing and
+          social-engineering attacks. I couldn't benchmark the tiny 26M model
+          because my hardware wasn't sufficient, but that didn't change the main
+          conclusion: the model determines how much I can automate, while the
+          safety boundary needs to live outside the model, in strict rules and
+          security checks.
+        </p>
+
+        <p class="council-note">
+          Built collaboratively in <b>Council</b>, a terminal chat where Claude
+          Code and Codex work the same repo alongside me.
         </p>
 
         <p class="preamble-links">

@@ -333,6 +333,13 @@ h1 em {
   line-height: 1.5;
 }
 
+.preamble .council-note {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 15px;
+}
+
 .preamble-links {
   display: flex;
   flex-wrap: wrap;
