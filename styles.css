@@ -259,6 +259,11 @@ svg[hidden]{display:none}
 .stat b{display:block;font:500 24px var(--serif);color:var(--orange);font-variant-numeric:tabular-nums}
 .stat small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
 
+/* diagram inside a card */
+.card-figure{margin:28px 0}
+.card-figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.card-figure figcaption{font-size:11px;color:var(--muted);line-height:1.5;margin-top:9px}
+
 .pills{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}
 .pill{border:1px solid var(--line);border-radius:99px;padding:7px 12px;background:var(--card);font-size:11px}
 
