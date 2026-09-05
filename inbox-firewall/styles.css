@@ -280,6 +280,28 @@ h1 em {
   font-size: 14px;
 }
 
+.pipeline {
+  max-width: 980px;
+  margin: 30px 0 32px;
+}
+
+.pipeline img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: #0f120f;
+}
+
+.pipeline figcaption {
+  max-width: 74ch;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -977,6 +999,17 @@ footer p {
 
   .stat-strip {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Below this width the diagram's labels stop being legible when scaled to
+     fit, so let it keep a readable size and be swiped instead. */
+  .pipeline {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .pipeline img {
+    min-width: 660px;
   }
 
   .control-deck {
