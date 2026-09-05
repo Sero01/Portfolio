@@ -9,3 +9,6 @@ docs/
 
 # Editable resume source (only the built PDF is published)
 *.docx
+
+# Wrangler local cache
+.wrangler/

@@ -12,11 +12,12 @@ const introLogic = js.slice(
   js.indexOf('/* ---------- message rendering ---------- */')
 );
 
-test('intro uses Parvez greeting as its primary heading', () => {
+test('intro leads with the Parvez greeting, nothing above it', () => {
   assert.match(
     html,
-    /<p class="intro-question">What would you like to know\?<\/p>\s*<h1 class="intro-greeting">[\s\S]*?<span>Hi, I am Parvez<\/span>[\s\S]*?<\/h1>/
+    /<h1 class="intro-greeting">[\s\S]*?<span>Hi, I am Parvez<\/span>[\s\S]*?<\/h1>/
   );
+  assert.doesNotMatch(html, /intro-question|What would you like to know/);
 });
 
 test('only the Send button launches the portfolio', () => {
