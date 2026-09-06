@@ -61,8 +61,7 @@ const content = {
   home: { title: "Hi, I am Parvez", thread: [
     { u: "Tell me about yourself" },
     { a: `
-    <div class="eyebrow">Parvez Ahmed · AI engineer · Bengaluru</div>
-    <h1>I design, build, and <em>ship </em>systems </h1>
+    <h1>I design and build systems</h1>
     <p class="lead">Agents, document intelligence, designs, realtime apps, and automations. Everything here is shipped, measured, and public.</p>
     <div class="stat-grid"><div class="stat"><b>10+</b><small>systems shipped &amp; live</small></div><div class="stat"><b>95.9%</b><small>auto-match @ precision 1.00</small></div><div class="stat"><b>16</b><small>services modernized</small></div><div class="stat"><b>800+</b><small>CVEs closed</small></div></div>
     <div class="pills"><span class="pill">Agents &amp; RAG</span><span class="pill">Document AI</span><span class="pill">Voice &amp; local-first</span><span class="pill">Realtime · WebRTC</span><span class="pill">Java · Python</span></div>
@@ -71,7 +70,7 @@ const content = {
   work: { title: "Selected work", thread: [
     { u: "Show me your strongest work" },
     { a: `
-    <div class="eyebrow">Selected work · live, tested, numbered</div><h2>Systems built for trust, not demos.</h2><p>Click any card and I'll go deeper.</p>
+    <h2>Systems built for trust, not demos.</h2><p>Click any card and I'll go deeper.</p>
     <div class="work-list">
       <button class="work-card" data-detail="docval"><span class="work-head"><h3>DocVal</h3><b>0.92 F1</b></span><p>Bank statements — native or scanned — into validated, typed transactions.</p><span class="work-more">Click to know more →</span></button>
       <button class="work-card" data-detail="reconmatch"><span class="work-head"><h3>ReconMatch</h3><b>95.9% @ P 1.00</b></span><p>Two ledgers in, explained matches and classified breaks out.</p><span class="work-more">Click to know more →</span></button>
@@ -82,7 +81,7 @@ const content = {
   experience: { title: "Experience", thread: [
     { u: "Walk me through your experience" },
     { a: `
-    <div class="eyebrow">Professional experience · newest first</div><h2>Production engineering, with measurable outcomes.</h2>` },
+    <h2>Production engineering, with measurable outcomes.</h2>` },
     { a: `<div class="role"><div class="role-line"><span class="date">APR 2026 — PRESENT</span><h3>Senior Analyst — AI Engineer</h3><span class="org">Northern Trust · Bengaluru</span></div><div class="story"><div><ul><li>Agentic RAG over legacy AS/400 code using Azure OpenAI, Neo4j, and LLM-generated Cypher.</li><li>ML matching for the one-to-many and many-to-many reconciliation breaks TLM cannot auto-resolve.</li><li>Upgraded 16 microservices from Java 8 → 21 and Spring Boot 2 → 3; remediated 800+ CVEs across a validation layer processing 500–600 daily files from 30+ upstreams, catching ~10–15 loading errors/day before TLM ingestion.</li></ul></div></div></div>`, timeline: "first" },
     { a: `<div class="role"><div class="role-line"><span class="date">AUG 2024 — MAR 2026</span><h3>Analyst, Software Engineer</h3><span class="org">Northern Trust · Bengaluru</span></div><div class="story"><div><ul><li>Zero-downtime migration of 21 Spring Boot services.</li><li>TLM HTML → XLSX in under 5 seconds; adopted company-wide.</li><li>ISO → CAMT.053 pipeline reduced from ~9 minutes to under 50 seconds (−82%).</li><li>GitHub Actions cut deployment time 40%; production RHEL 7 → 8 migration.</li></ul></div></div></div>`, timeline: "middle" },
     { a: `<div class="role"><div class="role-line"><span class="date">JUN — SEP 2023</span><h3>Front-End Engineering Intern</h3><span class="org">Northern Trust · Bengaluru</span></div><div class="story"><div><ul><li>Improved Lighthouse scores 25% through audits, code splitting, and accessibility fixes.</li></ul></div></div></div>`, timeline: "middle" },
@@ -91,17 +90,17 @@ const content = {
   projects: { title: "Side projects", thread: [
     { u: "What do you build outside work?" },
     { a: `
-    <div class="eyebrow">The gallery · experiments that shipped</div><h2>Curiosity, made executable.</h2><p>A wall of the systems I built to answer my own questions. Each frame opens the project.</p>
+    <h2>Curiosity, made executable.</h2><p>A wall of the systems I built to answer my own questions. Each frame opens the project.</p>
     ${wallHtml()}` }
   ]},
   photos: { title: "Photography", thread: [
     { u: "Show me the world through your eyes" },
-    { a: `<div class="eyebrow">Off-ledger assets · photography</div><h2>Light, motion, and quieter systems.</h2><p>What I notice when I'm not thinking about token costs. The stream stays open —</p>` }
+    { a: `<h2>Light, motion, and quieter systems.</h2><p>What I notice when I'm not thinking about token costs. The stream stays open —</p>` }
   ]},
   contact: { title: "Let’s talk", thread: [
     { u: "How can I reach you?" },
     { a: `
-    <div class="eyebrow">Open items</div><h1>Let’s build something<br><em>together.</em></h1><p class="lead">If you're working on something that has to actually work — documents, agents, matching, realtime — I'd like to hear about it.</p>
+    <h1>Let’s build something<br><em>together.</em></h1><p class="lead">If you're working on something that has to actually work — documents, agents, matching, realtime — I'd like to hear about it.</p>
     <div class="contact-card">
       <form class="contact-form" action="https://formspree.io/f/xdaqgnvj" method="POST">
         <div class="contact-fields">

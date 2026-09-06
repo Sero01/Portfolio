@@ -15,9 +15,21 @@ const introLogic = js.slice(
 test('intro leads with the Parvez greeting, nothing above it', () => {
   assert.match(
     html,
-    /<h1 class="intro-greeting">[\s\S]*?<span>Hi, I am Parvez<\/span>[\s\S]*?<\/h1>/
+    /<div class="intro-hero">[\s\S]*?<p class="intro-kicker">Hi, I am<\/p>[\s\S]*?<h1 class="intro-masthead">Parvez<\/h1>/
   );
   assert.doesNotMatch(html, /intro-question|What would you like to know/);
+});
+
+test('on phones the theme menu is anchored to the card, not the toggle', () => {
+  // the menu is ~300px wide; the toggle sits ~260px from the left edge on a
+  // 360px screen, so right:0 on .model-wrap hangs it off the left of the
+  // viewport. Below 480px it anchors to .intro-prompt / .composer instead.
+  assert.match(css, /\.model-menu\{[\s\S]*?right:0/);
+  assert.match(
+    css,
+    /@media\(max-width:480px\)[\s\S]*?\.model-wrap\{position:static\}[\s\S]*?\.model-menu\{left:0;right:0;min-width:0\}/
+  );
+  assert.match(css, /@media\(max-width:480px\)[\s\S]*?\.composer\{position:relative\}/);
 });
 
 test('only the Send button launches the portfolio', () => {
