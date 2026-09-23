@@ -1,7 +1,8 @@
 /* The page is one day, read top to bottom.
-   Scroll position sets the time in the bar and brings the night in as a box
-   that grows to fill the screen. The photographs roll on their own, a little
-   faster while the page is moving, and project videos play while in view. */
+   Scroll position fades the hero out, sets the time in the bar and brings the
+   night in as a box that grows to fill the screen. Work and Experience rows
+   draw in as they arrive. The photographs roll on their own, a little faster
+   while the page is moving, and project videos play while in view. */
 (() => {
   const root = document.documentElement;
   const $ = selector => document.querySelector(selector);
@@ -21,6 +22,31 @@
   const smooth = t => t * t * (3 - 2 * t);
 
   let barHeight = 0;
+
+  /* ---------- hero: the words fall behind the page and fade as it moves on ---------- */
+
+  // The portrait keeps pace with the page while the name and line lag behind
+  // it, so they sink away from the face rather than climbing over it. Each
+  // fades over its own share of the hero, the name last, as the bar takes it.
+  const HANDOFF = 0.7;  // share of the hero scrolled when the name moves to the bar
+  const heroLayers = [
+    { el: $('.hero-line'), lag: 0.3, fade: [0, 0.4] },
+    { el: $('.hero-portrait'), lag: 0, fade: [0.1, 0.6] },
+    { el: $('.hero-name'), lag: 0.2, fade: [0.1, HANDOFF] },
+  ];
+
+  function paintHero(y, heroHeight) {
+    const still = reduceMotion.matches;
+    heroLayers.forEach(layer => {
+      const [from, to] = layer.fade;
+      // Past its own fade a layer stops lagging, so it never reaches the Work title.
+      const travel = Math.min(Math.max(0, y), to * heroHeight);
+      const opacity = (1 - smooth(clamp01((travel / heroHeight - from) / (to - from)))).toFixed(3);
+      const shift = still || !layer.lag ? '' : `0 ${(travel * layer.lag).toFixed(1)}px`;
+      if (opacity !== layer.opacity) layer.el.style.opacity = layer.opacity = opacity;
+      if (shift !== layer.shift) layer.el.style.translate = layer.shift = shift;
+    });
+  }
 
   /* ---------- nightfall: Projects rises as a faded box and fills the screen ---------- */
 
@@ -188,6 +214,23 @@
   videos.forEach(video => watcher.observe(video));
   reduceMotion.addEventListener('change', playVisible);
 
+  /* ---------- rows: Work and Experience draw in once, as they arrive ---------- */
+
+  const revealer = new IntersectionObserver(entries => {
+    entries.filter(entry => entry.isIntersecting).forEach(({ target }, i) => {
+      target.style.setProperty('--stagger', `${i * 0.09}s`);
+      target.classList.add('is-shown');
+      revealer.unobserve(target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+
+  // Rows already on or above the screen are left as they are.
+  document.querySelectorAll('.project, .role').forEach(row => {
+    if (row.getBoundingClientRect().top < innerHeight) row.classList.add('is-shown');
+    else revealer.observe(row);
+  });
+  root.classList.add('can-reveal');
+
   /* ---------- loop ---------- */
 
   let queued = false;
@@ -198,13 +241,14 @@
     // Read layout first, then write, so a frame never forces a second layout.
     const y = scrollY;
     const vh = innerHeight;
-    const pastHero = y > hero.offsetHeight * 0.7;
+    const heroHeight = hero.offsetHeight;
     const nightTop = nightfall.getBoundingClientRect().top;
     const photosRect = photos.getBoundingClientRect();
     const dy = y - lastY;
     lastY = y;
 
-    root.classList.toggle('is-past-hero', pastHero);
+    root.classList.toggle('is-past-hero', y > heroHeight * HANDOFF);
+    paintHero(y, heroHeight);
     paintNightfall(nightTop, vh);
     paintClock(y);
     paintPhotos(photosRect, vh, dy);
