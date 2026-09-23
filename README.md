@@ -10,8 +10,12 @@ Pushing to `static` builds production; `main` and `master` only produce
 preview deployments, so keep all three in step:
 
 ```sh
-git push origin master:master master:static master:main
+git push origin main:main main:static main:master
 ```
+
+The homepage is the day-to-night page (`index.html`, `styles.css`,
+`script.js`), which replaced the chat-style one on 2026-09-23. The chat-style
+homepage and its `tests/` live on in the **`v0`** branch.
 
 There is a second, older Pages project called `parvez-ahmed` serving
 `parvez-ahmed.pages.dev` from a direct upload. It is not what the custom

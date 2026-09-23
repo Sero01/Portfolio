@@ -2,137 +2,282 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Parvez Ahmed — AI engineer building reliable document extraction and reconciliation systems.">
-  <meta property="og:title" content="Parvez Ahmed — AI Engineer">
-  <meta property="og:description" content="Extraction and reconciliation systems for financial operations — with the accuracy numbers published.">
-  <meta property="og:type" content="website">
-  <meta name="theme-color" id="metaTheme" content="#f7f6f2">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Parvez Ahmed</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='28' fill='%23d97757'/%3E%3Ctext x='50' y='71' font-size='58' font-family='Georgia,serif' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
-  <script>(function(){var t=localStorage.getItem('portfolio-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=t;})()</script>
+  <meta name="description" content="Parvez Ahmed, software engineer at Northern Trust, based out of Bangalore. Reconciliation, legacy-code RAG and open-source document tools, with the numbers published.">
+  <meta property="og:title" content="Parvez Ahmed">
+  <meta property="og:description" content="Software engineer at Northern Trust, based out of Bangalore.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#e7e9ee">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23161513'/%3E%3Cpath d='M16 1a15 15 0 0 0 0 30z' fill='%23e7e9ee'/%3E%3Ccircle cx='16' cy='16' r='14.25' fill='none' stroke='%23161513' stroke-width='1.5'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
-  <svg hidden aria-hidden="true">
-    <defs>
-      <g id="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g>
-      <g id="i-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></g>
-      <g id="i-mic"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></g>
-      <g id="i-plus"><path d="M5 12h14M12 5v14"/></g>
-      <g id="i-send"><path d="M12 19V5M5 12l7-7 7 7"/></g>
-      <g id="i-chevron"><path d="m6 9 6 6 6-6"/></g>
-      <g id="i-check"><path d="M20 6 9 17l-5-5"/></g>
-      <g id="i-chat"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></g>
-      <g id="i-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></g>
-      <g id="i-briefcase"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></g>
-      <g id="i-building"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></g>
-      <g id="i-code"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></g>
-      <g id="i-camera"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></g>
-      <g id="i-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></g>
-      <symbol id="i-github" viewBox="0 0 30 30"><path d="M15,3C8.373,3,3,8.373,3,15c0,5.623,3.872,10.328,9.092,11.63C12.036,26.468,12,26.28,12,26.047v-2.051 c-0.487,0-1.303,0-1.508,0c-0.821,0-1.551-0.353-1.905-1.009c-0.393-0.729-0.461-1.844-1.435-2.526 c-0.289-0.227-0.069-0.486,0.264-0.451c0.615,0.174,1.125,0.596,1.605,1.222c0.478,0.627,0.703,0.769,1.596,0.769 c0.433,0,1.081-0.025,1.691-0.121c0.328-0.833,0.895-1.6,1.588-1.962c-3.996-0.411-5.903-2.399-5.903-5.098 c0-1.162,0.495-2.286,1.336-3.233C9.053,10.647,8.706,8.73,9.435,8c1.798,0,2.885,1.166,3.146,1.481C13.477,9.174,14.461,9,15.495,9 c1.036,0,2.024,0.174,2.922,0.483C18.675,9.17,19.763,8,21.565,8c0.732,0.731,0.381,2.656,0.102,3.594 c0.836,0.945,1.328,2.066,1.328,3.226c0,2.697-1.904,4.684-5.894,5.097C18.199,20.49,19,22.1,19,23.313v2.734 c0,0.104-0.023,0.179-0.035,0.268C23.641,24.676,27,20.236,27,15C27,8.373,21.627,3,15,3z"/></symbol>
-      <symbol id="i-linkedin" viewBox="0 0 16 16"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></symbol>    </defs>
-  </svg>
+  <header class="bar">
+    <a class="bar-name" href="#top">Parvez Ahmed</a>
+    <nav class="bar-nav" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+      <a href="assets/Resume/Parvez_Ahmed_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    </nav>
+    <span class="bar-clock" aria-hidden="true">08:00</span>
+  </header>
 
-  <div class="intro" id="intro" aria-label="Introduction">
-    <button class="icon-btn theme-toggle intro-theme" data-theme-toggle aria-label="Switch to dark mode">
-      <svg viewBox="0 0 24 24" class="ic ic-moon"><use href="#i-moon"/></svg>
-      <svg viewBox="0 0 24 24" class="ic ic-sun"><use href="#i-sun"/></svg>
-    </button>
+  <main>
 
-    <div class="intro-hero">
-      <p class="intro-kicker">Hi, I am</p>
-      <h1 class="intro-masthead">Parvez</h1>
-      <img class="intro-portrait" src="assets/parvez-cutout.png" alt="Parvez Ahmed" width="900" height="1032" decoding="async" />
-    </div>
+    <section class="hero day" id="top" aria-label="Introduction">
+      <img class="hero-portrait" src="assets/parvez.jpg" alt="Parvez Ahmed, smiling, in glasses and a white t-shirt" width="1013" height="1165" fetchpriority="high">
+      <h1 class="hero-name"><span>Parvez</span> <span>Ahmed</span></h1>
+      <p class="hero-line">Software engineer at Northern Trust, based out of&nbsp;Bangalore.</p>
+    </section>
 
-    <div class="intro-prompt" id="introPrompt">
-      <div class="prompt-text"><span id="introText"></span><span class="typing-caret"></span></div>
-      <div class="prompt-controls">
-        <button class="icon-btn" aria-label="Attach a file"><svg viewBox="0 0 24 24" class="ic"><use href="#i-plus"/></svg></button>
-        <button class="icon-btn" aria-label="Voice input"><svg viewBox="0 0 24 24" class="ic"><use href="#i-mic"/></svg></button>
-        <div class="model-wrap">
-          <button class="model-select" data-model-select aria-haspopup="listbox" aria-expanded="false">
-            <svg viewBox="0 0 24 24" class="ic ic-moon"><use href="#i-moon"/></svg>
-            <svg viewBox="0 0 24 24" class="ic ic-sun"><use href="#i-sun"/></svg>
-            <b data-model-label>Light</b>
-            <svg viewBox="0 0 24 24" class="ic ic-chev"><use href="#i-chevron"/></svg>
-          </button>
-          <div class="model-menu" role="listbox" hidden>
-            <button role="option" data-set-theme="light"><svg viewBox="0 0 24 24" class="ic"><use href="#i-sun"/></svg><span><b>Light</b><small>Warm paper, daytime reading</small></span><svg viewBox="0 0 24 24" class="ic ic-tick"><use href="#i-check"/></svg></button>
-            <button role="option" data-set-theme="dark"><svg viewBox="0 0 24 24" class="ic"><use href="#i-moon"/></svg><span><b>Dark</b><small>Low light, late-night review</small></span><svg viewBox="0 0 24 24" class="ic ic-tick"><use href="#i-check"/></svg></button>
+    <section class="section day" id="work" aria-labelledby="work-title">
+      <h2 class="section-title" id="work-title">Work</h2>
+      <ul class="projects">
+        <li class="project">
+          <h3 class="project-name">Reconciliation model</h3>
+          <p class="project-what">Clears the breaks the matching engine can&rsquo;t.</p>
+          <p class="project-proof"><span class="figure">21,000</span><span class="figure-label">breaks cleared at 99.62% accuracy</span></p>
+        </li>
+        <li class="project">
+          <h3 class="project-name">Legacy-code RAG</h3>
+          <p class="project-what">Helps 20+ teams modernise decades-old AS/400&nbsp;code.</p>
+          <p class="project-proof"><span class="figure">5,000</span><span class="figure-label">AS/400 programs and files in one knowledge graph</span></p>
+        </li>
+        <li class="project">
+          <h3 class="project-name">Payments pipeline</h3>
+          <p class="project-what">ISO 20022 in, CAMT.053 out.</p>
+          <p class="project-proof"><span class="figure">50&nbsp;s</span><span class="figure-label">down from 9 minutes</span></p>
+        </li>
+        <li class="project">
+          <h3 class="project-name">Platform upgrade</h3>
+          <p class="project-what">16 services from Java 8 to 21, with zero downtime.</p>
+          <p class="project-proof"><span class="figure">800+</span><span class="figure-label">CVEs closed</span></p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section day" id="experience" aria-labelledby="experience-title">
+      <h2 class="section-title" id="experience-title">Experience</h2>
+      <ol class="roles">
+        <li class="role">
+          <span class="role-when">2026–now</span>
+          <div class="role-who">
+            <h3 class="role-title">Senior Analyst, Software Engineer</h3>
+            <span class="role-org">Northern Trust</span>
+          </div>
+          <p class="role-note">Promoted in under two years.</p>
+        </li>
+        <li class="role">
+          <span class="role-when">2026</span>
+          <div class="role-who">
+            <h3 class="role-title">Software Engineer, contract</h3>
+            <span class="role-org">CaptainSide</span>
+          </div>
+          <p class="role-note">Built the Discover recommendation engine.</p>
+        </li>
+        <li class="role">
+          <span class="role-when">2024–26</span>
+          <div class="role-who">
+            <h3 class="role-title">Analyst, Software Engineer</h3>
+            <span class="role-org">Northern Trust</span>
+          </div>
+          <p class="role-note">A report tool now used company-wide.</p>
+        </li>
+        <li class="role">
+          <span class="role-when">2023</span>
+          <div class="role-who">
+            <h3 class="role-title">Project intern</h3>
+            <span class="role-org">Northern Trust</span>
+          </div>
+          <p class="role-note">Lighthouse scores up 25%.</p>
+        </li>
+        <li class="role">
+          <span class="role-when">2022–23</span>
+          <div class="role-who">
+            <h3 class="role-title">Project collaborator</h3>
+            <span class="role-org">Volkswagen Group New Academy</span>
+          </div>
+          <p class="role-note">A decision system for 100+ dealerships.</p>
+        </li>
+        <li class="role">
+          <span class="role-when">2020–24</span>
+          <div class="role-who">
+            <h3 class="role-title">B.Tech, Computer Science</h3>
+            <span class="role-org">MIT World Peace University</span>
+          </div>
+          <p class="role-note">CGPA 9.55 of 10.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section night nightfall" id="projects" aria-labelledby="projects-title">
+      <h2 class="section-title" id="projects-title">Projects</h2>
+
+      <ul class="features">
+        <li class="feature">
+          <div class="feature-media"><img src="assets/projects/waypoint.webp" alt="Waypoint returning ten ranked results for manhattan project physics from a million-passage index in 20 ms" width="1280" height="720" loading="lazy"></div>
+          <h3 class="feature-name">Waypoint</h3>
+          <p class="feature-what">A single-file search index, built to open fast.</p>
+          <p class="project-proof"><span class="figure">3.3&times;</span><span class="figure-label">faster first query than Lucene, same ranking</span></p>
+        </li>
+        <li class="feature">
+          <div class="feature-media"><img src="assets/projects/docval.webp" alt="DocVal's extracted transactions from a scanned statement, with all four balance and date checks passing" width="1280" height="720" loading="lazy"></div>
+          <h3 class="feature-name">DocVal</h3>
+          <p class="feature-what">Bank statements in, validated transactions out.</p>
+          <p class="project-proof"><span class="figure">0.92</span><span class="figure-label">F1 on synthetic, 0.42 on real scans</span></p>
+          <p class="project-links">
+            <a href="docval/">Case study</a>
+            <a href="eval-case-study/">Evals</a>
+            <a href="https://docval-yy4s.onrender.com" target="_blank" rel="noopener">Demo</a>
+            <a href="https://github.com/Sero01/docval" target="_blank" rel="noopener">Code</a>
+          </p>
+        </li>
+        <li class="feature">
+          <div class="feature-media"><video muted loop playsinline preload="none" poster="assets/projects/reconmatch-poster.webp" width="1280" height="720" aria-label="ReconMatch matching one bank payment to three ledger entries and scoring 88% against 62% for the published reference"><source src="assets/projects/reconmatch.mp4" type="video/mp4"></video></div>
+          <h3 class="feature-name">ReconMatch</h3>
+          <p class="feature-what">Two ledgers in, explained matches out.</p>
+          <p class="project-proof"><span class="figure">88.65%</span><span class="figure-label">exact on held-out data, against 62.45% for the published reference</span></p>
+          <p class="project-links">
+            <a href="reconmatch/">Case study</a>
+            <a href="https://reconmatch-aa9c.onrender.com" target="_blank" rel="noopener">Demo</a>
+            <a href="https://github.com/Sero01/reconmatch" target="_blank" rel="noopener">Code</a>
+          </p>
+        </li>
+        <li class="feature">
+          <div class="feature-media"><img src="assets/projects/inbox-firewall.webp" alt="Inbox Firewall pipeline: message, router, DSL line, validator, tier policy, then execute or draft, with an escalate path for anything uncertain" width="1280" height="720" loading="lazy"></div>
+          <h3 class="feature-name">Inbox Firewall</h3>
+          <p class="feature-what">How small can a model be and still be trusted with your inbox?</p>
+          <p class="project-proof"><span class="figure">88.1%</span><span class="figure-label">of 1,028 emails routed correctly by rules alone</span></p>
+          <p class="project-links">
+            <a href="inbox-firewall/">Case study</a>
+            <a href="https://github.com/Sero01/tiny-router-poc" target="_blank" rel="noopener">Code</a>
+          </p>
+        </li>
+      </ul>
+
+      <ul class="builds">
+        <li><a class="build" href="https://agentguides.dev" target="_blank" rel="noopener">
+          <span class="build-media"><img src="assets/projects/agentguides.webp" alt="Agent Guides home page" width="1560" height="873" loading="lazy"></span>
+          <span class="build-name">Agent Guides</span>
+          <span class="build-what">Every Sunday, six months running</span>
+        </a></li>
+        <li><a class="build" href="https://github.com/Sero01/council" target="_blank" rel="noopener">
+          <span class="build-media build-type" aria-hidden="true"><span class="type-chat"><span>you</span><span>Claude Code</span><span>Codex</span></span></span>
+          <span class="build-name">Council</span>
+          <span class="build-what">Claude Code and Codex in one group chat</span>
+        </a></li>
+        <li><a class="build" href="https://closeby-photobooth.126ahmedparvez.workers.dev" target="_blank" rel="noopener">
+          <span class="build-media"><video muted loop playsinline preload="none" poster="assets/projects/closeby-poster.webp" width="960" height="540" aria-label="closeby: two people in two places posing on one countdown and getting a shared photo strip"><source src="assets/projects/closeby.mp4" type="video/mp4"></video></span>
+          <span class="build-name">closeby</span>
+          <span class="build-what">A photobooth for two people in two places</span>
+        </a></li>
+        <li><a class="build" href="https://github.com/Sero01/watchparty" target="_blank" rel="noopener">
+          <span class="build-media"><video muted loop playsinline preload="none" poster="assets/projects/watchparty-poster.webp" width="960" height="540" aria-label="Watchparty streaming a film to three phones in sync, with hold-to-talk voice chat"><source src="assets/projects/watchparty.mp4" type="video/mp4"></video></span>
+          <span class="build-name">Watchparty</span>
+          <span class="build-what">Movies in sync on friends&rsquo; phones</span>
+        </a></li>
+        <li><a class="build" href="https://github.com/Sero01/Emma" target="_blank" rel="noopener">
+          <span class="build-media"><img src="assets/projects/speculum.gif" alt="Speculum, Emma's dashboard, charting the agent's tool use and session rhythm" width="800" height="522" loading="lazy"></span>
+          <span class="build-name">Emma</span>
+          <span class="build-what">A local agent that plans before it acts</span>
+        </a></li>
+        <li><div class="build">
+          <span class="build-media build-type" aria-hidden="true"><span class="type-quote">&ldquo;Build an organized, purposeful home in /workspace over&nbsp;time.&rdquo;</span></span>
+          <span class="build-name">Adam</span>
+          <span class="build-what">An agent that sets its own goals</span>
+        </div></li>
+      </ul>
+    </section>
+
+    <section class="photos night" id="photographs" aria-labelledby="photos-title">
+      <h2 class="section-title" id="photos-title">Photographs</h2>
+      <div class="reels">
+        <div class="reel">
+          <div class="reel-set">
+            <figure class="shot" style="--ar:828/1128;--s:1.0870">
+              <div class="shot-frame"><img src="assets/photos/photo-09.webp" alt="A wooden dhow moored in front of a white royal yacht under a blue sky" width="900" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Sultan&rsquo;s cruise</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:901/1200">
+              <div class="shot-frame"><img src="assets/photos/photo-11.webp" alt="Small white and pink flowers in focus behind soft blurred petals" width="901" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Flowers beyond</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:899/1200">
+              <div class="shot-frame"><img src="assets/photos/photo-01.webp" alt="Night traffic seen from above, headlights and tail lights packed across every lane" width="899" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Bangalore traffic</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:899/1200">
+              <div class="shot-frame"><img src="assets/photos/photo-13.webp" alt="Two men on a village road framed through a hanging tyre" width="899" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>The fishermen</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:1200/676">
+              <div class="shot-frame"><img src="assets/photos/photo-02.webp" alt="Koi fish blurred into orange and white streaks in dark water" width="1200" height="676" loading="lazy" decoding="async"></div>
+              <figcaption>Koi fish</figcaption>
+            </figure>
           </div>
         </div>
-        <button class="send-button" id="introSend" aria-label="Send"><svg viewBox="0 0 24 24" class="ic"><use href="#i-send"/></svg></button>
-      </div>
-    </div>
-    <p class="intro-hint">A portfolio, prompted differently.</p>
-    <div class="demo-cursor" id="demoCursor" aria-hidden="true"></div>
-  </div>
-
-  <div class="app" id="app" aria-hidden="true">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-top">
-        <button class="brand" data-section="home" aria-label="Open introduction">Parvez's Portfolio</button>
-        <button class="close-menu" id="closeMenu" aria-label="Close menu">×</button>
-      </div>
-      <button class="new-chat" data-section="home"><span>＋</span> New conversation</button>
-      <p class="nav-label">Portfolio</p>
-      <nav id="historyNav" aria-label="Portfolio history">
-        <button class="history-item active" data-section="home"><svg viewBox="0 0 24 24" class="ic chat-icon"><use href="#i-user"/></svg><span><b>Hi, I am Parvez</b><small>AI engineer · Bengaluru</small></span></button>
-        <button class="history-item" data-section="work"><svg viewBox="0 0 24 24" class="ic chat-icon"><use href="#i-briefcase"/></svg><span><b>Selected work</b><small>DocVal · ReconMatch · Evals</small></span></button>
-        <button class="history-item" data-section="experience"><svg viewBox="0 0 24 24" class="ic chat-icon"><use href="#i-building"/></svg><span><b>Experience</b><small>Northern Trust · Škoda VW</small></span></button>
-        <button class="history-item" data-section="projects"><svg viewBox="0 0 24 24" class="ic chat-icon"><use href="#i-code"/></svg><span><b>Side projects</b><small>Speculum · Pickpath · Inklink +4</small></span></button>
-        <button class="history-item" data-section="photos"><svg viewBox="0 0 24 24" class="ic chat-icon"><use href="#i-camera"/></svg><span><b>Photography</b><small>Off-ledger assets</small></span></button>
-        <button class="history-item" data-section="contact"><svg viewBox="0 0 24 24" class="ic chat-icon"><use href="#i-mail"/></svg><span><b>Let’s talk</b><small>Email · GitHub · LinkedIn</small></span></button>
-      </nav>
-      <div class="profile"><img class="avatar" src="assets/parvez.jpg" alt="Parvez Ahmed" width="34" height="34" loading="lazy" decoding="async" /><span><b>Parvez Ahmed</b><small>Available in Bengaluru · <a class="profile-resume" href="assets/Resume/Parvez_Ahmed_Resume.pdf" target="_blank" rel="noopener">Résumé</a></small></span><i>•••</i></div>
-    </aside>
-
-    <main class="workspace">
-      <header class="topbar">
-        <button class="menu" id="openMenu" aria-label="Open menu">☰</button>
-        <button class="conversation-title" id="conversationTitle">Let's talk</button>
-        <div class="topbar-actions">
-          <button class="icon-btn theme-toggle" data-theme-toggle aria-label="Switch to dark mode">
-            <svg viewBox="0 0 24 24" class="ic ic-moon"><use href="#i-moon"/></svg>
-            <svg viewBox="0 0 24 24" class="ic ic-sun"><use href="#i-sun"/></svg>
-          </button>
-          <a class="icon-btn" href="https://github.com/Sero01" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" class="ic ic-solid"><use href="#i-github"/></svg></a>
-          <a class="icon-btn" href="https://www.linkedin.com/in/parvez-ahmed-b47680124/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" class="ic ic-solid"><use href="#i-linkedin"/></svg></a>
-        </div>
-      </header>
-      <section class="chat" id="chat" aria-live="polite"></section>
-      <div class="composer-wrap">
-        <div class="composer">
-          <span class="composer-placeholder" id="composerText">Ask about my work…</span><span class="composer-caret" aria-hidden="true"></span>
-          <div class="composer-bottom">
-            <button class="icon-btn" aria-label="Attach a file"><svg viewBox="0 0 24 24" class="ic"><use href="#i-plus"/></svg></button>
-            <button class="icon-btn" aria-label="Voice input"><svg viewBox="0 0 24 24" class="ic"><use href="#i-mic"/></svg></button>
-            <small>Portfolio mode</small>
-            <div class="model-wrap">
-              <button class="model-select" data-model-select aria-haspopup="listbox" aria-expanded="false">
-                <svg viewBox="0 0 24 24" class="ic ic-moon"><use href="#i-moon"/></svg>
-                <svg viewBox="0 0 24 24" class="ic ic-sun"><use href="#i-sun"/></svg>
-                <b data-model-label>Light</b>
-                <svg viewBox="0 0 24 24" class="ic ic-chev"><use href="#i-chevron"/></svg>
-              </button>
-              <div class="model-menu" role="listbox" hidden>
-                <button role="option" data-set-theme="light"><svg viewBox="0 0 24 24" class="ic"><use href="#i-sun"/></svg><span><b>Light</b><small>Warm paper, daytime reading</small></span><svg viewBox="0 0 24 24" class="ic ic-tick"><use href="#i-check"/></svg></button>
-                <button role="option" data-set-theme="dark"><svg viewBox="0 0 24 24" class="ic"><use href="#i-moon"/></svg><span><b>Dark</b><small>Low light, late-night review</small></span><svg viewBox="0 0 24 24" class="ic ic-tick"><use href="#i-check"/></svg></button>
-              </div>
-            </div>
-            <button class="composer-send" aria-label="Send"><svg viewBox="0 0 24 24" class="ic"><use href="#i-send"/></svg></button>
+        <div class="reel">
+          <div class="reel-set">
+            <figure class="shot" style="--ar:603/1128;--s:1.1194">
+              <div class="shot-frame"><img src="assets/photos/photo-08.webp" alt="Sunlight glittering on blue water below a rocky hill" width="675" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Bandar Al Khairan</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:900/1200">
+              <div class="shot-frame"><img src="assets/photos/photo-12.webp" alt="A white flower cluster against a pale overcast sky" width="900" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Sonder</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:817/1136;--s:1.0783">
+              <div class="shot-frame"><img src="assets/photos/photo-07.webp" alt="Highways lit orange winding into a city at night" width="881" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Muscat view point</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:923/1200">
+              <div class="shot-frame"><img src="assets/photos/photo-14.webp" alt="A woman in silhouette walking past an arch into a room lit by a chandelier" width="923" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>The arch</figcaption>
+            </figure>
           </div>
         </div>
-        <p>AI can make mistakes. This portfolio doesn’t.</p>
+        <div class="reel">
+          <div class="reel-set">
+            <figure class="shot" style="--ar:828/1128;--s:1.0870">
+              <div class="shot-frame"><img src="assets/photos/photo-03.webp" alt="A green ridge fading into haze from the top of a fort" width="900" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Sinhagarh, Pune</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:610/1134;--s:1.0582">
+              <div class="shot-frame"><img src="assets/photos/photo-06.webp" alt="Orange marigolds against a blue wall at dusk" width="676" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Marigold</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:834/1134;--s:1.0791">
+              <div class="shot-frame"><img src="assets/photos/photo-05.webp" alt="A single street lamp glowing amber through dark leaves" width="900" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Street lamp</figcaption>
+            </figure>
+            <figure class="shot" style="--ar:675/1200">
+              <div class="shot-frame"><img src="assets/photos/photo-10.webp" alt="A narrow alley between apartment blocks with one person walking through the light" width="675" height="1200" loading="lazy" decoding="async"></div>
+              <figcaption>Between the walls</figcaption>
+            </figure>
+          </div>
+        </div>
       </div>
-    </main>
-  </div>
+    </section>
+
+    <section class="contact night" id="contact" aria-labelledby="contact-title">
+      <h2 class="contact-title" id="contact-title"><a href="mailto:126ahmedparvez@gmail.com">Say hello</a></h2>
+      <p class="contact-mail">126ahmedparvez@gmail.com</p>
+      <ul class="contact-links">
+        <li><a href="https://github.com/Sero01" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/parvez-ahmed-b47680124/" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="assets/Resume/Parvez_Ahmed_Resume.pdf" target="_blank" rel="noopener">Résumé</a></li>
+      </ul>
+      <a class="contact-top" href="#top">Back to morning</a>
+    </section>
+
+  </main>
 
   <script src="script.js"></script>
 </body>
