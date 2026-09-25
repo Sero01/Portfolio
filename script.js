@@ -1,8 +1,10 @@
 /* The page is one day, read top to bottom.
    Scroll position fades the hero out, sets the time in the bar and brings the
-   night in as a box that grows to fill the screen. Work and Experience rows
+   night in as a box that grows to fill the screen, where the featured projects
+   stack as cards. Work and Experience rows
    draw in as they arrive. The photographs roll on their own, a little faster
-   while the page is moving, and project videos play while in view. */
+   while the page is moving, and project videos play while in view. The
+   wheel eases the whole page along, so it carries some weight. */
 (() => {
   const root = document.documentElement;
   const $ = selector => document.querySelector(selector);
@@ -11,6 +13,7 @@
   const bar = $('.bar');
   const hero = $('.hero');
   const nightfall = $('.nightfall');
+  const features = [...document.querySelectorAll('.feature')];
   const photos = $('.photos');
   const reelWindow = $('.reels');
   const reels = [...document.querySelectorAll('.reel')];
@@ -84,6 +87,40 @@
       root.classList.toggle('is-night', night);
       themeColor.content = night ? '#161513' : '#e7e9ee';
     }
+  }
+
+  /* ---------- featured projects: each card sinks back as the next covers it ---------- */
+
+  const COVERED_SCALE = 0.8;  // a card's size once the next has covered it
+  const COVERED_DROP = 0.1;   // how far it sinks meanwhile, as a share of its height
+  const covers = features.map(() => '');
+  const drops = features.map(() => 0);
+
+  // Heights are untransformed and the cards scale from their top edge; the
+  // drop last applied is taken back off each top, so moving a card never
+  // feeds back into the next frame's reading. Sunk and shrunk, a covered
+  // card still ends inside the one on top of it.
+  function paintFeatures(tops, heights) {
+    let changed = false;
+    const layoutTops = tops.map((top, i) => top - drops[i]);
+    features.forEach((card, i) => {
+      const next = layoutTops[i + 1];
+      const p = next === undefined ? 0 : clamp01((layoutTops[i] + heights[i] - next) / heights[i]);
+      const cover = p.toFixed(3);
+      if (cover === covers[i]) return;
+      covers[i] = cover;
+      card.style.setProperty('--cover', cover);
+      const still = reduceMotion.matches || !p;
+      drops[i] = still ? 0 : +(heights[i] * COVERED_DROP * p).toFixed(1);
+      card.style.transform = still ? '' : `translateY(${drops[i]}px) scale(${lerp(1, COVERED_SCALE, p).toFixed(4)})`;
+      const covered = p > 0.99;
+      if (covered !== card.classList.contains('is-covered')) {
+        card.classList.toggle('is-covered', covered);
+        changed = true;
+      }
+    });
+    // A video under another card is out of sight but still intersecting.
+    if (changed) playVisible();
   }
 
   /* ---------- clock: scroll position mapped onto the hours of a day ---------- */
@@ -198,7 +235,7 @@
 
   function playVisible() {
     videos.forEach(video => {
-      if (onScreen.has(video) && !reduceMotion.matches) video.play().catch(() => {});
+      if (onScreen.has(video) && !video.closest('.is-covered') && !reduceMotion.matches) video.play().catch(() => {});
       else video.pause();
     });
   }
@@ -231,6 +268,49 @@
   });
   root.classList.add('can-reveal');
 
+  /* ---------- weight: the wheel eases the page along instead of jumping it ---------- */
+
+  // Each notch travels a little less than the browser's own step, and the page
+  // glides after it and settles, so it reads as heavy. Touch, keys, the
+  // scrollbar and links keep the browser's own scrolling.
+  const WHEEL_STEP = 0.7;  // share of the browser's distance per notch
+  const GLIDE = 4;         // settling rate per second; lower is heavier
+
+  let glideTarget = 0;
+  let glideAt = 0;
+  let gliding = false;
+  let lastFrame = 0;
+
+  function glide(now) {
+    // Something else moved the page (a key, the scrollbar, a link): let it.
+    if (Math.abs(scrollY - glideAt) > 2) {
+      gliding = false;
+      return;
+    }
+    const dt = Math.min(0.05, (now - lastFrame) / 1000);
+    lastFrame = now;
+    glideAt = lerp(glideAt, glideTarget, 1 - Math.exp(-GLIDE * dt));
+    if (Math.abs(glideTarget - glideAt) < 0.5) glideAt = glideTarget;
+    scrollTo({ top: glideAt, behavior: 'instant' });
+    if (glideAt !== glideTarget) requestAnimationFrame(glide);
+    else gliding = false;
+  }
+
+  function onWheel(event) {
+    if (reduceMotion.matches || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    event.preventDefault();
+    if (!gliding) glideAt = glideTarget = scrollY;
+    const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1;
+    const end = root.scrollHeight - innerHeight;
+    glideTarget = Math.min(end, Math.max(0, glideTarget + event.deltaY * unit * WHEEL_STEP));
+    if (gliding) return;
+    gliding = true;
+    lastFrame = performance.now();
+    requestAnimationFrame(glide);
+  }
+
+  addEventListener('wheel', onWheel, { passive: false });
+
   /* ---------- loop ---------- */
 
   let queued = false;
@@ -244,12 +324,15 @@
     const heroHeight = hero.offsetHeight;
     const nightTop = nightfall.getBoundingClientRect().top;
     const photosRect = photos.getBoundingClientRect();
+    const featureTops = features.map(card => card.getBoundingClientRect().top);
+    const featureHeights = features.map(card => card.offsetHeight);
     const dy = y - lastY;
     lastY = y;
 
     root.classList.toggle('is-past-hero', y > heroHeight * HANDOFF);
     paintHero(y, heroHeight);
     paintNightfall(nightTop, vh);
+    paintFeatures(featureTops, featureHeights);
     paintClock(y);
     paintPhotos(photosRect, vh, dy);
   }
@@ -264,6 +347,7 @@
   function refresh() {
     lastWidth = innerWidth;
     barHeight = bar.offsetHeight;
+    root.style.setProperty('--bar-h', `${barHeight}px`);
     layoutReels();
     measureHours();
     paint();
@@ -279,7 +363,10 @@
 
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', onResize);
-  reduceMotion.addEventListener('change', refresh);
+  reduceMotion.addEventListener('change', () => {
+    covers.fill('');
+    refresh();
+  });
   document.fonts?.ready.then(refresh);
   addEventListener('load', refresh);
   refresh();

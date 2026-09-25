@@ -393,25 +393,49 @@ a { color: inherit; text-decoration: none; }
   transform-origin: 50% 0;
 }
 
-/* The four with the most to show: large, staggered, each carrying its figure.
-   The rest follow as a quieter grid of small cards. */
+/* The four with the most to show: full-width cards that stack. Each sticks
+   under the bar and the next slides up over it; script.js shrinks and dims
+   the one being covered. The stack costs no scrolling beyond the cards' own
+   height. The rest follow as a quieter grid of small cards. */
 .features {
-  --drop: clamp(64px, 12vw, 200px);
+  --stick: calc(var(--bar-h, 56px) + clamp(12px, 2.5vh, 28px));
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(24px, 6vw, 112px);
-  row-gap: clamp(56px, 10vh, 120px);
-  padding-bottom: var(--drop);
+  /* Equal heights, so a covered card never shows below the one on top. */
+  grid-auto-rows: 1fr;
+  row-gap: clamp(48px, 10vh, 120px);
 }
 
-.features > li:nth-child(even) { transform: translateY(var(--drop)); }
-
 .feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-auto-rows: min-content;
-  column-gap: var(--col-gap);
-  row-gap: 10px;
+  position: sticky;
+  top: var(--stick);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+  /* As wide as the screen allows while the whole card stays in view. */
+  width: min(100%, calc((100svh - var(--stick) - 24px) * 1.6));
+  aspect-ratio: 16 / 10;
+  margin-inline: auto;
+  padding: clamp(24px, 4.5%, 56px);
+  overflow: hidden;
+  border-radius: 20px;
+  background: color-mix(in oklab, var(--night), var(--moon) 5%);
+  text-align: center;
+  transform-origin: 50% 0;
+}
+
+.feature > * { position: relative; }
+
+/* Covered: script.js raises --cover from 0 to 1 as the next card arrives. */
+.feature::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--night);
+  opacity: calc(var(--cover, 0) * .6);
+  pointer-events: none;
 }
 
 .feature-media,
@@ -423,9 +447,14 @@ a { color: inherit; text-decoration: none; }
   background: color-mix(in oklab, var(--night), var(--moon) 8%);
 }
 
+/* The shot fills the top of the card and fades into it behind the words. */
 .feature-media {
-  grid-column: 1 / -1;
-  margin-bottom: 12px;
+  position: absolute;
+  inset: 0 0 auto;
+  border-radius: 0;
+  background: none;
+  -webkit-mask-image: linear-gradient(#000 28%, transparent 72%);
+  mask-image: linear-gradient(#000 28%, transparent 72%);
 }
 
 .feature-media :is(img, video),
@@ -439,32 +468,40 @@ a { color: inherit; text-decoration: none; }
 }
 
 .feature-name {
-  grid-column: 1;
   margin: 0;
-  font-size: clamp(1.75rem, 1.25rem + 1.3vw, 2.5rem);
-  font-stretch: 112%;
-  font-weight: 620;
-  line-height: 1;
-  letter-spacing: -.025em;
+  font-size: clamp(2.25rem, min(1.2rem + 3.6vw, 9svh), 4.75rem);
+  font-stretch: 75%;
+  font-weight: 500;
+  line-height: .95;
+  letter-spacing: -.03em;
 }
 
 .feature-what {
-  grid-column: 1;
   margin: 0;
-  max-width: 30ch;
+  max-width: 44ch;
+  color: color-mix(in oklab, var(--moon) 82%, var(--night));
 }
-
-.feature .project-proof {
-  grid-column: 2;
-  grid-row: 2 / span 3;
-}
-
-.feature .figure { font-size: clamp(2rem, 1.4rem + 1.8vw, 3.25rem); }
-.feature .figure-label { max-width: 20ch; }
 
 .feature .project-links {
-  grid-column: 1;
-  margin-top: 4px;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  color: var(--fg);
+  font-size: .875rem;
+}
+
+.feature .project-links a {
+  padding: 5px 14px;
+  border: 1px solid color-mix(in oklab, currentColor 35%, transparent);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+
+.feature .project-links a:hover {
+  background: var(--moon);
+  border-color: var(--moon);
+  color: var(--night);
 }
 
 .builds {
@@ -704,19 +741,22 @@ a.build:hover .build-name {
   .role-when { display: block; margin-bottom: 4px; }
   .role-note { margin-top: 6px; color: var(--soft); }
 
-  .feature { display: block; }
-  .feature-name { margin-bottom: 10px; }
-  .feature .project-proof { margin: 18px 0 14px; text-align: left; }
+  /* Too narrow to lay words over a shot: it sits on top, the words below. */
+  .feature {
+    justify-content: flex-start;
+    aspect-ratio: auto;
+    padding: 0 20px 24px;
+    border-radius: 16px;
+  }
+  .feature-media {
+    position: relative;
+    align-self: stretch;
+    margin: 0 -20px -36px;
+  }
 }
 
-/* Below this the large cards run one to a row, and the small ones two. */
+/* Below this the small cards run two to a row. */
 @media (max-width: 899px) {
-  .features {
-    grid-template-columns: minmax(0, 1fr);
-    padding-bottom: 0;
-  }
-  .features > li:nth-child(even) { transform: none; }
-
   .builds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
