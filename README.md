@@ -59,8 +59,26 @@ the same tokens, and no light/dark toggle. They share `/story.css` and
 Inbox Firewall also keeps its lab: `inbox-firewall/app.js` with `data.json`,
 styled by `inbox-firewall/styles.css`. The chart colours in `app.js` are
 hard-coded, so keep them in step with the tokens. The old diagram,
-`assets/photos/tiny-router-diagram.png`, is still the social card image.
+`assets/photos/tiny-router-diagram.png`, is no longer linked from anywhere.
 The page itself draws the pipeline as inline SVG.
+
+## Search and sharing
+
+- Every indexable page carries a canonical URL on `parvez-ahmed.com`, Open
+  Graph and Twitter tags, and JSON-LD: `Person`, `ProfilePage` and `WebSite` on
+  the homepage, and an `Article` on each story page that points back to that
+  `Person` by `@id`. `404.html` is `noindex`.
+- `sitemap.xml` lists the five pages and `robots.txt` points to it. Add any
+  new page to the sitemap.
+- `_headers` sends `X-Robots-Tag: noindex` on `*.pages.dev`, so only the
+  custom domain gets indexed.
+- The favicon is `/favicon.svg`, with `/apple-touch-icon.png` (180px) for iOS.
+  It's a real file, not a data URI, because Google only shows favicons it can
+  crawl.
+- The social cards in `assets/social/` are 1200×630 screenshots of each
+  page's opening screen, with the bar's nav, clock and link pills hidden. If an
+  opening changes, retake its card: headless Chrome at 1200×630, wait for the
+  drawing to finish, JPEG.
 
 `/eval-case-study/` still has the old paper-and-serif style.
 
