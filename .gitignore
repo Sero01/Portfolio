@@ -12,3 +12,6 @@ docs/
 
 # Wrangler local cache
 .wrangler/
+
+# Personal to-do list
+TODO.md
