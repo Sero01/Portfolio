@@ -302,7 +302,7 @@ function svgElement(name, attributes = {}) {
 function renderChart() {
   const svg = elements.riskChart;
   svg.innerHTML = "";
-  const bounds = { left: 58, right: 690, top: 20, bottom: 276 };
+  const bounds = { left: 58, right: 700, top: 20, bottom: 272 };
   const points = Array.from({ length: 21 }, (_, index) => {
     const threshold = index / 20;
     return { threshold, ...scoreAll(threshold) };
@@ -321,15 +321,15 @@ function renderChart() {
         y1: bounds.top,
         x2: xPos,
         y2: bounds.bottom,
-        stroke: "#303831",
+        stroke: "#302f2c",
         "stroke-width": 1,
       }),
     );
     const label = svgElement("text", {
       x: xPos,
-      y: 302,
-      fill: "#7e887f",
-      "font-size": 10,
+      y: 298,
+      fill: "#9a978f",
+      "font-size": 13,
       "text-anchor": "middle",
     });
     label.textContent = `${tick * 100}%`;
@@ -345,15 +345,15 @@ function renderChart() {
         y1: yPos,
         x2: bounds.right,
         y2: yPos,
-        stroke: "#303831",
+        stroke: "#302f2c",
         "stroke-width": 1,
       }),
     );
     const label = svgElement("text", {
       x: 47,
       y: yPos + 4,
-      fill: "#7e887f",
-      "font-size": 10,
+      fill: "#9a978f",
+      "font-size": 13,
       "text-anchor": "end",
     });
     label.textContent = percent(risk);
@@ -370,8 +370,8 @@ function renderChart() {
     svgElement("path", {
       d: path,
       fill: "none",
-      stroke: "#d5ff4c",
-      "stroke-width": 3,
+      stroke: "#e7e9ee",
+      "stroke-width": 2,
       "stroke-linejoin": "round",
     }),
   );
@@ -382,20 +382,20 @@ function renderChart() {
       cx: x(selected.coverage),
       cy: y(selected.risk),
       r: 7,
-      fill: "#58e8ff",
-      stroke: "#101310",
+      fill: "#b98c4a",
+      stroke: "#201f1e",
       "stroke-width": 3,
     }),
   );
 
   const xLabel = svgElement("text", {
     x: (bounds.left + bounds.right) / 2,
-    y: 319,
-    fill: "#939b94",
-    "font-size": 10,
+    y: 322,
+    fill: "#9a978f",
+    "font-size": 13,
     "text-anchor": "middle",
   });
-  xLabel.textContent = "Local coverage →";
+  xLabel.textContent = "Coverage →";
   svg.appendChild(xLabel);
 }
 
@@ -469,12 +469,8 @@ async function boot() {
     bindControls();
     renderAll();
   } catch (error) {
-    document.querySelector("main").innerHTML = `
-      <section class="thesis panel">
-        <p class="eyebrow">Demo data unavailable</p>
-        <blockquote>Serve <em>demo/</em> over HTTP.</blockquote>
-        <p>Run <code>python3 -m http.server 8000 --directory demo</code>, then open localhost:8000.</p>
-      </section>
+    document.querySelector("#lab-body").innerHTML = `
+      <p class="small">The lab's data didn't load. Serve the site over HTTP rather than opening the file directly.</p>
     `;
     console.error(error);
   }

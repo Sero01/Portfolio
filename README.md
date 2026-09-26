@@ -43,10 +43,26 @@ re-copy the changed prose by hand.
 
 ## The project pages
 
-`/docval/` and `/reconmatch/` are self-contained story pages built on the same
-pattern as `/eval-case-study/` — one `index.html` with inline CSS, no build
-step, reusing the site's tokens and the `portfolio-theme` localStorage key. Both
-project cards link to them as "How it works".
+`/inbox-firewall/`, `/docval/` and `/reconmatch/` are the story pages the
+project cards link to as "Story". They are set in the homepage's night: Mona Sans,
+the same tokens, and no light/dark toggle. They share `/story.css` and
+`/story.js`, so they need the site served from its root:
+
+- The opening redraws the card's SVG inline, cropped with its own `viewBox`.
+  Every stroke carries `pathLength="1"` so it can draw itself in.
+- Each chapter's heading stays pinned on the left while its text scrolls past.
+  Below 900px everything stacks into one column.
+- The bar's clock runs through one hour as the story is read: 21:00 for Inbox
+  Firewall, 22:00 for DocVal and 23:00 for ReconMatch, set with `data-hours` on
+  `<body>`. Each page ends on the next story's name.
+
+Inbox Firewall also keeps its lab: `inbox-firewall/app.js` with `data.json`,
+styled by `inbox-firewall/styles.css`. The chart colours in `app.js` are
+hard-coded, so keep them in step with the tokens. The old diagram,
+`assets/photos/tiny-router-diagram.png`, is still the social card image.
+The page itself draws the pipeline as inline SVG.
+
+`/eval-case-study/` still has the old paper-and-serif style.
 
 They are deliberately *not* duplicates of the eval case study: `/docval/` is the
 project story (what the pipeline does, what it scores, the fix that moved it),
@@ -66,21 +82,25 @@ disposition is `SUGGESTED_FOR_REVIEW` — no auto-match is claimed on that data.
 
 ### Charts
 
-Bars are plain HTML/CSS, no chart library. The two series use a categorical pair
-validated against the card surface in both modes — `#d97757`/`#00819e` on light,
-re-stepped to `#d3714f`/`#2ba3c0` on dark rather than flipped. Each `.track`
+Bars are plain HTML/CSS, no chart library. The result is amber (`#b98c4a`, the
+amber in the card drawings) and the comparison is grey (`#6f6c66`). Against the
+night, that pair passes the lightness, CVD-separation and contrast checks. The
+grey fails the chroma floor, which is intended: it is a neutral reference, and
+every bar is labelled with its value. A chart with one series uses moon white.
+Bars grow in once their chart scrolls into view. Each `.track`
 carries a 62px right margin that holds the value label; because it shrinks the
 track box itself, fill widths and reference lines stay on one percentage base.
 Don't remove it — the widest bars overflow the card without it.
 
 ### Waking the demo
 
-Both pages fire a `fetch(DEMO_URL, {mode:'no-cors'})` on load. Render's free tier
+The DocVal and ReconMatch pages fire a `fetch(DEMO_URL, {mode:'no-cors'})` on load. Render's free tier
 spins the instance down after 15 idle minutes and takes about a minute to boot,
 so the request goes out while the article is being read and the demo is usually
 awake by the time anyone reaches the button. The response is opaque and is never
 read — only the request arriving at Render matters — but it still resolves once
-the server has answered, which is what flips the status line to "Demo is awake".
+the server has answered, which is what lights the status dot. The `.demo[data-wake]` element holds the
+URL, and `story.js` does the rest.
 A `setInterval` re-pings every 10 minutes so a slow read cannot outlast the idle
 timer.
 

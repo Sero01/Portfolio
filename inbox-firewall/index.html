@@ -1,357 +1,361 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta
-      name="description"
-      content="A ~26M router turns inbox messages into a typed action DSL. Held-out calibration drove ECE to 0.000 and moved unsafe executions by exactly zero. Calibration is a coverage instrument, not a safety one — with an interactive lab you can re-run."
-    >
-    <link rel="canonical" href="https://parvez-ahmed.com/inbox-firewall/">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://parvez-ahmed.com/inbox-firewall/">
-    <meta property="og:site_name" content="Parvez Ahmed">
-    <meta
-      property="og:title"
-      content="Calibration is a coverage instrument, not a safety one"
-    >
-    <meta
-      property="og:description"
-      content="Held-out calibration drove ECE to 0.000 and changed the count of unsafe executions by exactly zero. A 26M router, a typed DSL, and an interactive lab where you can strip the defenses out one layer at a time."
-    >
-    <meta property="og:image" content="https://parvez-ahmed.com/assets/photos/tiny-router-diagram.png">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1774">
-    <meta property="og:image:height" content="887">
-    <meta
-      property="og:image:alt"
-      content="The pipeline: message, router, typed DSL line, validator, tier policy, execute or draft — with an escalate path branching out for low-confidence, malformed, untrusted or ambiguous messages."
-    >
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Calibration is a coverage instrument, not a safety one">
-    <meta
-      name="twitter:description"
-      content="Held-out calibration drove ECE to 0.000 and changed the count of unsafe executions by exactly zero. A 26M router, a typed DSL, and a lab you can re-run."
-    >
-    <meta name="twitter:image" content="https://parvez-ahmed.com/assets/photos/tiny-router-diagram.png">
-    <meta
-      name="twitter:image:alt"
-      content="The pipeline: message, router, typed DSL line, validator, tier policy, execute or draft — with an escalate path branching out for low-confidence, malformed, untrusted or ambiguous messages."
-    >
-    <meta name="author" content="Parvez Ahmed">
-    <meta name="theme-color" content="#101310">
-    <title>Inbox Firewall — a safety study, with a live lab — Parvez Ahmed</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23d5ff4c'/%3E%3Ctext x='50' y='70' font-size='56' font-family='Georgia,serif' fill='%23101310' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <div class="noise" aria-hidden="true"></div>
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="Back to parvez-ahmed.com">
-        <span class="brand-mark">P</span>
-        <span>
-          <strong>Parvez Ahmed</strong>
-          <small>Inbox firewall · selective automation lab</small>
-        </span>
-      </a>
-      <div class="status-strip">
-        <span class="live-dot"></span>
-        <span>Measured test data</span>
-        <span class="status-divider"></span>
-        <span>226-message held-out split</span>
-      </div>
-      <div class="topbar-links">
-        <a
-          class="ghost-pill"
-          href="https://github.com/Sero01/tiny-router-poc"
-          target="_blank"
-          rel="noopener"
-        >Repo ↗</a>
-        <span class="mock-badge">Mock executor only</span>
-      </div>
-    </header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inbox Firewall · Parvez Ahmed</title>
+  <meta name="description" content="A ~26M router turns inbox messages into a typed action DSL. Held-out calibration drove ECE to 0.000 and moved unsafe executions by exactly zero. Calibration is a coverage instrument, not a safety one, with an interactive lab you can re-run.">
+  <link rel="canonical" href="https://parvez-ahmed.com/inbox-firewall/">
+  <meta name="author" content="Parvez Ahmed">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://parvez-ahmed.com/inbox-firewall/">
+  <meta property="og:site_name" content="Parvez Ahmed">
+  <meta property="og:title" content="Calibration is a coverage instrument, not a safety one">
+  <meta property="og:description" content="Held-out calibration drove ECE to 0.000 and changed the count of unsafe executions by exactly zero. A 26M router, a typed DSL, and an interactive lab where you can strip the defenses out one layer at a time.">
+  <meta property="og:image" content="https://parvez-ahmed.com/assets/photos/tiny-router-diagram.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1774">
+  <meta property="og:image:height" content="887">
+  <meta property="og:image:alt" content="The pipeline: message, router, typed DSL line, validator, tier policy, execute or draft, with an escalate path branching out for low-confidence, malformed, untrusted or ambiguous messages.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Calibration is a coverage instrument, not a safety one">
+  <meta name="twitter:description" content="Held-out calibration drove ECE to 0.000 and changed the count of unsafe executions by exactly zero. A 26M router, a typed DSL, and a lab you can re-run.">
+  <meta name="twitter:image" content="https://parvez-ahmed.com/assets/photos/tiny-router-diagram.png">
+  <meta name="twitter:image:alt" content="The pipeline: message, router, typed DSL line, validator, tier policy, execute or draft, with an escalate path branching out for low-confidence, malformed, untrusted or ambiguous messages.">
+  <meta name="theme-color" content="#161513">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23161513'/%3E%3Cpath d='M16 1a15 15 0 0 0 0 30z' fill='%23e7e9ee'/%3E%3Ccircle cx='16' cy='16' r='14.25' fill='none' stroke='%23161513' stroke-width='1.5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/story.css">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body data-hours="21:00-22:00">
 
-    <main>
-      <section class="hero">
-        <div>
-          <p class="eyebrow">Case study · 26M router · Parvez Ahmed</p>
-          <h1>What actually keeps<br>an AI action <em>safe?</em></h1>
-        </div>
-        <p class="hero-copy">
-          The short version: not the confidence score. Below is the argument in
-          five paragraphs, and then a lab where you can pull each defense out
-          and watch the numbers move.
-        </p>
-      </section>
+  <header class="bar">
+    <a class="bar-name" href="/">Parvez Ahmed</a>
+    <nav class="bar-nav" aria-label="Site">
+      <a href="/#projects">Projects</a>
+    </nav>
+    <span class="bar-clock" aria-hidden="true">21:00</span>
+  </header>
 
-      <article class="preamble panel">
-        <p class="eyebrow">The study</p>
+  <main>
 
-        <p class="lead">
-          I started with a simple question: <b>how small can an AI model be
-          before it stops being safe to let it act on your inbox?</b>
-        </p>
+    <section class="story-hero" aria-labelledby="story-name">
+      <svg class="story-art draw" viewBox="290 80 700 300" aria-hidden="true">
+        <g fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke="#b5544c"><rect x="308" y="102" width="64" height="44" rx="4" pathLength="1"/><path d="M310 106L340 128L370 106" pathLength="1"/></g>
+          <g stroke="#e7e9ee"><rect x="308" y="212" width="64" height="44" rx="4" pathLength="1"/><path d="M310 216L340 238L370 216" pathLength="1"/></g>
+          <g stroke="#b5544c"><rect x="308" y="322" width="64" height="44" rx="4" pathLength="1"/><path d="M310 326L340 348L370 326" pathLength="1"/></g>
+          <path d="M388 124C488 124 456 234 556 234" stroke="#e7e9ee" stroke-opacity="0.28" pathLength="1"/>
+          <path d="M388 234H556" stroke="#e7e9ee" pathLength="1"/>
+          <path d="M388 344C488 344 456 234 556 234" stroke="#e7e9ee" stroke-opacity="0.28" pathLength="1"/>
+          <!-- Brain icon from Lucide (ISC licence), lucide.dev -->
+          <g stroke="#e7e9ee" stroke-width="0.545" transform="translate(574 168) scale(5.5)">
+            <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" pathLength="1"/>
+            <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" pathLength="1"/>
+            <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" pathLength="1"/>
+            <path d="M17.599 6.5a3 3 0 0 0 .399-1.375M6.003 5.125A3 3 0 0 0 6.401 6.5M3.477 10.896a4 4 0 0 1 .585-.396M19.938 10.5a4 4 0 0 1 .585.396M6 18a4 4 0 0 1-1.967-.516M19.967 17.484A4 4 0 0 1 18 18" pathLength="1"/>
+          </g>
+          <path d="M724 234H892" stroke="#e7e9ee" pathLength="1"/>
+          <g stroke="#e7e9ee"><rect x="908" y="212" width="64" height="44" rx="4" pathLength="1"/><path d="M910 216L940 238L970 216" pathLength="1"/></g>
+        </g>
+      </svg>
+      <h1 class="story-name" id="story-name">Inbox Firewall</h1>
+      <p class="story-line">How small can a model be and still be trusted with your&nbsp;inbox?</p>
+      <ul class="story-links">
+        <li><a class="pill" href="#lab">Lab</a></li>
+        <li><a class="pill" href="https://github.com/Sero01/tiny-router-poc" target="_blank" rel="noopener">Code</a></li>
+      </ul>
+    </section>
 
-        <figure class="pipeline">
-          <img
-            src="/assets/photos/tiny-router-diagram.png"
-            width="1774"
-            height="887"
-            alt="The pipeline: message, router, typed DSL line, validator, tier policy, execute or draft — with an escalate path branching out for low-confidence, malformed, untrusted or ambiguous messages."
-          >
-          <figcaption>
-            Anything low-confidence, malformed, untrusted, or ambiguous leaves
-            by the escalate path instead of acting.
-          </figcaption>
-        </figure>
+    <article class="story">
 
-        <p>
-          I built a system where every email had to become one of five actions:
-          ignore it, mark it urgent, archive it, draft a reply, or escalate it
-          to a human. I tested this on 1,028 messages, keeping the difficult and
-          malicious ones hidden until the final test. Even a simple rules-based
-          system performed surprisingly well, correctly routing 88.1% of
-          messages while handling about 75% automatically.
-        </p>
-
-        <div class="stat-strip">
-          <div class="stat"><b>1028</b><small>labelled messages, splits disjoint</small></div>
-          <div class="stat"><b>88.1%</b><small>baseline action accuracy</small></div>
-          <div class="stat"><b>11</b><small>unsafe executions calibration didn't fix</small></div>
-          <div class="stat"><b>7</b><small>unsafe after the content-trust layer</small></div>
-        </div>
-
-        <p>
-          The baseline is regex and keywords, no learning at all. Then I found
-          the 11: messages it acted on confidently that it should have handed to
-          a human. Six were prompt injections, the rest phishing. Every one
-          produced a perfectly well-formed action, so the validator was
-          powerless.
-        </p>
-
-        <p>
-          The obvious fix was calibration, and it failed in an interesting way.
-          Fitting the confidence scores on held-out clean data drove calibration
-          error from 0.245 to 0.000, but unsafe executions were still at 11. On
-          clean data the router is almost always right when it's confident, so
-          calibration maps nearly every score to ~1.0, and the gate ends up
-          waving the confident injections through. That showed me something
-          important: <b>being confident, even being well-calibrated, doesn't
-          mean you're safe when an attacker controls the input.</b>
-        </p>
-
-        <p>
-          I then added a simple security layer that treated the email itself as
-          untrusted and looked for signs that it was trying to manipulate the
-          AI. This reduced unsafe actions from 11 to 7, including reducing
-          prompt-injection failures from 6 to 2, with only a small drop in
-          coverage. The remaining failures were harder phishing and
-          social-engineering attacks. I couldn't benchmark the tiny 26M model
-          because my hardware wasn't sufficient, but that didn't change the main
-          conclusion: the model determines how much I can automate, while the
-          safety boundary needs to live outside the model, in strict rules and
-          security checks.
-        </p>
-
-        <p class="council-note">
-          Built collaboratively in <b>Council</b>, a terminal chat where Claude
-          Code and Codex work the same repo alongside me.
-        </p>
-
-        <p class="preamble-links">
-          <a href="https://github.com/Sero01/tiny-router-poc" target="_blank" rel="noopener">Read the code ↗</a>
-          <span aria-hidden="true">·</span>
-          <a href="/">More of my work →</a>
-        </p>
-      </article>
-
-      <section class="lab-intro">
-        <p class="eyebrow">The lab</p>
-        <h2>Now take the defenses apart yourself.</h2>
-        <p>
-          Everything below runs on the 226-message held-out test split, in your
-          browser. Swap the router, remove a defense layer, drag the gate — the
-          metrics, the trace, and the risk curve all recompute from the measured
-          results.
-        </p>
-      </section>
-
-      <section class="control-deck panel">
-        <div class="control-group">
-          <span class="control-label">Router</span>
-          <div class="segmented" id="router-control">
-            <button class="active" data-router="rules">Rules baseline</button>
-            <button data-router="escalate">Always escalate</button>
-          </div>
-        </div>
-        <div class="control-group layer-control">
-          <span class="control-label">Defense stack</span>
-          <div class="segmented" id="layer-control">
-            <button data-layer="0">Raw</button>
-            <button data-layer="1">+ Validator</button>
-            <button data-layer="2">+ Tier policy</button>
-            <button class="active" data-layer="3">+ Injection defense</button>
-          </div>
-        </div>
-        <label class="threshold-control">
-          <span>
-            <span class="control-label">Global gate</span>
-            <strong id="threshold-value">0.00</strong>
-          </span>
-          <input
-            id="threshold"
-            type="range"
-            min="0"
-            max="1"
-            value="0"
-            step="0.05"
-          >
-        </label>
-      </section>
-
-      <section class="metric-grid" aria-label="Current evaluation metrics">
-        <article class="metric-card">
-          <span>Coverage</span>
-          <strong id="metric-coverage">—</strong>
-          <small>messages executed locally</small>
-        </article>
-        <article class="metric-card">
-          <span>Action accuracy</span>
-          <strong id="metric-accuracy">—</strong>
-          <small>tool + exact arguments</small>
-        </article>
-        <article class="metric-card danger">
-          <span>Unsafe executed</span>
-          <strong id="metric-unsafe">—</strong>
-          <small id="metric-unsafe-detail">should-escalate rows</small>
-        </article>
-        <article class="metric-card">
-          <span>Selective risk</span>
-          <strong id="metric-risk">—</strong>
-          <small>wrong among executed</small>
-        </article>
-      </section>
-
-      <section class="lab-grid">
-        <article class="panel inbox-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Stream 01</p>
-              <h2>Incoming message</h2>
-            </div>
-            <div class="stream-controls">
-              <button id="previous-message" aria-label="Previous message">←</button>
-              <button id="play-stream"><span>▶</span> Play stream</button>
-              <button id="next-message" aria-label="Next message">→</button>
-            </div>
-          </div>
-          <div class="message-tabs" id="message-tabs"></div>
-          <div class="message-card">
-            <div class="message-meta">
-              <span id="message-id">—</span>
-              <span id="message-slice" class="slice-badge">—</span>
-            </div>
-            <h3 id="message-subject">Loading measured results…</h3>
-            <p class="sender" id="message-sender">—</p>
-            <div class="message-body" id="message-body"></div>
-          </div>
-          <div class="truth-row">
-            <span>Human label</span>
-            <code id="gold-action">—</code>
-          </div>
-        </article>
-
-        <article class="panel trace-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Decision trace</p>
-              <h2>Why this happened</h2>
-            </div>
-            <span class="outcome-pill" id="outcome-pill">Waiting</span>
-          </div>
-          <ol class="trace-list" id="trace-list"></ol>
-          <div class="proposal-box">
-            <span>Router proposal</span>
-            <code id="proposal-dsl">—</code>
-          </div>
-        </article>
-      </section>
-
-      <section class="evidence-grid">
-        <article class="panel chart-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">The money figure</p>
-              <h2>Risk vs. coverage</h2>
-            </div>
-            <div class="chart-legend">
-              <span><i class="legend-line"></i> current stack</span>
-              <span><i class="legend-dot"></i> selected gate</span>
-            </div>
-          </div>
-          <div class="chart-wrap">
-            <svg
-              id="risk-chart"
-              viewBox="0 0 720 320"
-              role="img"
-              aria-label="Risk coverage curve"
-            ></svg>
-          </div>
-          <p class="chart-note">
-            Better is bottom-right: more local handling, fewer wrong executions.
-            Tight gates move left; they do not make the router smarter.
+      <section class="chapter">
+        <h2 class="chapter-title">The question</h2>
+        <div class="prose">
+          <p class="lede">
+            I started with a simple question: how small can an AI model be before it stops
+            being safe to let it act on your inbox?
           </p>
-        </article>
+          <p>
+            I built a system where every email had to become one of five actions: ignore it,
+            mark it urgent, archive it, draft a reply, or escalate it to a human. I tested this
+            on 1,028 messages, keeping the difficult and malicious ones hidden until the final
+            test. Even a simple rules-based system performed surprisingly well, correctly
+            routing 88.1% of messages while handling about 75% automatically.
+          </p>
+        </div>
+      </section>
 
-        <article class="panel ablation-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Layer ablation</p>
-              <h2>What moves unsafe?</h2>
+      <section class="chapter">
+        <h2 class="chapter-title">The pipeline</h2>
+        <div class="prose">
+          <figure class="pipe" role="img" aria-label="The pipeline: message, router, DSL line, validator, tier policy, then execute or draft. The router, the validator and the tier policy can each send a message down the escalate path to a human instead.">
+            <svg class="pipe-wide draw" viewBox="0 0 1000 230" aria-hidden="true">
+              <g fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M48 70H192M208 70H352M368 70H512M528 70H672M688 70H932" stroke="#e7e9ee" stroke-opacity="0.45" pathLength="1"/>
+                <g stroke="#e7e9ee">
+                  <circle cx="40" cy="70" r="8" pathLength="1"/><circle cx="200" cy="70" r="8" pathLength="1"/><circle cx="360" cy="70" r="8" pathLength="1"/>
+                  <circle cx="520" cy="70" r="8" pathLength="1"/><circle cx="680" cy="70" r="8" pathLength="1"/><circle cx="940" cy="70" r="8" pathLength="1"/>
+                </g>
+                <g stroke="#b98c4a">
+                  <path d="M200 78V150Q200 170 220 170H932" pathLength="1"/>
+                  <path d="M520 78V150Q520 170 540 170" pathLength="1"/>
+                  <path d="M680 78V150Q680 170 700 170" pathLength="1"/>
+                  <circle cx="940" cy="170" r="8" pathLength="1"/>
+                </g>
+              </g>
+              <g fill="#e7e9ee" font-size="20" text-anchor="middle">
+                <text x="32" y="36" text-anchor="start">message</text>
+                <text x="200" y="36">router</text>
+                <text x="360" y="36">DSL line</text>
+                <text x="520" y="36">validator</text>
+                <text x="680" y="36">tier policy</text>
+                <text x="948" y="36" text-anchor="end">execute or draft</text>
+                <text x="948" y="216" text-anchor="end" fill="#9a978f">escalate to a human</text>
+              </g>
+            </svg>
+            <svg class="pipe-tall draw" viewBox="0 0 340 480" aria-hidden="true">
+              <g fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M150 38V92M150 108V162M150 178V232M150 248V302M150 318V372" stroke="#e7e9ee" stroke-opacity="0.45" pathLength="1"/>
+                <g stroke="#e7e9ee">
+                  <circle cx="150" cy="30" r="8" pathLength="1"/><circle cx="150" cy="100" r="8" pathLength="1"/><circle cx="150" cy="170" r="8" pathLength="1"/>
+                  <circle cx="150" cy="240" r="8" pathLength="1"/><circle cx="150" cy="310" r="8" pathLength="1"/><circle cx="150" cy="380" r="8" pathLength="1"/>
+                </g>
+                <g stroke="#b98c4a">
+                  <path d="M142 100H64Q40 100 40 124V426Q40 450 64 450H142" pathLength="1"/>
+                  <path d="M142 240H40" pathLength="1"/>
+                  <path d="M142 310H40" pathLength="1"/>
+                  <circle cx="150" cy="450" r="8" pathLength="1"/>
+                </g>
+              </g>
+              <g fill="#e7e9ee" font-size="18">
+                <text x="172" y="36">message</text>
+                <text x="172" y="106">router</text>
+                <text x="172" y="176">DSL line</text>
+                <text x="172" y="246">validator</text>
+                <text x="172" y="316">tier policy</text>
+                <text x="172" y="386">execute or draft</text>
+                <text x="172" y="456" fill="#9a978f">escalate to a human</text>
+              </g>
+            </svg>
+          </figure>
+          <p class="small">
+            Anything low-confidence, malformed, untrusted or ambiguous leaves by the escalate
+            path instead of acting.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">The eleven</h2>
+        <div class="prose">
+          <ul class="figures">
+            <li><span class="figure">1,028</span><span class="figure-label">labelled messages, splits disjoint</span></li>
+            <li><span class="figure">88.1%</span><span class="figure-label">baseline action accuracy</span></li>
+            <li><span class="figure">11</span><span class="figure-label">unsafe executions</span></li>
+          </ul>
+          <p>
+            The baseline is regex and keywords, no learning at all. Then I found the 11:
+            messages it acted on confidently that it should have handed to a human. Six were
+            prompt injections, the rest phishing. Every one produced a perfectly well-formed
+            action, so the validator was powerless.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">Calibration</h2>
+        <div class="prose">
+          <ul class="figures">
+            <li><span class="figure">0.245 &rarr; 0</span><span class="figure-label">calibration error, on held-out clean data</span></li>
+            <li><span class="figure">11 &rarr; 11</span><span class="figure-label">unsafe executions, <em>unmoved</em></span></li>
+          </ul>
+          <p>
+            The obvious fix was calibration, and it failed in an interesting way. Fitting the
+            confidence scores on held-out clean data drove calibration error from 0.245 to
+            0.000, but unsafe executions were still at 11. On clean data the router is almost
+            always right when it&rsquo;s confident, so calibration maps nearly every score to
+            ~1.0, and the gate ends up waving the confident injections through.
+          </p>
+          <p>
+            That showed me something important: <strong>being confident, even being
+            well-calibrated, doesn&rsquo;t mean you&rsquo;re safe when an attacker controls the
+            input.</strong>
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">Trust nothing in the message</h2>
+        <div class="prose">
+          <ul class="figures">
+            <li><span class="figure">11 &rarr; 7</span><span class="figure-label">unsafe executions</span></li>
+            <li><span class="figure">6 &rarr; 2</span><span class="figure-label">of them prompt injections</span></li>
+          </ul>
+          <p>
+            I then added a simple security layer that treated the email itself as untrusted and
+            looked for signs that it was trying to manipulate the AI. This reduced unsafe actions
+            from 11 to 7, including reducing prompt-injection failures from 6 to 2, with only a
+            small drop in coverage. The remaining failures were harder phishing and
+            social-engineering attacks.
+          </p>
+          <p>
+            I couldn&rsquo;t benchmark the tiny 26M model because my hardware wasn&rsquo;t
+            sufficient, but that didn&rsquo;t change the main conclusion.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">What I learned</h2>
+        <div class="prose">
+          <p class="thesis">Confidence is a coverage instrument, not a safety&nbsp;boundary.</p>
+          <p>
+            The model determines how much I can automate, while the safety boundary needs to
+            live outside the model, in strict rules and security checks. Typed outputs catch
+            malformed actions. Content-trust checks catch obvious injections. Phishing remains.
+            The honest system escalates what its deterministic layers cannot prove safe.
+          </p>
+          <p class="small">
+            Built collaboratively in <a href="https://github.com/Sero01/council" target="_blank" rel="noopener">Council</a>,
+            a terminal chat where Claude Code and Codex work the same repo alongside me.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter lab" id="lab" aria-labelledby="lab-title">
+        <h2 class="chapter-title" id="lab-title">The lab</h2>
+        <div class="prose">
+          <p class="lede">Now take the defenses apart yourself.</p>
+          <p>
+            Everything below runs on the 226-message held-out test split, in your browser. Swap
+            the router, remove a defense layer, drag the gate: the metrics, the trace and the
+            risk curve all recompute from the measured results.
+          </p>
+          <p class="small">A mock executor. No emails are read, sent, archived or modified.</p>
+        </div>
+
+        <div class="lab-body" id="lab-body">
+          <div class="controls">
+            <div class="control">
+              <span class="control-label" id="router-label">Router</span>
+              <div class="segmented" id="router-control" role="group" aria-labelledby="router-label">
+                <button class="active" data-router="rules">Rules baseline</button>
+                <button data-router="escalate">Always escalate</button>
+              </div>
             </div>
+            <div class="control">
+              <span class="control-label" id="layer-label">Defenses</span>
+              <div class="segmented" id="layer-control" role="group" aria-labelledby="layer-label">
+                <button data-layer="0">None</button>
+                <button data-layer="1">+ Validator</button>
+                <button data-layer="2">+ Tier policy</button>
+                <button class="active" data-layer="3">+ Injection defense</button>
+              </div>
+            </div>
+            <label class="control threshold">
+              <span class="control-label">Confidence gate <strong id="threshold-value">0.00</strong></span>
+              <input id="threshold" type="range" min="0" max="1" value="0" step="0.05">
+            </label>
           </div>
-          <div id="ablation-bars" class="ablation-bars"></div>
-          <div class="calibration-callout">
-            <span class="callout-number">11 → 11</span>
-            <div>
-              <strong>Calibration fixed ECE, not safety.</strong>
-              <p>
-                Clean held-out ECE reached 0.000. Every unsafe execution
-                survived adversarial distribution shift.
+
+          <ul class="figures metrics" aria-label="Current evaluation metrics" aria-live="polite">
+            <li><span class="figure" id="metric-coverage">&mdash;</span><span class="figure-label">coverage, messages executed</span></li>
+            <li><span class="figure" id="metric-accuracy">&mdash;</span><span class="figure-label">action accuracy, tool and exact arguments</span></li>
+            <li class="danger"><span class="figure" id="metric-unsafe">&mdash;</span><span class="figure-label">unsafe executed, <span id="metric-unsafe-detail">should-escalate rows</span></span></li>
+            <li><span class="figure" id="metric-risk">&mdash;</span><span class="figure-label">selective risk, wrong among executed</span></li>
+          </ul>
+
+          <div class="lab-grid">
+            <article class="lab-panel">
+              <div class="panel-head">
+                <h3>Message</h3>
+                <div class="stream-controls">
+                  <button id="previous-message" aria-label="Previous message">&larr;</button>
+                  <button id="play-stream"><span>&#9654;</span> Play stream</button>
+                  <button id="next-message" aria-label="Next message">&rarr;</button>
+                </div>
+              </div>
+              <div class="message-tabs" id="message-tabs"></div>
+              <div class="message-card">
+                <div class="message-meta">
+                  <span id="message-id">&mdash;</span>
+                  <span id="message-slice" class="slice-badge">&mdash;</span>
+                </div>
+                <h4 id="message-subject">Loading measured results&hellip;</h4>
+                <p class="sender" id="message-sender">&mdash;</p>
+                <div class="message-body" id="message-body"></div>
+              </div>
+              <div class="truth-row">
+                <span>Human label</span>
+                <code id="gold-action">&mdash;</code>
+              </div>
+            </article>
+
+            <article class="lab-panel">
+              <div class="panel-head">
+                <h3>Why this happened</h3>
+                <span class="outcome-pill" id="outcome-pill">Waiting</span>
+              </div>
+              <ol class="trace-list" id="trace-list"></ol>
+              <div class="proposal-box">
+                <span>Router proposal</span>
+                <code id="proposal-dsl">&mdash;</code>
+              </div>
+            </article>
+          </div>
+
+          <div class="lab-grid">
+            <article class="lab-panel">
+              <div class="panel-head">
+                <h3>Risk against coverage</h3>
+                <div class="chart-legend">
+                  <span><i class="legend-line"></i>current defenses</span>
+                  <span><i class="legend-dot"></i>your gate</span>
+                </div>
+              </div>
+              <div class="chart-wrap">
+                <svg id="risk-chart" viewBox="0 0 720 320" role="img" aria-label="Risk against coverage as the confidence gate moves"></svg>
+              </div>
+              <p class="chart-note">
+                Better is bottom right: more handled automatically, fewer wrong actions. A tighter
+                gate moves left; it does not make the router smarter.
               </p>
-            </div>
+            </article>
+
+            <article class="lab-panel">
+              <div class="panel-head">
+                <h3>What moves unsafe?</h3>
+              </div>
+              <div id="ablation-bars" class="ablation-bars"></div>
+              <div class="calibration-note">
+                <span class="figure">11 &rarr; 11</span>
+                <p>
+                  <strong>Calibration fixed the error, not the safety.</strong>
+                  Clean held-out ECE reached 0.000; every unsafe execution survived the
+                  adversarial shift.
+                </p>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
       </section>
 
-      <section class="thesis panel">
-        <p class="eyebrow">The result</p>
-        <blockquote>
-          Confidence is a <em>coverage instrument</em>, not a safety boundary.
-        </blockquote>
-        <p>
-          Typed outputs catch malformed actions. Content-trust checks catch
-          obvious injections. Phishing remains. The honest system escalates
-          what its deterministic layers cannot prove safe.
-        </p>
-      </section>
-    </main>
+    </article>
 
-    <footer>
-      <p class="footer-byline">
-        Built by <a href="/">Parvez Ahmed</a> — software engineer, Bengaluru.
-      </p>
-      <nav class="footer-links" aria-label="Related links">
-        <a href="https://github.com/Sero01/tiny-router-poc" target="_blank" rel="noopener">Repo ↗</a>
-        <a href="https://github.com/Sero01/council" target="_blank" rel="noopener">Council ↗</a>
-        <a href="/">parvez-ahmed.com →</a>
-      </nav>
-      <p class="footer-note">No emails are read, sent, archived, or modified.</p>
+    <footer class="story-next">
+      <p class="story-next-label">Next</p>
+      <a class="story-next-name" href="/docval/">DocVal</a>
+      <a class="story-back" href="/#projects">Back to projects</a>
     </footer>
 
-    <script src="app.js"></script>
-  </body>
+  </main>
+
+  <script src="/story.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>
