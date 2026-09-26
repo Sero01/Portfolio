@@ -630,5 +630,5 @@ code {
   .panels { grid-template-columns: 1fr; }
 
   .rows li { grid-template-columns: 1fr auto; }
-  .rows li > b + span { grid-column: 1 / -1; grid-row: 2; }
+  .rows li > b + span:not(.num) { grid-column: 1 / -1; grid-row: 2; }
 }

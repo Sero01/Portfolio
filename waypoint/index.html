@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Waypoint · Parvez Ahmed</title>
+  <meta name="description" content="Waypoint is a frozen, single-file search index that answers its first query 3.3x faster than Apache Lucene on a stock JVM, and matches Lucene's ranking to the last bit on 98% of scores.">
+  <meta property="og:title" content="Waypoint: a search index built to open fast">
+  <meta property="og:description" content="3.3x faster than Lucene to the first result, the same ranking, and a 3x bar set in advance that it missed.">
+  <meta property="og:type" content="article">
+  <meta name="theme-color" content="#161513">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23161513'/%3E%3Cpath d='M16 1a15 15 0 0 0 0 30z' fill='%23e7e9ee'/%3E%3Ccircle cx='16' cy='16' r='14.25' fill='none' stroke='%23161513' stroke-width='1.5'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wdth,wght@75..125,200..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/story.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body data-hours="22:00-23:00">
+
+  <header class="bar">
+    <a class="bar-name" href="/">Parvez Ahmed</a>
+    <nav class="bar-nav" aria-label="Site">
+      <a href="/#projects">Projects</a>
+    </nav>
+    <span class="bar-clock" aria-hidden="true">22:00</span>
+  </header>
+
+  <main>
+
+    <section class="story-hero" aria-labelledby="story-name">
+      <svg class="story-art draw" viewBox="290 80 710 290" aria-hidden="true">
+        <g fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M880 104V344" stroke="#e7e9ee" stroke-opacity="0.28" stroke-dasharray="2 12"/>
+          <g stroke="#e7e9ee" stroke-opacity="0.28">
+            <path d="M352 112H382L396 126V168a4 4 0 0 1-4 4H352a4 4 0 0 1-4-4V116a4 4 0 0 1 4-4ZM382 112V126H396" pathLength="1"/>
+            <path d="M348 122H342a4 4 0 0 0-4 4V178a4 4 0 0 0 4 4H382a4 4 0 0 0 4-4V172" pathLength="1"/>
+            <path d="M338 132H332a4 4 0 0 0-4 4V188a4 4 0 0 0 4 4H372a4 4 0 0 0 4-4V182" pathLength="1"/>
+            <path d="M328 142H322a4 4 0 0 0-4 4V198a4 4 0 0 0 4 4H362a4 4 0 0 0 4-4V192" pathLength="1"/>
+            <path d="M318 152H312a4 4 0 0 0-4 4V208a4 4 0 0 0 4 4H352a4 4 0 0 0 4-4V202" pathLength="1"/>
+            <path d="M416 142H620" pathLength="1"/>
+          </g>
+          <g stroke="#e7e9ee">
+            <path d="M352 262H382L396 276V318a4 4 0 0 1-4 4H352a4 4 0 0 1-4-4V266a4 4 0 0 1 4-4ZM382 262V276H396" pathLength="1"/>
+            <path d="M416 292H860" pathLength="1"/>
+          </g>
+          <path d="M900 292H980" stroke="#b98c4a" pathLength="1"/>
+          <path d="M900 314H956M900 336H940" stroke="#e7e9ee" stroke-opacity="0.28" pathLength="1"/>
+        </g>
+      </svg>
+      <h1 class="story-name" id="story-name">Waypoint</h1>
+      <p class="story-line">A single-file search index, built to open&nbsp;fast.</p>
+      <ul class="story-links">
+        <li><a class="pill" href="https://github.com/Sero01/waypoint" target="_blank" rel="noopener">Code</a></li>
+      </ul>
+    </section>
+
+    <article class="story">
+
+      <section class="chapter">
+        <h2 class="chapter-title">The bill</h2>
+        <div class="prose">
+          <p class="lede">
+            Lucene pays for deletes, updates and live indexing every time it opens an index,
+            even when you will never use them.
+          </p>
+          <p>
+            Waypoint doesn&rsquo;t have them. The index is built once and frozen into one file.
+            Opening it is one memory map and a 128-byte header read, and nothing else loads
+            until a query needs it.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">First result</h2>
+        <div class="prose">
+          <figure class="chart">
+            <h3 class="chart-title">From process start to the first result on screen</h3>
+            <ul class="legend">
+              <li><i aria-hidden="true"></i>Waypoint</li>
+              <li class="k2"><i aria-hidden="true"></i>Lucene</li>
+            </ul>
+            <div class="bars">
+              <div class="bar-row">
+                <span class="bar-label">Stock JVM<small>what most people run</small></span>
+                <div class="bar-group">
+                  <div class="track" style="--v:29.2%"><div class="fill"></div><b class="value">117 ms</b></div>
+                  <div class="track" style="--v:95%"><div class="fill k2"></div><b class="value">380 ms</b></div>
+                </div>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Both tuned<small>AOT cache on each</small></span>
+                <div class="bar-group">
+                  <div class="track" style="--v:24.1%"><div class="fill"></div><b class="value">96 ms</b></div>
+                  <div class="track" style="--v:48%"><div class="fill k2"></div><b class="value">192 ms</b></div>
+                </div>
+              </div>
+            </div>
+            <figcaption>
+              One million MS MARCO passages, the same token stream into both engines, median of
+              12 fresh JVMs.
+            </figcaption>
+          </figure>
+
+          <ul class="figures">
+            <li><span class="figure">3.3&times;</span><span class="figure-label">faster to first result on a stock JVM</span></li>
+            <li><span class="figure">12.3&times;</span><span class="figure-label">on the engine&rsquo;s own work, JVM start-up subtracted</span></li>
+            <li><span class="figure">1,000</span><span class="figure-label">classes loaded for one query, <em>against 2,512 for Lucene</em></span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">Same answers</h2>
+        <div class="prose">
+          <ul class="figures">
+            <li><span class="figure">98.0%</span><span class="figure-label">of 20,266 scores bit-identical to Lucene&rsquo;s</span></li>
+            <li><span class="figure">2.3e-7</span><span class="figure-label">the largest difference in the rest</span></li>
+          </ul>
+          <p>
+            Fast doesn&rsquo;t count if the ranking drifts. Lucene is the test oracle, so I
+            copied its arithmetic, not just its formula.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">The bar I missed</h2>
+        <div class="prose">
+          <p>
+            Before writing any code, I promised to withdraw the headline if Waypoint
+            wasn&rsquo;t 3&times; faster with both engines fully tuned.
+          </p>
+
+          <figure class="chart">
+            <h3 class="chart-title">How much faster Waypoint is, as the JVM gets tuned</h3>
+            <ul class="legend">
+              <li class="ref"><i aria-hidden="true"></i>3&times;, the bar set in advance</li>
+            </ul>
+            <div class="bars">
+              <div class="bar-row">
+                <span class="bar-label">Stock</span>
+                <div class="track" style="--v:82.5%"><div class="fill moon"></div><b class="value">3.3&times;</b><span class="refline" style="--v:75%"></span></div>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">AppCDS</span>
+                <div class="track" style="--v:55%"><div class="fill moon"></div><b class="value">2.2&times;</b><span class="refline" style="--v:75%"></span></div>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">AOT cache</span>
+                <div class="track" style="--v:50%"><div class="fill moon"></div><b class="value">2.0&times;</b><span class="refline" style="--v:75%"></span></div>
+              </div>
+            </div>
+          </figure>
+
+          <p class="lede">It landed at 2&times;. The 3&times; claim is withdrawn.</p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">Use Lucene</h2>
+        <div class="prose">
+          <ul class="rows pairs" aria-label="Warm query latency and index size, the faster engine on each">
+            <li><b>AND queries</b><span class="num">Lucene, up to 2.9&times;</span></li>
+            <li><b>Common terms</b><span class="num">Lucene, 2.2&times;</span></li>
+            <li><b>Index size</b><span class="num">Lucene, 1.21&times; smaller</span></li>
+            <li><b>Rare terms</b><span class="num">Waypoint, 1.4&times;</span></li>
+            <li><b>Reopening an index</b><span class="num">Waypoint, 12.5&times;</span></li>
+          </ul>
+          <p>
+            For almost every production workload, Lucene is the right answer. Waypoint wins
+            one shape: a small, frozen index queried from processes that start, answer once,
+            and exit.
+          </p>
+        </div>
+      </section>
+
+    </article>
+
+    <footer class="story-next">
+      <p class="story-next-label">Next</p>
+      <a class="story-next-name" href="/docval/">DocVal</a>
+      <a class="story-back" href="/#projects">Back to projects</a>
+    </footer>
+
+  </main>
+
+  <script src="/story.js"></script>
+</body>
+</html>

@@ -43,7 +43,7 @@ re-copy the changed prose by hand.
 
 ## The project pages
 
-`/inbox-firewall/`, `/docval/` and `/reconmatch/` are the story pages the
+`/inbox-firewall/`, `/waypoint/`, `/docval/` and `/reconmatch/` are the story pages the
 project cards link to as "Story". They are set in the homepage's night: Mona Sans,
 the same tokens, and no light/dark toggle. They share `/story.css` and
 `/story.js`, so they need the site served from its root:
@@ -53,8 +53,8 @@ the same tokens, and no light/dark toggle. They share `/story.css` and
 - Each chapter's heading stays pinned on the left while its text scrolls past.
   Below 900px everything stacks into one column.
 - The bar's clock runs through one hour as the story is read: 21:00 for Inbox
-  Firewall, 22:00 for DocVal and 23:00 for ReconMatch, set with `data-hours` on
-  `<body>`. Each page ends on the next story's name.
+  Firewall, 22:00 for Waypoint, 23:00 for DocVal and 00:00 for ReconMatch, set with `data-hours` on
+  `<body>`. Each page ends on the next story's name, in the homepage's card order.
 
 Inbox Firewall also keeps its lab: `inbox-firewall/app.js` with `data.json`,
 styled by `inbox-firewall/styles.css`. The chart colours in `app.js` are
