@@ -272,6 +272,19 @@ code {
   letter-spacing: -.01em;
 }
 
+/* the one line a story lands on, set large */
+.thesis {
+  color: var(--moon);
+  font-size: clamp(2rem, 1.2rem + 2.8vw, 3.75rem);
+  font-stretch: 75%;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.03em;
+  text-wrap: balance;
+}
+
+.prose > .thesis { margin-bottom: .6em; }
+
 .aside {
   padding-left: 18px;
   border-left: 1px solid var(--amber);

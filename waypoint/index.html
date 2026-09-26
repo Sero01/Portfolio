@@ -58,16 +58,47 @@
     <article class="story">
 
       <section class="chapter">
-        <h2 class="chapter-title">The bill</h2>
+        <h2 class="chapter-title">A Sunday project</h2>
         <div class="prose">
           <p class="lede">
-            Lucene pays for deletes, updates and live indexing every time it opens an index,
-            even when you will never use them.
+            One Sunday I wanted something hard to build, so I picked a search engine.
           </p>
           <p>
-            Waypoint doesn&rsquo;t have them. The index is built once and frozen into one file.
-            Opening it is one memory map and a 128-byte header read, and nothing else loads
-            until a query needs it.
+            A search engine is a few parts: an analyzer that turns text into tokens, an
+            inverted index mapping each term to the documents that contain it, and a scorer,
+            usually BM25, that ranks them. I started with the indexer and went down the rabbit
+            hole: papers, source code, a lot of questions to Claude.
+          </p>
+          <p>
+            Every road led to Apache Lucene, the open-source index under Elasticsearch and
+            Solr, tuned for over twenty years. Beating it outright was never on the table. The
+            question became: is there one axis where it can be beaten?
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">Picking the fight</h2>
+        <div class="prose">
+          <p>
+            I read Lucene&rsquo;s source and ranked the options.
+          </p>
+          <ul class="rows" aria-label="Axes considered against Lucene">
+            <li><b>Index size</b><span>Bit-packed blocks and compressed tries. Not a chance.</span></li>
+            <li><b>Warm queries</b><span>Block-max pruning and SIMD decoding, its most-tuned code. Unlikely.</span></li>
+            <li><b>Build speed</b><span>74% of a build is tokenising, so it&rsquo;s really a tokenizer contest.</span></li>
+            <li><b>Cold start</b><span>Lucene does a lot of work before its first answer. The one worth trying.</span></li>
+          </ul>
+          <p>
+            Before a single query, Lucene finds the latest commit, then for every segment
+            validates each file&rsquo;s header and checksum and builds a reader per field.
+            That buys deletes, updates and live indexing, paid on every open whether you use
+            them or not.
+          </p>
+          <p>
+            So Waypoint drops them. The index is built once and frozen into one file. Opening
+            it is one memory map and a 128-byte header read; everything else is read lazily
+            when a query first touches it.
           </p>
         </div>
       </section>
@@ -108,6 +139,12 @@
             <li><span class="figure">12.3&times;</span><span class="figure-label">on the engine&rsquo;s own work, JVM start-up subtracted</span></li>
             <li><span class="figure">1,000</span><span class="figure-label">classes loaded for one query, <em>against 2,512 for Lucene</em></span></li>
           </ul>
+          <p>
+            On a cold JVM, time is classes loaded. So the read path has no lambdas, streams,
+            regex or pattern-matching <code>switch</code>: each compiles to
+            <code>invokedynamic</code> and drags in the method-handle machinery on first use.
+            A test forks a JVM, counts classes for one query, and fails the build over budget.
+          </p>
         </div>
       </section>
 
@@ -119,8 +156,14 @@
             <li><span class="figure">2.3e-7</span><span class="figure-label">the largest difference in the rest</span></li>
           </ul>
           <p>
-            Fast doesn&rsquo;t count if the ranking drifts. Lucene is the test oracle, so I
-            copied its arithmetic, not just its formula.
+            Fast doesn&rsquo;t count if the ranking drifts, so Lucene is the test oracle.
+            Matching it meant copying its arithmetic, not just BM25: document lengths quantised
+            to a byte, a 256-entry reciprocal cache, the same rewrite that keeps scores
+            monotonic in floats.
+          </p>
+          <p>
+            The last 2% can&rsquo;t be fixed. Float addition isn&rsquo;t associative, and the
+            two engines add a query&rsquo;s clauses in a different order.
           </p>
         </div>
       </section>
@@ -155,6 +198,11 @@
           </figure>
 
           <p class="lede">It landed at 2&times;. The 3&times; claim is withdrawn.</p>
+          <p>
+            Part of the reason: a bare JVM loads 440 classes and spends about 90&nbsp;ms before
+            <code>main</code>. Both engines pay that floor, so it drags every ratio towards 1.
+            A 12&times; gap in engine work shows up as 3&times; in what you wait for.
+          </p>
         </div>
       </section>
 
@@ -173,6 +221,18 @@
             one shape: a small, frozen index queried from processes that start, answer once,
             and exit.
           </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">What I learned</h2>
+        <div class="prose">
+          <p class="thesis">Fast is what you leave&nbsp;out.</p>
+          <ul class="rows">
+            <li><b>Flags are trades</b><span>Lucene&rsquo;s SIMD flag is up to 1.8&times; faster warm, but loads 207 more classes and is slower cold. A benchmark that doesn&rsquo;t say which side it ran on is overstating something.</span></li>
+            <li><b>Sound reasoning, wrong answer</b><span>About 40% of Waypoint&rsquo;s classes came from the foreign-memory API. Swapping it for <code>MappedByteBuffer</code> saved 26 classes and no time. Probe before you refactor.</span></li>
+            <li><b>Report the floor</b><span>Wall clock without the JVM&rsquo;s own start-up next to it credits the engine with the runtime&rsquo;s cost.</span></li>
+          </ul>
         </div>
       </section>
 

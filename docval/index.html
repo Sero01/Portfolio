@@ -83,25 +83,36 @@
     <article class="story">
 
       <section class="chapter">
-        <h2 class="chapter-title">The problem</h2>
+        <h2 class="chapter-title">How hard could it be?</h2>
         <div class="prose">
           <p class="lede">
-            Getting a model to read a bank statement takes an afternoon. Knowing whether it
-            read the statement <em>correctly</em> is the actual engineering problem, and it
-            is the one almost nobody demos.
+            I had a pile of receipts and bank statements I wanted as data, and open-source
+            tools that claim to do it.
           </p>
           <p>
-            DocVal takes a bank statement, a native PDF or a photographed scan, and returns
-            typed, structured transactions. Then it does the part that matters: it checks the
-            arithmetic. Opening balance plus every credit minus every debit must equal the
-            closing balance. The running-balance chain has to hold row by row. Dates have to
-            fall inside the statement period and stay in order. If the maths doesn&rsquo;t
-            hold, the extraction doesn&rsquo;t ship clean. It ships flagged.
+            Then a friend told me their company offers this as a service: people check every
+            receipt and statement by hand and type it into the client&rsquo;s system. OCR
+            still isn&rsquo;t trusted with it. I wanted to know why, so I built one.
           </p>
           <p>
-            That check is possible because a bank statement is one of the rare documents that
-            carries its own answer key. The numbers on it have to add up. So instead of asking
-            a second model whether the first model did well, you can just do the sum.
+            Reading the document turned out to be the easy half; a vision model does it in an
+            afternoon. The hard half is knowing when it read it <em>wrong</em>, and that is why
+            the humans are still there.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">The answer key</h2>
+        <div class="prose">
+          <p>
+            A bank statement is one of the rare documents that grades itself. Opening balance
+            plus credits minus debits must equal closing. The running balance must hold row by
+            row. Dates must stay in order and inside the period.
+          </p>
+          <p>
+            So instead of asking a second model whether the first did well, DocVal does the
+            sum. If it doesn&rsquo;t add up, the extraction ships flagged, not clean.
           </p>
         </div>
       </section>
@@ -116,11 +127,9 @@
             <li><b>Validate</b><span>Balance continuity, running-balance chain, date sanity. Pure functions, no model in the loop.</span></li>
           </ol>
           <p>
-            The vision model returns a <em>wire</em> schema of plain strings, and normalisation
-            into canonical types is ordinary deterministic code. That split is deliberate:
-            models copy what is printed on the page no matter how firmly you ask them not to,
-            so <code>$</code> becomes <code>USD</code> in Python, with a test, rather than in a
-            prompt.
+            The model returns plain strings and Python turns them into types. Models copy what
+            is printed no matter how you ask, so <code>$</code> becomes <code>USD</code> in
+            code, with a test, not in a prompt.
           </p>
         </div>
       </section>
@@ -129,9 +138,8 @@
         <h2 class="chapter-title">One number hides two</h2>
         <div class="prose">
           <p>
-            Held-out transaction F1 is <strong>0.63</strong>. On its own that is a mediocre
-            number and it tells you almost nothing. Split by where the documents came from, it
-            tells you everything.
+            Held-out transaction F1 is <strong>0.63</strong>, which on its own says almost
+            nothing. Split by source, it says everything.
           </p>
 
           <figure class="chart">
@@ -156,12 +164,10 @@
           </figure>
 
           <p>
-            Flash-Lite reads clean synthetic pages almost perfectly and garbles dense real
-            statements: rows shifted across columns, debit and credit swapped, digits misread.
-            The validation layer flags exactly those documents rather than accepting them
-            quietly, which is why the validation pass rate is a deeply unglamorous
-            <strong>0.25</strong>. A low pass rate on hard documents is the system working.
-            A high one would mean the checks were too weak to notice.
+            The model reads clean synthetic pages almost perfectly and garbles dense real ones:
+            shifted columns, swapped debits and credits, misread digits. The validator flags
+            exactly those, so only <strong>0.25</strong> of documents pass. On hard documents
+            that&rsquo;s the system working; a high pass rate would mean weak checks.
           </p>
         </div>
       </section>
@@ -170,12 +176,10 @@
         <h2 class="chapter-title">The fix</h2>
         <div class="prose">
           <p>
-            The first held-out run scored 0.12 on real scans with a 13% error rate. The eval
-            told me why: 10 of 13 failures were the model running through a 32k output-token
-            cap on dense multi-page documents, collapsing or dropping rows. That is not
-            &ldquo;bad extraction&rdquo;. It is a structural failure with a structural fix.
-            Dense documents now get extracted a page at a time and merged, with the
-            running-balance validator checking the seams.
+            The first run scored 0.12 on real scans. The eval said why: 10 of 13 failures were
+            the model hitting its 32k output-token cap on dense documents and dropping rows.
+            Not bad reading, a structural limit. Now dense documents are read a page at a
+            time and merged, with the running balance checking the seams.
           </p>
 
           <figure class="chart">
@@ -228,10 +232,8 @@
           </ul>
 
           <p>
-            The cost line is there on purpose. An accuracy gain that multiplies your bill by ten
-            is a different decision from a free one, and you cannot make that call if you only
-            ever measured accuracy. Mean latency is <strong>70.9 seconds</strong> per document
-            on the vision path; native-text PDFs cost nothing and return immediately.
+            Cost sits next to accuracy on purpose: a gain that multiplies the bill is a
+            different decision from a free one.
           </p>
         </div>
       </section>
@@ -240,16 +242,10 @@
         <h2 class="chapter-title">The data was wrong too</h2>
         <div class="prose">
           <p>
-            The validation layer earned its place before the pipeline was even finished. Running
-            it over the primary corpus surfaced that roughly <strong>12% of transaction rows in
-            the AgamiAI dataset have internally inconsistent running balances</strong>, not from
-            a bad extraction, but in the published ground-truth JSON <em>and</em> in the rendered
-            PDFs themselves. The source data does not add up.
-          </p>
-          <p>
-            You only ever find that by checking. A pipeline that trusts its inputs would have
-            quietly scored itself against wrong answers and reported a number nobody could have
-            challenged.
+            Run over the dataset itself, the validator found that about <strong>12% of
+            transaction rows</strong> have running balances that don&rsquo;t add up, in the
+            published ground truth and in the PDFs. A pipeline that trusted its inputs would
+            have scored itself against wrong answers.
           </p>
         </div>
       </section>
@@ -266,11 +262,18 @@
             <li><b>Mean latency per document</b><span class="num">70.9 s</span></li>
           </ul>
           <p class="small">100 held-out documents on gemini-2.5-flash-lite, re-run on 18 July 2026.</p>
+        </div>
+      </section>
+
+      <section class="chapter">
+        <h2 class="chapter-title">What I learned</h2>
+        <div class="prose">
+          <p class="thesis">Arithmetic doesn&rsquo;t&nbsp;hallucinate.</p>
           <p>
-            Publishing 0.42 is uncomfortable. It is also the whole argument: that number is
-            where the remaining work is, and a pipeline whose author knows its worst number is
-            more deployable than one carrying a single proud average. The weakest figure goes in
-            the README on purpose.
+            The people doing that data entry aren&rsquo;t there to read, they&rsquo;re there to
+            vouch. A model can&rsquo;t vouch for itself; a document with its own checksums can. Check
+            with deterministic code, split every number by source, and publish the worst one:
+            0.42 is where the work is.
           </p>
         </div>
       </section>
@@ -279,16 +282,16 @@
         <h2 class="chapter-title">Try it</h2>
         <div class="prose">
           <p>
-            Precomputed samples that cost nothing to run, or a rate-limited live upload capped
-            at 5 pages and 10&nbsp;MB. Bring your own statement, or use a bundled one.
+            Free precomputed samples, or a live upload of your own statement, up to 5 pages and
+            10&nbsp;MB.
           </p>
           <div class="demo" data-wake="https://docval-yy4s.onrender.com/">
             <a class="demo-go" href="https://docval-yy4s.onrender.com" target="_blank" rel="noopener">Open the demo</a>
             <span class="demo-status"><i aria-hidden="true"></i><span>Waking the demo</span></span>
           </div>
           <p class="small">
-            How the accuracy is measured, and why evals on your own generated data flatter you,
-            is its own story: <a href="/eval-case-study/">the eval case study</a>.
+            How the accuracy is measured is its own story:
+            <a href="/eval-case-study/">the eval case study</a>.
           </p>
         </div>
       </section>

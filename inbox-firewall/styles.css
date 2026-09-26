@@ -1,19 +1,7 @@
-/* Inbox Firewall: the story is set by /story.css. This sheet adds the one
-   line set large, the pipeline drawing, and the lab that app.js runs. The lab
-   keeps the night's palette: moon for what passed, amber for what a defense
-   stopped, red for what got through. */
-
-.thesis {
-  color: var(--moon);
-  font-size: clamp(2rem, 1.2rem + 2.8vw, 3.75rem);
-  font-stretch: 75%;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -.03em;
-  text-wrap: balance;
-}
-
-.prose > .thesis { margin-bottom: .6em; }
+/* Inbox Firewall: the story is set by /story.css. This sheet adds the
+   pipeline drawing and the lab that app.js runs. The lab keeps the night's
+   palette: moon for what passed, amber for what a defense stopped, red for
+   what got through. */
 
 /* ---------- the pipeline ---------- */
 

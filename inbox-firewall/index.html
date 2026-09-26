@@ -84,18 +84,30 @@
     <article class="story">
 
       <section class="chapter">
-        <h2 class="chapter-title">The question</h2>
+        <h2 class="chapter-title">How it started</h2>
         <div class="prose">
           <p class="lede">
-            I started with a simple question: how small can an AI model be before it stops
-            being safe to let it act on your inbox?
+            I was looking for open-ended research problems to hand to
+            <a href="https://github.com/Sero01/council" target="_blank" rel="noopener">Council</a>,
+            to see how well two agents explore when nobody knows the answer.
           </p>
           <p>
-            I built a system where every email had to become one of five actions: ignore it,
-            mark it urgent, archive it, draft a reply, or escalate it to a human. I tested this
-            on 1,028 messages, keeping the difficult and malicious ones hidden until the final
-            test. Even a simple rules-based system performed surprisingly well, correctly
-            routing 88.1% of messages while handling about 75% automatically.
+            Council is a shared workspace where Claude Code and Codex work the same repo with
+            one shared context and hand work to each other. Back then that meant Opus&nbsp;5
+            and Codex&nbsp;5.6&nbsp;Sol.
+          </p>
+          <p>
+            While digging for problems I found a video on how capable small models have
+            become. The one that stuck was Cactus&rsquo;s Needle, about 26 million
+            parameters. I gave the agents one brief, find it a real job, and watched them
+            research and argue.
+          </p>
+          <p>
+            They agreed on an inbox firewall. People now let agents run their inboxes, and an
+            inbox is text written by strangers. One prompt injection and the agent archives,
+            forwards or replies for the attacker. So put a model in front that&rsquo;s too
+            small to be clever but smart enough to tell a threat from an email. They built the
+            proof of concept and the harness to measure it.
           </p>
         </div>
       </section>
@@ -153,27 +165,35 @@
               </g>
             </svg>
           </figure>
+          <p>
+            The model never acts. It emits one line of a closed DSL: <code>IGNORE</code>,
+            <code>MARK_URGENT</code>, <code>ARCHIVE</code>, <code>DRAFT_REPLY</code> or
+            <code>ESCALATE</code>. Every argument is an enum, so off-vocabulary output is
+            rejected by a hand-written parser, never <code>eval</code>. Each action has a tier:
+            ignore just runs, archive needs high confidence, a draft is never sent.
+          </p>
           <p class="small">
-            Anything low-confidence, malformed, untrusted or ambiguous leaves by the escalate
-            path instead of acting.
+            1,028 labelled messages, splits disjoint, the hardest and most hostile held back
+            for the final test.
           </p>
         </div>
       </section>
 
       <section class="chapter">
-        <h2 class="chapter-title">The eleven</h2>
+        <h2 class="chapter-title">Well-formed and wrong</h2>
         <div class="prose">
           <ul class="figures">
-            <li><span class="figure">1,028</span><span class="figure-label">labelled messages, splits disjoint</span></li>
-            <li><span class="figure">88.1%</span><span class="figure-label">baseline action accuracy</span></li>
+            <li><span class="figure">88.1%</span><span class="figure-label">action accuracy, regex and keywords only</span></li>
             <li><span class="figure">11</span><span class="figure-label">unsafe executions</span></li>
           </ul>
           <p>
-            The baseline is regex and keywords, no learning at all. Then I found the 11:
-            messages it acted on confidently that it should have handed to a human. Six were
-            prompt injections, the rest phishing. Every one produced a perfectly well-formed
-            action, so the validator was powerless.
+            The first surprise was the rules baseline: no learning, 88.1% right, three
+            quarters handled automatically. The second was the 11 messages it acted on that
+            should have gone to a human. Six prompt injections, five phishing, and every one a
+            perfectly valid action, so the validator had nothing to reject.
           </p>
+          <p><strong>Types catch malformed output. They can&rsquo;t catch a well-formed bad
+            decision.</strong></p>
         </div>
       </section>
 
@@ -181,21 +201,17 @@
         <h2 class="chapter-title">Calibration</h2>
         <div class="prose">
           <ul class="figures">
-            <li><span class="figure">0.245 &rarr; 0</span><span class="figure-label">calibration error, on held-out clean data</span></li>
+            <li><span class="figure">0.245 &rarr; 0</span><span class="figure-label">calibration error, held-out clean data</span></li>
             <li><span class="figure">11 &rarr; 11</span><span class="figure-label">unsafe executions, <em>unmoved</em></span></li>
           </ul>
           <p>
-            The obvious fix was calibration, and it failed in an interesting way. Fitting the
-            confidence scores on held-out clean data drove calibration error from 0.245 to
-            0.000, but unsafe executions were still at 11. On clean data the router is almost
-            always right when it&rsquo;s confident, so calibration maps nearly every score to
-            ~1.0, and the gate ends up waving the confident injections through.
+            The obvious fix was to calibrate confidence and gate on it. It worked perfectly and
+            changed nothing. On clean data a confident router is nearly always right, so
+            calibration maps almost every score to ~1.0 and the gate waves confident injections
+            straight through.
           </p>
-          <p>
-            That showed me something important: <strong>being confident, even being
-            well-calibrated, doesn&rsquo;t mean you&rsquo;re safe when an attacker controls the
-            input.</strong>
-          </p>
+          <p><strong>Calibration fits the distribution you have. An attacker brings a different
+            one.</strong></p>
         </div>
       </section>
 
@@ -207,15 +223,15 @@
             <li><span class="figure">6 &rarr; 2</span><span class="figure-label">of them prompt injections</span></li>
           </ul>
           <p>
-            I then added a simple security layer that treated the email itself as untrusted and
-            looked for signs that it was trying to manipulate the AI. This reduced unsafe actions
-            from 11 to 7, including reducing prompt-injection failures from 6 to 2, with only a
-            small drop in coverage. The remaining failures were harder phishing and
-            social-engineering attacks.
+            What moved the number was treating the email body as untrusted input and flagging
+            text that addresses the model rather than the reader. Injections fell from 6 to 2
+            for a small loss in coverage. What&rsquo;s left is phishing, which is built to read
+            like a normal email.
           </p>
-          <p>
-            I couldn&rsquo;t benchmark the tiny 26M model because my hardware wasn&rsquo;t
-            sufficient, but that didn&rsquo;t change the main conclusion.
+          <p class="small">
+            Needle itself is still on the bench. Its fine-tuner wants JAX and more than my
+            2&nbsp;GB GPU, so the exporter is built and the run is deferred. The conclusion
+            doesn&rsquo;t depend on it.
           </p>
         </div>
       </section>
@@ -225,14 +241,9 @@
         <div class="prose">
           <p class="thesis">Confidence is a coverage instrument, not a safety&nbsp;boundary.</p>
           <p>
-            The model determines how much I can automate, while the safety boundary needs to
-            live outside the model, in strict rules and security checks. Typed outputs catch
-            malformed actions. Content-trust checks catch obvious injections. Phishing remains.
-            The honest system escalates what its deterministic layers cannot prove safe.
-          </p>
-          <p class="small">
-            Built collaboratively in <a href="https://github.com/Sero01/council" target="_blank" rel="noopener">Council</a>,
-            a terminal chat where Claude Code and Codex work the same repo alongside me.
+            The model decides how much you can automate. Safety lives outside it, in layers
+            that don&rsquo;t care how sure it feels: typed outputs, action tiers, content-trust
+            checks, and an escalate path for anything they can&rsquo;t prove safe.
           </p>
         </div>
       </section>
