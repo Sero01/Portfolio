@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Finish line -->
+    <path d="M880 104V344" stroke="#e7e9ee" stroke-opacity="0.28" stroke-dasharray="2 12"/>
+    <!-- Top lane: a stack of segments, still on its way -->
+    <g stroke="#e7e9ee" stroke-opacity="0.28">
+      <path d="M352 112H382L396 126V168a4 4 0 0 1-4 4H352a4 4 0 0 1-4-4V116a4 4 0 0 1 4-4ZM382 112V126H396"/>
+      <path d="M348 122H342a4 4 0 0 0-4 4V178a4 4 0 0 0 4 4H382a4 4 0 0 0 4-4V172"/>
+      <path d="M338 132H332a4 4 0 0 0-4 4V188a4 4 0 0 0 4 4H372a4 4 0 0 0 4-4V182"/>
+      <path d="M328 142H322a4 4 0 0 0-4 4V198a4 4 0 0 0 4 4H362a4 4 0 0 0 4-4V192"/>
+      <path d="M318 152H312a4 4 0 0 0-4 4V208a4 4 0 0 0 4 4H352a4 4 0 0 0 4-4V202"/>
+      <path d="M416 142H620"/>
+    </g>
+    <!-- Bottom lane: one file, already there -->
+    <g stroke="#e7e9ee">
+      <path d="M352 262H382L396 276V318a4 4 0 0 1-4 4H352a4 4 0 0 1-4-4V266a4 4 0 0 1 4-4ZM382 262V276H396"/>
+      <path d="M416 292H860"/>
+    </g>
+    <path d="M900 292H980" stroke="#b98c4a"/>
+    <path d="M900 314H956M900 336H940" stroke="#e7e9ee" stroke-opacity="0.28"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" transform="translate(46 0)">
+    <!-- A photographed statement, a little crooked -->
+    <g stroke="#e7e9ee" transform="rotate(-7 345 214)">
+      <rect x="300" y="149" width="90" height="130" rx="4"/>
+      <path d="M316 176H350M362 176H374M316 202H356M364 202H374M316 228H344M360 228H374M316 254H352M364 254H374" stroke-opacity="0.5"/>
+    </g>
+    <path d="M420 214H510" stroke="#e7e9ee"/>
+    <!-- Extracted rows: description, amount -->
+    <path d="M540 124H700M740 124H820M540 184H690M740 184H820M540 304H710M740 304H820" stroke="#e7e9ee"/>
+    <path d="M540 244H680" stroke="#e7e9ee"/>
+    <path d="M740 244H820" stroke="#b5544c"/>
+    <!-- Running-balance chain: every link holds but one -->
+    <g stroke="#e7e9ee"><circle cx="880" cy="124" r="8"/><circle cx="880" cy="184" r="8"/><circle cx="880" cy="304" r="8"/></g>
+    <circle cx="880" cy="244" r="8" stroke="#b5544c"/>
+    <path d="M880 136V172M880 256V292" stroke="#b98c4a"/>
+    <path d="M880 196V207M880 221V232" stroke="#b5544c"/>
+  </g>
+</svg>

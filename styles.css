@@ -243,6 +243,14 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: -.03em;
 }
 
+.section-title:has(+ .section-sub) { margin-bottom: 16px; }
+
+.section-sub {
+  margin: 0 0 clamp(40px, 8vh, 88px);
+  max-width: 40ch;
+  color: var(--soft);
+}
+
 /* ---------- work ---------- */
 
 .projects,
@@ -535,6 +543,45 @@ a.build:hover .build-name {
   text-underline-offset: .2em;
 }
 
+/* On hover the shot dims and a bubble with a north-east arrow comes up in
+   its corner, breathing gently to say the card goes somewhere. */
+.build .build-media { position: relative; }
+
+.build .build-media > * { transition: filter .35s var(--ease); }
+
+.build .build-media::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23161513' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / 50% no-repeat var(--moon);
+  opacity: 0;
+  scale: .6;
+  transition: opacity .3s var(--ease), scale .35s var(--ease);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  a.build:hover .build-media > * { filter: brightness(.6); }
+  a.build:hover .build-media::after { opacity: 1; scale: 1; }
+}
+
+a.build:focus-visible .build-media > * { filter: brightness(.6); }
+a.build:focus-visible .build-media::after { opacity: 1; scale: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  a.build:is(:hover, :focus-visible) .build-media::after {
+    animation: breathe 1.6s ease-in-out .35s infinite;
+  }
+}
+
+@keyframes breathe {
+  50% { transform: scale(1.14); }
+}
+
 /* Terminal-only projects have nothing to screenshot, so their cards show
    words instead: who is in the chat, or a goal the agent set itself. */
 .build-type {
@@ -656,11 +703,30 @@ a.build:hover .build-name {
 /* ---------- contact ---------- */
 
 .contact {
+  position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: clamp(112px, 18vh, 200px) var(--gutter) clamp(28px, 5vh, 48px);
+  overflow: clip;
+}
+
+.contact > * { position: relative; }
+
+/* The morning portrait again, at night: moonlit, and sinking into the dark. */
+.contact > .contact-portrait {
+  position: absolute;
+  right: clamp(-40px, 6vw, 140px);
+  bottom: 0;
+  height: min(82svh, 900px);
+  width: auto;
+  max-width: none;
+  filter: grayscale(1) brightness(.78) contrast(1.05);
+  user-select: none;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 45%, transparent 96%);
+  mask-image: linear-gradient(#000 45%, transparent 96%);
 }
 
 .contact-title {
@@ -720,6 +786,18 @@ a.build:hover .build-name {
     mask-image:
       linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
       linear-gradient(to bottom, transparent, #000 12%, #000 72%, transparent);
+  }
+
+  /* Same at night: the portrait takes the empty top, the words sit below it. */
+  .contact { padding-top: calc(64px + 42svh); }
+
+  .contact > .contact-portrait {
+    top: 64px;
+    bottom: auto;
+    right: -14vw;
+    height: min(50svh, 640px);
+    -webkit-mask-image: linear-gradient(#000 40%, transparent 92%);
+    mask-image: linear-gradient(#000 40%, transparent 92%);
   }
 }
 
