@@ -65,10 +65,14 @@ The page itself draws the pipeline as inline SVG.
 ## Writing
 
 `/writing/` lists the essays, newest first; each one lives in its own folder,
-`/writing/<slug>/index.html`. They are set in the story pages' night: they load
-`/story.css` and `/story.js` and add `/writing/writing.css` on top. The bar's
-clock runs on past the last story, from 01:00. The homepage links here from the
-bar and from the contact links (the bar's nav is hidden on phones).
+`/writing/<slug>/index.html`. They use the story pages' layout (they load
+`/story.css` and `/story.js`), but are set in the homepage's day:
+`/writing/writing.css` turns the story tokens over, so `--night` is the haze
+page and `--moon` the ink text. The bar's clock runs through the morning from
+07:00. On an essay, `/writing/writing.js` brings the paragraph at the reading
+line forward and fades the rest; it acts on `.essay .prose > p`, so the
+`<article>` needs the `essay` class. The homepage links here from the bar and
+from the contact links (the bar's nav is hidden on phones).
 
 To add a piece: copy `writing/a-tuesday-in-the-park/` to a new slug, change the
 text, title, date and read time, update its canonical, Open Graph and JSON-LD,

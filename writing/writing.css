@@ -1,7 +1,20 @@
-/* Writing: the story pages' night, after the last story has ended.
-   Loaded after /story.css and only adds what an essay needs that a project
-   story doesn't: a shorter opening, a list of pieces, and one long chapter
-   whose left column holds the date instead of a heading. */
+/* Writing: the homepage's day, kept on for reading.
+   Loaded after /story.css. The essays borrow the story pages' layout, clock and
+   reveals, but are read in daylight, so the story tokens are turned over here:
+   "night" is the page and "moon" the text, whatever their names say. On top it
+   adds what an essay needs that a project story doesn't: a shorter opening, a
+   list of pieces, one long chapter whose left column holds the date, and the
+   paragraph being read brought forward (writing.js). */
+
+:root {
+  --night: #e7e9ee;      /* the homepage's haze */
+  --moon: #161513;       /* its ink */
+  --moon-soft: #5e5c58;  /* its soft ink */
+  --moon-body: color-mix(in oklab, var(--moon) 84%, var(--night));
+  --hair: color-mix(in oklab, var(--moon) 16%, transparent);
+  /* Sodium is too light to read on haze; this amber passes 4.5:1. */
+  --sodium: #9a5800;
+}
 
 /* ---------- opening: a name, without a drawing to wait under ---------- */
 
@@ -111,4 +124,14 @@
     gap: 6px 14px;
     margin-bottom: 28px;
   }
+}
+
+/* ---------- the paragraph being read, brought forward ----------
+   writing.js marks the paragraph at the reading line; the rest fall back. */
+
+.focus-read .essay .prose > p { opacity: .3; }
+.focus-read .essay .prose > p.is-focus { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .focus-read .essay .prose > p { transition: opacity .5s var(--ease); }
 }
