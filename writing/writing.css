@@ -1,0 +1,114 @@
+/* Writing: the story pages' night, after the last story has ended.
+   Loaded after /story.css and only adds what an essay needs that a project
+   story doesn't: a shorter opening, a list of pieces, and one long chapter
+   whose left column holds the date instead of a heading. */
+
+/* ---------- opening: a name, without a drawing to wait under ---------- */
+
+.writing-hero {
+  min-height: clamp(320px, 56svh, 620px);
+}
+
+.essay-hero {
+  min-height: clamp(360px, 64svh, 720px);
+}
+
+.essay-title {
+  max-width: 11ch;
+  font-size: clamp(3.25rem, 9.5vw, 9.5rem);
+  line-height: .88;
+  text-wrap: balance;
+}
+
+/* ---------- the list of pieces ---------- */
+
+.entries {
+  margin: 0;
+  padding: 0 var(--gutter) clamp(56px, 10vh, 112px);
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  padding: clamp(28px, 5vh, 48px) 0 clamp(36px, 6vh, 56px);
+  border-top: 1px solid var(--hair);
+}
+
+.entries li:last-child .entry { border-bottom: 1px solid var(--hair); }
+
+.entry-when {
+  grid-column: 1 / span 4;
+  padding-top: .5em;
+  font-size: .9375rem;
+  color: var(--moon-soft);
+}
+
+.entry-body {
+  grid-column: 5 / span 8;
+  min-width: 0;
+}
+
+.entry-title {
+  display: inline;
+  font-size: clamp(2rem, 1.2rem + 2.6vw, 3.75rem);
+  font-stretch: 75%;
+  font-weight: 500;
+  line-height: .95;
+  letter-spacing: -.03em;
+  background: linear-gradient(var(--sodium), var(--sodium)) 0 100% / 0 2px no-repeat;
+  transition: background-size .5s var(--ease), color .3s;
+}
+
+.entry:hover .entry-title,
+.entry:focus-visible .entry-title {
+  color: var(--sodium);
+  background-size: 100% 2px;
+}
+
+.entry-line {
+  display: block;
+  max-width: 40em;
+  margin-top: 16px;
+  color: var(--moon-body);
+  line-height: 1.55;
+}
+
+/* ---------- the essay: one chapter, the date keeping the left ---------- */
+
+.essay-meta {
+  grid-column: 1 / span 4;
+  align-self: start;
+  position: sticky;
+  top: calc(56px + clamp(20px, 4vh, 40px));
+  display: grid;
+  gap: 4px;
+  margin: .35em 0 24px;
+  font-size: .9375rem;
+  color: var(--moon-soft);
+}
+
+.essay-meta time { color: var(--moon); font-weight: 500; }
+
+/* the short lines that stand alone */
+.beat {
+  color: var(--moon);
+  font-size: clamp(1.25rem, 1.05rem + .7vw, 1.625rem);
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+
+.prose > .beat + .beat { margin-top: .35em; }
+
+@media (max-width: 899px) {
+  .entry { display: block; }
+  .entry-when { display: block; padding: 0 0 12px; }
+
+  .essay-meta {
+    position: static;
+    display: flex;
+    gap: 6px 14px;
+    margin-bottom: 28px;
+  }
+}

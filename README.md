@@ -62,13 +62,27 @@ hard-coded, so keep them in step with the tokens. The old diagram,
 `assets/photos/tiny-router-diagram.png`, is no longer linked from anywhere.
 The page itself draws the pipeline as inline SVG.
 
+## Writing
+
+`/writing/` lists the essays, newest first; each one lives in its own folder,
+`/writing/<slug>/index.html`. They are set in the story pages' night: they load
+`/story.css` and `/story.js` and add `/writing/writing.css` on top. The bar's
+clock runs on past the last story, from 01:00. The homepage links here from the
+bar and from the contact links (the bar's nav is hidden on phones).
+
+To add a piece: copy `writing/a-tuesday-in-the-park/` to a new slug, change the
+text, title, date and read time, update its canonical, Open Graph and JSON-LD,
+and then add it in three places: an `.entry` at the top of the list in
+`writing/index.html` (plus a `blogPost` item in that page's JSON-LD), a line in
+`sitemap.xml`, and a social card in `assets/social/<slug>.jpg`.
+
 ## Search and sharing
 
 - Every indexable page carries a canonical URL on `parvez-ahmed.com`, Open
   Graph and Twitter tags, and JSON-LD: `Person`, `ProfilePage` and `WebSite` on
   the homepage, and an `Article` on each story page that points back to that
   `Person` by `@id`. `404.html` is `noindex`.
-- `sitemap.xml` lists the five pages and `robots.txt` points to it. Add any
+- `sitemap.xml` lists the indexable pages and `robots.txt` points to it. Add any
   new page to the sitemap.
 - `_headers` sends `X-Robots-Tag: noindex` on `*.pages.dev`, so only the
   custom domain gets indexed.
