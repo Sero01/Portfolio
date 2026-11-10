@@ -32,9 +32,12 @@
     html {
       background: var(--night);
       color: var(--moon);
+      scrollbar-color: color-mix(in oklab, var(--moon) 28%, var(--night)) var(--night);
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
     }
+
+    ::selection { background: var(--moon); color: var(--night); }
 
     body {
       margin: 0;
@@ -117,6 +120,7 @@
       from { opacity: 0; transform: translateY(.35em); }
     }
   </style>
+  <link rel="stylesheet" href="/cursor.css">
 </head>
 <body>
 
@@ -131,5 +135,6 @@
     <a class="home" href="/">Back to morning</a>
   </main>
 
+  <script src="/cursor.js"></script>
 </body>
 </html>

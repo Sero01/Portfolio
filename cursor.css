@@ -1,0 +1,58 @@
+/* The cursor: one disc, the other half of the day from whatever it is over.
+   It is white under mix-blend-mode: difference, so on the haze it shows as ink
+   and at night as moonlight, and the words it passes over turn over with it.
+   cursor.js adds it for mice only, moves it a little behind the pointer so it
+   carries weight, and sizes it: larger over big type and links. It must stay a
+   direct child of <body>: inside anything that makes a stacking context it
+   would blend with that box alone, not with the page. */
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s;
+  will-change: transform;
+}
+
+.cursor.is-on { opacity: 1; }
+
+/* A photograph's difference is its negative, so over photographs the disc
+   stops blending: moonlight, with a hairline of ink to hold it on a pale shot. */
+.cursor.is-plain,
+.cursor.is-open {
+  background: #e7e9ee;
+  mix-blend-mode: normal;
+  box-shadow: 0 0 0 1px rgb(22 21 19 / .5);
+}
+
+/* Over a card that goes somewhere, the disc carries the card's north-east
+   arrow; the bubble in the card's corner stands down (styles.css). */
+.cursor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23161513' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / 42% no-repeat;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.cursor.is-open::after { opacity: 1; }
+
+/* The system cursor goes once the disc has shown itself, and comes back over
+   anything typed or dragged in, where the disc steps aside. */
+.has-cursor,
+.has-cursor * { cursor: none !important; }
+
+.has-cursor :is(input, textarea, select, iframe, [contenteditable=""], [contenteditable="true"]) { cursor: auto !important; }
+
+@media print {
+  .cursor { display: none; }
+}

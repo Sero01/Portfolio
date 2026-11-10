@@ -35,9 +35,14 @@
 html {
   background: var(--night);
   color: var(--moon);
+  /* The scrollbar's thumb: a little of the text colour in the page. */
+  scrollbar-color: color-mix(in oklab, var(--moon) 28%, var(--night)) var(--night);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
+
+/* Selected words turn over, as they do under the cursor. */
+::selection { background: var(--moon); color: var(--night); }
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
@@ -103,6 +108,15 @@ code {
   min-width: 5ch;
   text-align: right;
   font-weight: 500;
+}
+
+/* story.js sets each digit in a cell as wide as a 0, so the time doesn't
+   shuffle sideways as it runs. Not tabular-nums: this font's tabular figures
+   are a different cut, with a slashed zero. */
+.bar-clock span {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
 }
 
 .bar-nav a,
@@ -212,6 +226,19 @@ code {
 }
 
 @keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* Arriving from its card on the homepage, the drawing travels across already
+   drawn (story.js), so it isn't drawn a second time. */
+.js .draw.is-still [pathLength] {
+  animation: none;
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+}
+
+.js .draw.is-still text {
+  opacity: 1;
+  transition: none;
+}
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(.35em); }
@@ -605,6 +632,71 @@ code {
   .can-reveal .chart .value { transition: opacity .6s var(--ease) .7s; }
   .can-reveal .chart:not(.is-shown) .fill { scale: 0 1; }
   .can-reveal .chart:not(.is-shown) .value { opacity: 0; }
+}
+
+/* ---------- grain ---------- */
+
+/* The homepage's film grain: grey specks over everything, the bar included,
+   that darken a light page and lift a dark one by the same small amount.
+   Still, not animated, and under the cursor. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 1.7 0 0 0 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 220px;
+  opacity: .12;
+  pointer-events: none;
+}
+
+@media (prefers-contrast: more), print {
+  body::after { display: none; }
+}
+
+/* ---------- between pages ---------- */
+
+/* Pages cross-fade into one another. Opened from its card on the homepage,
+   a story's drawing travels from the card to its place up here: the card's
+   drawing is the wider frame, so it enlarges into this one while this one
+   starts small enough to match it. story.js sets the --vt-* numbers from the
+   drawing's viewBox; without them nothing is resized. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: .4s; }
+
+.story-art { view-transition-name: drawing; }
+
+::view-transition-group(drawing) {
+  animation-duration: .7s;
+  animation-timing-function: var(--ease);
+}
+
+::view-transition-old(drawing) {
+  animation: vt-out .7s var(--ease) both, vt-card-to-art .7s var(--ease) both;
+}
+
+::view-transition-new(drawing) {
+  animation: vt-in .7s var(--ease) both, vt-art-from-card .7s var(--ease) both;
+}
+
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
+
+@keyframes vt-card-to-art {
+  to {
+    width: calc(100% * var(--vt-zoom, 1));
+    translate: calc(var(--vt-card-x, 0) * -100%) calc(var(--vt-card-y, 0) * -100%);
+  }
+}
+
+@keyframes vt-art-from-card {
+  from {
+    width: calc(100% / var(--vt-zoom, 1));
+    translate: calc(var(--vt-art-x, 0) * 100%) calc(var(--vt-art-y, 0) * 100%);
+  }
 }
 
 /* ---------- narrow screens: one column ---------- */

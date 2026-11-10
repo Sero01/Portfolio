@@ -1,10 +1,12 @@
 /* The page is one day, read top to bottom.
    Scroll position fades the hero out, sets the time in the bar and brings the
    night in as a box that grows to fill the screen, where the featured projects
-   stack as cards. Work and Experience rows
+   stack as cards, each drawing itself in as it arrives. The haze warms
+   through the afternoon before that. Work and Experience rows
    draw in as they arrive. The photographs roll on their own, a little faster
    while the page is moving, and project videos play while in view. The
-   wheel eases the whole page along, so it carries some weight. */
+   wheel eases the whole page along, so it carries some weight. Opening a
+   story, its card's drawing travels to the top of the story's page. */
 (() => {
   const root = document.documentElement;
   const $ = selector => document.querySelector(selector);
@@ -85,8 +87,28 @@
     if (night !== isNight) {
       isNight = night;
       root.classList.toggle('is-night', night);
-      themeColor.content = night ? '#161513' : '#e7e9ee';
+      themeColor.content = night ? '#161513' : lastDay;
     }
+  }
+
+  /* ---------- dusk: the haze warms through the afternoon ---------- */
+
+  // The sky holds its morning colour until mid-afternoon, then turns towards
+  // amber, fullest as the night starts to rise. It goes by the clock's time,
+  // not by position, so it keeps its hours on any screen.
+  const HAZE = [231, 233, 238];
+  const DUSK = [237, 227, 214];
+  const DUSK_FROM = 14 * 60 + 30;
+  const DUSK_FULL = 18 * 60;
+  let lastDay = '#e7e9ee';
+
+  function paintSky(minutes) {
+    const t = smooth(clamp01((minutes - DUSK_FROM) / (DUSK_FULL - DUSK_FROM)));
+    const day = `#${HAZE.map((c, i) => Math.round(lerp(c, DUSK[i], t)).toString(16).padStart(2, '0')).join('')}`;
+    if (day === lastDay) return;
+    lastDay = day;
+    root.style.setProperty('--day', day);
+    if (!isNight) themeColor.content = day;
   }
 
   /* ---------- featured projects: each card sinks back as the next covers it ---------- */
@@ -123,6 +145,137 @@
     if (changed) playVisible();
   }
 
+  /* ---------- featured drawings: each draws itself in as its card arrives ---------- */
+
+  // The cards carry their drawings as images, which can't be animated from
+  // out here, so each file is fetched again (from cache) and put in the page
+  // as SVG, every stroke given pathLength="1" for styles.css to draw along.
+  // Without motion, or if the fetch fails, the image stays as it is.
+  const drawer = new IntersectionObserver(entries => {
+    entries.filter(entry => entry.isIntersecting).forEach(({ target }) => {
+      target.classList.add('is-drawn');
+      drawer.unobserve(target);
+    });
+  }, { threshold: 0.5 });
+
+  function inlineDrawing(img) {
+    fetch(img.src)
+      .then(response => (response.ok ? response.text() : Promise.reject()))
+      .then(text => {
+        // Parsed as part of this page, the way the story pages' drawings are.
+        const holder = document.createElement('template');
+        holder.innerHTML = text;
+        const svg = holder.content.querySelector('svg');
+        if (!svg || !img.isConnected) return;
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', img.alt);
+        svg.classList.add('draw');
+        svg.querySelectorAll('path, rect, circle, line, ellipse, polyline, polygon').forEach((stroke, i) => {
+          // A dashed line can't be drawn along its length; it fades in instead.
+          const dashed = stroke.hasAttribute('stroke-dasharray');
+          if (!dashed) stroke.setAttribute('pathLength', '1');
+          stroke.classList.add(dashed ? 'dash' : 'stroke');
+          stroke.style.setProperty('--i', i);
+        });
+        // Already in view (a reload, or coming back from its story): it is
+        // there, drawn, as the image was.
+        const r = img.getBoundingClientRect();
+        const inView = r.bottom > 0 && r.top < innerHeight;
+        if (inView) svg.classList.add('is-drawn', 'is-still');
+        img.replaceWith(svg);
+        if (!inView) drawer.observe(svg);
+      })
+      .catch(() => {});
+  }
+
+  if (!reduceMotion.matches && window.fetch) {
+    document.querySelectorAll('.feature-media img[src$=".svg"]').forEach(inlineDrawing);
+  }
+
+  /* ---------- small cards: without a mouse, colour comes up mid-screen ---------- */
+
+  // The shots are grey until pointed at (styles.css). A finger can't point
+  // without pressing, so there the cards crossing the middle of the screen
+  // are the ones in colour.
+  if (!matchMedia('(hover: hover)').matches) {
+    const lighter = new IntersectionObserver(entries => {
+      entries.forEach(({ target, isIntersecting }) => target.classList.toggle('is-lit', isIntersecting));
+    }, { rootMargin: '-30% 0px -30% 0px' });
+    document.querySelectorAll('.build').forEach(card => lighter.observe(card));
+  }
+
+  /* ---------- between pages: a card's drawing travels to and from its story ---------- */
+
+  // styles.css and story.css opt in to cross-document view transitions. The
+  // card whose story is being opened, or come back from, is named as the
+  // transition's "drawing", and the story names its own. Each side leaves a
+  // note for the other on the way out, only if its drawing was on screen:
+  // from here the size of the card's drawing, from the story how it crops it
+  // (its viewBox). With both, the two stay in register while one becomes the
+  // other; with neither, the pages just cross-fade.
+  const NOTE = 'vt-drawing';
+  const samePage = path => path.replace(/index\.html$/, '');
+  const inSight = el => {
+    const r = el.getBoundingClientRect();
+    return r.bottom > 0 && r.top < innerHeight;
+  };
+
+  function mediaFor(url) {
+    if (!url) return null;
+    const path = samePage(new URL(url, location.href).pathname);
+    const card = features.find(feature => {
+      const story = feature.querySelector('.project-links a');
+      return story && story.origin === location.origin && samePage(story.pathname) === path;
+    });
+    return card ? card.querySelector('.feature-media') : null;
+  }
+
+  function drawingSize(media) {
+    const drawing = media.firstElementChild;
+    const box = drawing.viewBox && drawing.viewBox.baseVal;
+    return box ? [box.width, box.height] : [+drawing.getAttribute('width'), +drawing.getAttribute('height')];
+  }
+
+  function nameDrawing(media, transition) {
+    features.forEach(card => { card.querySelector('.feature-media').style.viewTransitionName = ''; });
+    if (!media || !transition) return;
+    media.style.viewTransitionName = 'drawing';
+    transition.finished.finally(() => { media.style.viewTransitionName = ''; });
+  }
+
+  addEventListener('pageswap', event => {
+    const media = event.viewTransition && mediaFor(event.activation?.entry?.url);
+    const seen = media && inSight(media);
+    try {
+      if (seen) sessionStorage.setItem(NOTE, drawingSize(media).join(' '));
+      else sessionStorage.removeItem(NOTE);
+    } catch {}
+    nameDrawing(seen ? media : null, event.viewTransition);
+  });
+
+  addEventListener('pagereveal', event => {
+    let crop = [];
+    try {
+      crop = (sessionStorage.getItem(NOTE) || '').split(' ').map(Number);
+      sessionStorage.removeItem(NOTE);
+    } catch {}
+    const media = event.viewTransition && crop.length === 4 && mediaFor(window.navigation?.activation?.from?.url);
+    if (media && inSight(media)) {
+      const [vx, vy, vw, vh] = crop;
+      const [cw, ch] = drawingSize(media);
+      root.style.setProperty('--vt-zoom', cw / vw);
+      root.style.setProperty('--vt-card-x', vx / cw);
+      root.style.setProperty('--vt-card-y', vy / ch);
+      root.style.setProperty('--vt-art-x', vx / vw);
+      root.style.setProperty('--vt-art-y', vy / vh);
+      nameDrawing(media, event.viewTransition);
+    } else {
+      nameDrawing(null);
+    }
+  });
+
   /* ---------- clock: scroll position mapped onto the hours of a day ---------- */
 
   let hours = [];
@@ -153,9 +306,12 @@
     while (i < hours.length - 1 && y > hours[i][0]) i++;
     const [y0, m0] = hours[i - 1];
     const [y1, m1] = hours[i];
-    const minutes = Math.round(lerp(m0, m1, clamp01((y - y0) / (y1 - y0))));
+    const exact = lerp(m0, m1, clamp01((y - y0) / (y1 - y0)));
+    const minutes = Math.round(exact);
     const time = `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
-    if (time !== lastTime) clock.textContent = lastTime = time;
+    // Each digit goes in its own cell (styles.css), so the time holds still.
+    if (time !== lastTime) clock.innerHTML = (lastTime = time).replace(/\d/g, '<span>$&</span>');
+    return exact;
   }
 
   /* ---------- photographs: three reels, rolling up, down, up ---------- */
@@ -333,7 +489,7 @@
     paintHero(y, heroHeight);
     paintNightfall(nightTop, vh);
     paintFeatures(featureTops, featureHeights);
-    paintClock(y);
+    paintSky(paintClock(y));
     paintPhotos(photosRect, vh, dy);
   }
 

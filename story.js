@@ -1,6 +1,7 @@
 /* Story pages. The clock in the bar runs through the evening as the story is
    read, the drawings draw themselves in, chapters and charts arrive once, and
-   a project with a demo on Render's free tier gets it woken while you read. */
+   a project with a demo on Render's free tier gets it woken while you read.
+   Arriving from the homepage, the card's drawing travels up into the opening. */
 (() => {
   const root = document.documentElement;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -19,7 +20,8 @@
     const progress = room > 0 ? Math.min(1, Math.max(0, scrollY / room)) : 0;
     const minutes = (from + Math.round(progress * span)) % 1440;
     const time = `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
-    if (time !== lastTime) clock.textContent = lastTime = time;
+    // Each digit goes in its own cell (story.css), so the time holds still.
+    if (time !== lastTime) clock.innerHTML = (lastTime = time).replace(/\d/g, '<span>$&</span>');
   }
 
   let queued = false;
@@ -63,6 +65,46 @@
       if (!el.classList.contains('is-shown') && !el.classList.contains('is-drawn')) io.observe(el);
     });
   }
+
+  /* ---------- between pages: the drawing arrives from its card, and goes back ----------
+
+     story.css and the homepage's styles.css opt in to cross-document view
+     transitions, and both name this drawing and its card's "drawing". Each
+     side leaves a note for the other on the way out, only if its drawing was
+     on screen: the homepage the size of the card's drawing, this page how it
+     crops that drawing (its viewBox). With the homepage's note the two are
+     kept in register while one becomes the other, and the drawing arrives
+     already drawn; without it the pages just cross-fade. */
+
+  const NOTE = 'vt-drawing';
+  const art = document.querySelector('.story-art');
+  const vars = ['--vt-zoom', '--vt-card-x', '--vt-card-y', '--vt-art-x', '--vt-art-y'];
+
+  addEventListener('pagereveal', event => {
+    let card = [];
+    try {
+      card = (sessionStorage.getItem(NOTE) || '').split(' ').map(Number);
+      sessionStorage.removeItem(NOTE);
+    } catch {}
+    vars.forEach(name => root.style.removeProperty(name));
+    if (!event.viewTransition || !art || card.length !== 2 || !card[0] || !card[1]) return;
+    const { x, y, width, height } = art.viewBox.baseVal;
+    const [cw, ch] = card;
+    [cw / width, x / cw, y / ch, x / width, y / height].forEach((value, i) => root.style.setProperty(vars[i], value));
+    art.classList.add('is-still');
+  });
+
+  addEventListener('pageswap', event => {
+    try {
+      const r = art && event.viewTransition && art.getBoundingClientRect();
+      if (r && r.bottom > 0 && r.top < innerHeight) {
+        const { x, y, width, height } = art.viewBox.baseVal;
+        sessionStorage.setItem(NOTE, [x, y, width, height].join(' '));
+      } else {
+        sessionStorage.removeItem(NOTE);
+      }
+    } catch {}
+  });
 
   /* ---------- demo: wake it while the story is read ----------
 

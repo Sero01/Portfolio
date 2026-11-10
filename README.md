@@ -31,11 +31,12 @@ the eval case study is hosted here, see below).
 
 ## The eval case study
 
-`/eval-case-study/` is a self-contained page — one `index.html` with inline
-CSS, no build step — carrying the text of
-`docval/docs/writeups/eval-case-study.md` verbatim, minus the draft header.
-It reuses the site's tokens and the same `portfolio-theme` localStorage key,
-so the light/dark choice follows the reader across from the main page. The
+`/eval-case-study/` carries the text of
+`docval/docs/writeups/eval-case-study.md` verbatim, minus the draft header. It
+is set like the story pages (it loads `/story.css` and `/story.js`), with a
+small inline `<style>` for what only it has: a title long enough to need its
+own size, a dateline in the left column, plain lists and a code block. It
+shares DocVal's hour on the clock, 23:00, and ends on the DocVal story. The
 DocVal card links to it.
 
 If the writeup changes in `docval`, the page does not follow automatically —
@@ -80,6 +81,83 @@ and then add it in three places: an `.entry` at the top of the list in
 `writing/index.html` (plus a `blogPost` item in that page's JSON-LD), a line in
 `sitemap.xml`, and a social card in `assets/social/<slug>.jpg`.
 
+## The cursor
+
+Every page loads `/cursor.css` and `/cursor.js` (the homepage by relative
+path). With a mouse, the pointer is a disc that follows a beat behind and
+turns over whatever it crosses: ink on the haze, moonlight at night. Touch,
+pens, forced colours and `prefers-contrast: more` keep the native pointer, and
+reduced motion drops the lag.
+
+- The disc is white with `mix-blend-mode: difference`, so it has to stay a
+  direct child of `<body>`. Inside anything that makes its own stacking
+  context it would stop blending with the page.
+- It grows over the words of display type, which it finds by computed size
+  (30px and up), so new headings need nothing. It only grows over the letters
+  themselves, not the empty part of a heading's box.
+- The rest goes by the selector lists at the top of `cursor.js`. Keep them in
+  step when adding things: `FILLED` for anything that fills in on hover (the
+  disc shrinks to a point so it doesn't fight the fill), `OPENS` for card
+  thumbnails (the disc carries the arrow, and `styles.css` stands the corner
+  bubble down for mouse hover), `PHOTOS` for images it shouldn't invert.
+- A new page needs both tags, `cursor.css` after its other stylesheets and
+  `cursor.js` last.
+
+- The disc carries across a page change: `cursor.js` leaves its position in
+  `sessionStorage` (`cursor-at`) on the way out and picks it up on arrival, so
+  it doesn't vanish until the mouse next moves.
+
+The clock's digits each sit in a cell as wide as a 0 (`.bar-clock span`, set
+by `script.js` and `story.js`) so the time doesn't shuffle as it runs. That is
+instead of `tabular-nums`, because Mona Sans's tabular figures have a slashed
+zero.
+
+## The homepage's finish
+
+- **The portrait.** `assets/parvez.jpg` has the tee's printed text retouched
+  out, because the "ed" of Ahmed sat on top of it. The untouched photo is in
+  git history (before November 2026). `assets/parvez-cutout.png`, in the
+  contact section, still has the print; nothing crosses it there.
+- **Featured cards draw themselves.** The cards are `<img>` tags in the HTML.
+  `script.js` fetches each SVG and swaps it in inline, marking every stroke
+  `.stroke` (with `pathLength="1"`) or `.dash` (already dashed, so it fades in
+  instead), and `styles.css` draws them when the card is half in view. A card
+  already on screen at load is left still. With reduced motion, or if the fetch
+  fails, the `<img>` stays. A new card drawing needs nothing beyond being an
+  SVG of strokes.
+- **Small cards are grey at rest.** Their thumbnails come up in colour on
+  hover or focus. On touch there is no hover, so `script.js` adds `is-lit` to
+  whichever cards are in the middle of the screen.
+- **Dusk.** From 14:30 to 18:00 on the clock the haze warms from `#e7e9ee`
+  toward `#ede3d6` (`HAZE` and `DUSK` in `script.js`), set as `--day` on the
+  root; the page background, the bar and `theme-color` follow it. To change how
+  warm the afternoon gets, change `DUSK`.
+- **Grain.** `body::after` in `styles.css` and `story.css` lays a faint noise
+  tile (an inline SVG `feTurbulence`) over every page except the 404. It sits
+  above the bar and below the cursor, and is off for `prefers-contrast: more`
+  and print. Its strength is the `opacity` on that rule.
+
+## Between pages
+
+`styles.css` and `story.css` opt in to cross-document view transitions
+(`@view-transition`), so pages cross-fade in browsers that have them (Chrome,
+Edge, Safari 18.2+) and change as before elsewhere. Reduced motion turns it
+off.
+
+Opening a story from its card, the card's drawing travels to the story's
+opening and back again on return. Both sides name it `drawing`
+(`view-transition-name`): the story's `.story-art` always, the card's
+`.feature-media` only for the navigation that concerns it. The story crops the
+drawing tighter than the card shows it, so each side leaves a note for the
+other in `sessionStorage` (`vt-drawing`) on `pageswap` — the card its drawing's
+size, the story its `viewBox` — and on `pagereveal` the arriving page turns
+that into `--vt-zoom`, `--vt-card-x/y` and `--vt-art-x/y`, which the keyframes
+at the end of both stylesheets use to keep the two drawings in register. A
+story arrived at this way skips drawing itself in (`is-still`).
+
+This relies on a story's opening drawing being the same drawing as its card,
+cropped only by `viewBox`. If the two ever differ, the morph will show it.
+
 ## Search and sharing
 
 - Every indexable page carries a canonical URL on `parvez-ahmed.com`, Open
@@ -96,11 +174,10 @@ and then add it in three places: an `.entry` at the top of the list in
 - The social cards in `assets/social/` are 1200×630 screenshots of each
   page's opening screen, with the bar's nav, clock and link pills hidden. If an
   opening changes, retake its card: headless Chrome at 1200×630, wait for the
-  drawing to finish, JPEG.
+  drawing to finish, JPEG. The story and writing cards predate the grain, which
+  is too faint to be worth retaking them for.
 
-`/eval-case-study/` still has the old paper-and-serif style.
-
-They are deliberately *not* duplicates of the eval case study: `/docval/` is the
+The story pages are deliberately *not* duplicates of the eval case study: `/docval/` is the
 project story (what the pipeline does, what it scores, the fix that moved it),
 while `/eval-case-study/` is the measurement methodology. The DocVal page links
 across to it rather than repeating it.

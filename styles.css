@@ -13,7 +13,12 @@
   --moon-soft: #9a978f;
   --sodium: #f5a524;
 
-  --sky: var(--haze);
+  /* The day's light. script.js warms it through the afternoon, so the haze has
+     turned a little amber by the time the night comes up. */
+  --day: var(--haze);
+  --sky: var(--day);
+  /* The scrollbar's thumb: a little of the text colour in the sky. */
+  --thumb: color-mix(in oklab, var(--ink) 28%, var(--haze));
   --gutter: clamp(16px, 4vw, 56px);
   --col-gap: clamp(16px, 2vw, 32px);
   /* No system-ui: on Android that resolves to Roboto. */
@@ -26,6 +31,8 @@
 html {
   background: var(--sky);
   color: var(--ink);
+  /* The scrollbar keeps the hour: haze by day, dark once night has fallen. */
+  scrollbar-color: var(--thumb) var(--sky);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -68,7 +75,17 @@ a { color: inherit; text-decoration: none; }
 .night { background: var(--night); }
 
 /* Once the night has filled the screen, the page behind it turns too. */
-:root.is-night { --sky: var(--night); }
+:root.is-night {
+  --sky: var(--night);
+  --thumb: color-mix(in oklab, var(--moon) 28%, var(--night));
+}
+
+/* Selected words turn over, as they do under the cursor: haze on ink by day,
+   ink on moonlight at night. */
+::selection { background: var(--ink); color: var(--haze); }
+
+.night ::selection,
+.is-night .bar ::selection { background: var(--moon); color: var(--night); }
 
 /* ---------- bar ---------- */
 
@@ -81,7 +98,7 @@ a { color: inherit; text-decoration: none; }
   gap: 2rem;
   padding: 18px var(--gutter);
   /* Solid, so content slides under it cleanly; the night layer below covers it. */
-  background: var(--haze);
+  background: var(--day);
   color: var(--ink);
   font-size: .9375rem;
   line-height: 1.2;
@@ -138,6 +155,15 @@ a { color: inherit; text-decoration: none; }
   min-width: 5ch;
   text-align: right;
   font-weight: 500;
+}
+
+/* script.js sets each digit in a cell as wide as a 0, so the time doesn't
+   shuffle sideways as it runs. Not tabular-nums: this font's tabular figures
+   are a different cut, with a slashed zero. */
+.bar-clock span {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
 }
 
 /* ---------- hero ---------- */
@@ -429,6 +455,9 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   border-radius: 20px;
   background: color-mix(in oklab, var(--night), var(--moon) 5%);
+  /* A hairline, so the card has an edge against the night around it. */
+  outline: 1px solid color-mix(in oklab, var(--moon) 9%, transparent);
+  outline-offset: -1px;
   text-align: center;
   transform-origin: 50% 0;
 }
@@ -465,7 +494,7 @@ a { color: inherit; text-decoration: none; }
   mask-image: linear-gradient(#000 28%, transparent 72%);
 }
 
-.feature-media :is(img, video),
+.feature-media :is(img, video, svg),
 .build-media :is(img, video) {
   display: block;
   width: 100%;
@@ -473,6 +502,30 @@ a { color: inherit; text-decoration: none; }
   object-fit: cover;
   /* Safari won't clip a playing video to its parent's corners. */
   border-radius: inherit;
+}
+
+/* Drawn on arrival, as on the story pages. script.js swaps each card's
+   drawing for the same file inline and marks every stroke, with
+   pathLength="1" so a dash of 1 is the whole of it; is-drawn arrives with
+   the card. A card already on screen when the page
+   opens is is-still, and skips the drawing. */
+@media (prefers-reduced-motion: no-preference) {
+  .feature-media .draw:not(.is-drawn) :is(.stroke, .dash) { opacity: 0; }
+
+  .feature-media .draw.is-drawn:not(.is-still) .stroke {
+    animation: draw 1.4s var(--ease) calc(var(--i, 0) * 60ms) backwards;
+  }
+
+  /* A dashed line can't be drawn along its length; it comes up after the rest. */
+  .feature-media .draw:not(.is-still) .dash { transition: opacity .8s var(--ease) .9s; }
+}
+
+/* The opacity is for the round caps, which would show as dots before a
+   stroke's turn comes. */
+@keyframes draw {
+  0% { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+  1% { opacity: 1; }
+  100% { stroke-dasharray: 1; stroke-dashoffset: 0; }
 }
 
 .feature-name {
@@ -543,11 +596,20 @@ a.build:hover .build-name {
   text-underline-offset: .2em;
 }
 
-/* On hover the shot dims and a bubble with a north-east arrow comes up in
-   its corner, breathing gently to say the card goes somewhere. */
+/* At rest the shots are grey and a little dim, so six products' own colours
+   don't break the night. A card's colour comes up when it is pointed at or
+   focused; without a mouse, script.js lights the cards crossing the middle of
+   the screen. For the keyboard a bubble with a north-east arrow comes up in
+   the corner, breathing gently to say the card goes somewhere. */
 .build .build-media { position: relative; }
 
-.build .build-media > * { transition: filter .35s var(--ease); }
+.build .build-media > * {
+  filter: grayscale(1) brightness(.82);
+  transition: filter .5s var(--ease);
+}
+
+a.build:is(:hover, :focus-visible) .build-media > *,
+.build.is-lit .build-media > * { filter: none; }
 
 .build .build-media::after {
   content: "";
@@ -565,11 +627,9 @@ a.build:hover .build-name {
 }
 
 @media (hover: hover) {
-  a.build:hover .build-media > * { filter: brightness(.6); }
   a.build:hover .build-media::after { opacity: 1; scale: 1; }
 }
 
-a.build:focus-visible .build-media > * { filter: brightness(.6); }
 a.build:focus-visible .build-media::after { opacity: 1; scale: 1; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -580,6 +640,14 @@ a.build:focus-visible .build-media::after { opacity: 1; scale: 1; }
 
 @keyframes breathe {
   50% { transform: scale(1.14); }
+}
+
+/* With a mouse the cursor carries the arrow itself (cursor.css), so the
+   bubble stays for the keyboard. */
+.has-cursor a.build:hover:not(:focus-visible) .build-media::after {
+  opacity: 0;
+  scale: .6;
+  animation: none;
 }
 
 /* Terminal-only projects have nothing to screenshot, so their cards show
@@ -769,6 +837,70 @@ a.build:focus-visible .build-media::after { opacity: 1; scale: 1; }
   padding-top: 20vh;
   font-size: .875rem;
   color: var(--soft);
+}
+
+/* ---------- grain ---------- */
+
+/* A little film grain over everything, the bar included: grey specks that
+   darken the haze and lift the night by the same small amount. Still, not
+   animated, and under the cursor. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 1.7 0 0 0 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 220px;
+  opacity: .12;
+  pointer-events: none;
+}
+
+@media (prefers-contrast: more), print {
+  body::after { display: none; }
+}
+
+/* ---------- between pages ---------- */
+
+/* Pages cross-fade into one another, and a story's drawing travels between
+   its card here and its place at the top of the story. script.js names the
+   card in question as the page is left or returned to, and sets the --vt-*
+   numbers: how the story crops the card's drawing. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: .4s; }
+
+::view-transition-group(drawing) {
+  animation-duration: .7s;
+  animation-timing-function: var(--ease);
+}
+
+/* Coming back: the story's drawing is the tighter crop, so it shrinks into
+   the card's while the card's starts enlarged to meet it. */
+::view-transition-old(drawing) {
+  animation: vt-out .7s var(--ease) both, vt-art-to-card .7s var(--ease) both;
+}
+
+::view-transition-new(drawing) {
+  animation: vt-in .7s var(--ease) both, vt-card-from-art .7s var(--ease) both;
+}
+
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
+
+@keyframes vt-art-to-card {
+  to {
+    width: calc(100% / var(--vt-zoom, 1));
+    translate: calc(var(--vt-art-x, 0) * 100%) calc(var(--vt-art-y, 0) * 100%);
+  }
+}
+
+@keyframes vt-card-from-art {
+  from {
+    width: calc(100% * var(--vt-zoom, 1));
+    translate: calc(var(--vt-card-x, 0) * -100%) calc(var(--vt-card-y, 0) * -100%);
+  }
 }
 
 /* ---------- tall screens: portrait up top, words underneath ---------- */
